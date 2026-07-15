@@ -1,0 +1,10 @@
+.angular/
+dist/
+node_modules/
+coverage/
+
+.env
+
+database/local-pg/
+server/uploads/*
+!server/uploads/.gitkeep
