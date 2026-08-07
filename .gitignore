@@ -8,3 +8,5 @@ coverage/
 database/local-pg/
 server/uploads/*
 !server/uploads/.gitkeep
+database/crochus-transfer.sql
+temp-dist/

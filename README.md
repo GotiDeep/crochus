@@ -21,11 +21,7 @@ npm install
 
 ### 2. Start the database
 
-Default local setup uses the workspace PostgreSQL helper on port `55432`:
-
-```bash
-npm run db:up
-```
+Default setup now uses your existing PostgreSQL server on port `5432`, so no separate local DB bootstrap is required.
 
 If you prefer Docker and have Docker installed:
 
@@ -73,11 +69,11 @@ The repo includes `.env.example` with safe local defaults.
 
 Important local defaults:
 
-- `PGHOST=127.0.0.1`
-- `PGPORT=55432`
+- `PGHOST=localhost`
+- `PGPORT=5432`
 - `PGDATABASE=crochus`
 - `PGUSER=postgres`
-- `PGPASSWORD=` (blank because the local helper uses trust auth)
+- `PGPASSWORD=your local PostgreSQL password`
 
 ## API Highlights
 
@@ -102,4 +98,4 @@ Important local defaults:
 
 - Orders are saved to PostgreSQL before WhatsApp is opened.
 - OTP and contact email flows log to the console when SMTP is not configured.
-- `npm run db:up` bootstraps a fresh local database for development.
+- `npm run db:up` is only needed if you want to use the workspace-local PostgreSQL helper instead of your existing PostgreSQL server.
