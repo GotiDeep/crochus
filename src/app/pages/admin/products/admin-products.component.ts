@@ -1,10 +1,11 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminSidebarComponent } from '../dashboard/admin-sidebar.component';
 import { AdminService } from '../../../core/services/admin.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Category, Product } from '../../../core/models';
+import { CustomAlertComponent } from '../../../shared/components/custom-alert/custom-alert.component';
 
 interface ProductFormData {
   name: string;
@@ -20,7 +21,7 @@ interface ProductFormData {
 @Component({
   selector: 'app-admin-products',
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, AdminSidebarComponent, CustomAlertComponent],
   template: `
     <div class="admin-layout">
       <app-admin-sidebar />
@@ -183,6 +184,13 @@ interface ProductFormData {
         }
       </main>
     </div>
+
+    <!-- Custom Alert Dialog -->
+    <app-custom-alert
+      #customAlert
+      (confirmed)="onAlertConfirmed()"
+      (cancelled)="onAlertCancelled()"
+    />
   `,
   styles: [`
     .admin-topbar {
@@ -255,6 +263,9 @@ interface ProductFormData {
 export class AdminProductsComponent implements OnInit {
   private adminService = inject(AdminService);
   private toast = inject(ToastService);
+
+  @ViewChild('customAlert') customAlert!: CustomAlertComponent;
+  private pendingDeleteId = signal<number | null>(null);
 
   loading = signal(true);
   saving = signal(false);
@@ -397,8 +408,17 @@ export class AdminProductsComponent implements OnInit {
     const handleSuccess = () => {
       this.saving.set(false);
       this.closeForm();
-      this.toast.success(isEdit ? 'Product updated!' : 'Product added!');
       this.refreshProducts();
+      setTimeout(() => {
+        this.customAlert.show({
+          type: 'success',
+          title: isEdit ? 'Product Updated!' : 'Product Added!',
+          message: isEdit
+            ? 'The product has been successfully updated.'
+            : 'New product has been added to your store.',
+          confirmText: 'Great!'
+        });
+      }, 100);
     };
 
     const request = isEdit
@@ -409,21 +429,53 @@ export class AdminProductsComponent implements OnInit {
       next: () => handleSuccess(),
       error: (error) => {
         this.saving.set(false);
-        this.toast.error(error instanceof Error ? error.message : 'Could not save product');
+        this.customAlert.show({
+          type: 'error',
+          title: 'Save Failed',
+          message: error instanceof Error ? error.message : 'Could not save product. Please try again.',
+          confirmText: 'OK'
+        });
       }
     });
   }
 
   deleteProduct(id: number) {
-    if (!confirm('Delete this product?')) return;
+    this.pendingDeleteId.set(id);
+    this.customAlert.show({
+      type: 'confirm',
+      title: 'Delete Product?',
+      message: 'This action cannot be undone. The product will be permanently removed from your store.',
+      confirmText: 'Yes, Delete',
+      cancelText: 'Cancel'
+    });
+  }
+
+  onAlertConfirmed() {
+    const id = this.pendingDeleteId();
+    if (id === null) return;
+    this.pendingDeleteId.set(null);
     this.adminService.deleteProduct(id).subscribe({
       next: () => {
         this.products.update((products) => products.filter((product) => product.id !== id));
-        this.toast.success('Product deleted');
+        this.customAlert.show({
+          type: 'success',
+          title: 'Product Deleted',
+          message: 'The product has been permanently removed from your store.',
+          confirmText: 'Done'
+        });
       },
       error: (error) => {
-        this.toast.error(error instanceof Error ? error.message : 'Could not delete product');
+        this.customAlert.show({
+          type: 'error',
+          title: 'Delete Failed',
+          message: error instanceof Error ? error.message : 'Could not delete product. Please try again.',
+          confirmText: 'OK'
+        });
       }
     });
+  }
+
+  onAlertCancelled() {
+    this.pendingDeleteId.set(null);
   }
 }

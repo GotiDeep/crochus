@@ -1,15 +1,16 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminSidebarComponent } from '../dashboard/admin-sidebar.component';
 import { AdminService } from '../../../core/services/admin.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Category } from '../../../core/models';
+import { CustomAlertComponent } from '../../../shared/components/custom-alert/custom-alert.component';
 
 @Component({
   selector: 'app-admin-categories',
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, AdminSidebarComponent, CustomAlertComponent],
   template: `
     <div class="admin-layout">
       <app-admin-sidebar />
@@ -56,6 +57,13 @@ import { Category } from '../../../core/models';
         </div>
       </main>
     </div>
+
+    <!-- Custom Alert Dialog -->
+    <app-custom-alert
+      #customAlert
+      (confirmed)="onAlertConfirmed()"
+      (cancelled)="onAlertCancelled()"
+    />
   `,
   styles: [`
     .admin-topbar {
@@ -114,6 +122,9 @@ export class AdminCategoriesComponent implements OnInit {
   private adminService = inject(AdminService);
   private toast = inject(ToastService);
 
+  @ViewChild('customAlert') customAlert!: CustomAlertComponent;
+  private pendingDeleteId = signal<number | null>(null);
+
   loading = signal(true);
   saving = signal(false);
   showForm = signal(false);
@@ -155,8 +166,15 @@ export class AdminCategoriesComponent implements OnInit {
     const handleSuccess = () => {
       this.saving.set(false);
       this.cancelEdit();
-      this.toast.success(isEdit ? 'Category updated!' : 'Category added!');
       this.loadCategories();
+      setTimeout(() => {
+        this.customAlert.show({
+          type: 'success',
+          title: isEdit ? 'Category Updated!' : 'Category Added!',
+          message: isEdit ? 'The category has been updated successfully.' : 'New category has been added.',
+          confirmText: 'Great!'
+        });
+      }, 100);
     };
 
     if (isEdit) {
@@ -180,15 +198,42 @@ export class AdminCategoriesComponent implements OnInit {
   }
 
   deleteCategory(id: number) {
-    if (!confirm('Delete this category?')) return;
+    this.pendingDeleteId.set(id);
+    this.customAlert.show({
+      type: 'confirm',
+      title: 'Delete Category?',
+      message: 'This action cannot be undone. All products in this category may be affected.',
+      confirmText: 'Yes, Delete',
+      cancelText: 'Cancel'
+    });
+  }
+
+  onAlertConfirmed() {
+    const id = this.pendingDeleteId();
+    if (id === null) return;
+    this.pendingDeleteId.set(null);
     this.adminService.deleteCategory(id).subscribe({
       next: () => {
         this.categories.update(c => c.filter(cat => cat.id !== id));
-        this.toast.success('Category deleted');
+        this.customAlert.show({
+          type: 'success',
+          title: 'Category Deleted',
+          message: 'The category has been permanently removed.',
+          confirmText: 'Done'
+        });
       },
       error: (error) => {
-        this.toast.error(error instanceof Error ? error.message : 'Could not delete category');
+        this.customAlert.show({
+          type: 'error',
+          title: 'Delete Failed',
+          message: error instanceof Error ? error.message : 'Could not delete category.',
+          confirmText: 'OK'
+        });
       }
     });
+  }
+
+  onAlertCancelled() {
+    this.pendingDeleteId.set(null);
   }
 }

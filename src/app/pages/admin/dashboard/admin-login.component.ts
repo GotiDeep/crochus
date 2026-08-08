@@ -12,7 +12,9 @@ import { AdminService } from '../../../core/services/admin.service';
     <div class="admin-login-page">
       <div class="login-card">
         <a routerLink="/" class="back-link">← Back to Store</a>
-        <div class="login-icon">🔐</div>
+        <div class="login-logo">
+          <img src="assets/logo.svg" alt="Crochus" class="login-logo-img" />
+        </div>
         <h1>Admin Login</h1>
         <p>Enter your admin password to access the dashboard</p>
 
@@ -73,7 +75,16 @@ import { AdminService } from '../../../core/services/admin.service';
       &:hover { color: var(--primary); }
     }
 
-    .login-icon { font-size: 2.5rem; margin-bottom: 16px; }
+    .login-logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      .login-logo-img {
+        height: 72px;
+        width: auto;
+        filter: var(--logo-filter, none);
+      }
+    }
     h1 { font-size: 1.8rem; margin-bottom: 8px; }
     p { font-size: 0.9rem; color: var(--text-secondary); }
 

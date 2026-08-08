@@ -13,8 +13,7 @@ import { SettingsService } from '../../../core/services/settings.service';
           <!-- Brand -->
           <div class="footer-brand">
             <div class="logo">
-              <span class="logo-mark">✦</span>
-              <span class="logo-name">Crochus</span>
+              <img src="assets/logo.svg" alt="Crochus" class="footer-logo-img" />
             </div>
             <p>Handmade with love and intention. Every piece tells a story — made by artisans, for those who value craft.</p>
             <div class="social-links">
@@ -96,15 +95,13 @@ import { SettingsService } from '../../../core/services/settings.service';
       .logo {
         display: flex;
         align-items: center;
-        gap: 8px;
         margin-bottom: 16px;
       }
-      .logo-mark { color: var(--accent); font-size: 1.1rem; }
-      .logo-name {
-        font-family: 'Cormorant Garamond', serif;
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: var(--text-primary);
+      .footer-logo-img {
+        height: 64px;
+        width: auto;
+        display: block;
+        filter: var(--logo-filter, none);
       }
 
       p {

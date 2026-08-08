@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AdminService } from '../../core/services/admin.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ToastService } from '../../core/services/toast.service';
 
@@ -16,7 +17,9 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
       <!-- Left Panel -->
       <div class="auth-visual">
         <div class="av-inner">
-          <a routerLink="/" class="auth-logo">✦ Crochus</a>
+          <a routerLink="/" class="auth-logo">
+            <img src="assets/logo.svg" alt="Crochus" class="auth-logo-img" />
+          </a>
           <div class="av-quote">
             <blockquote>"Every handmade piece carries a piece of the maker's soul."</blockquote>
           </div>
@@ -27,7 +30,9 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
       <!-- Right Panel -->
       <div class="auth-form-panel">
         <div class="auth-form-inner">
-          <a routerLink="/" class="auth-logo mobile-logo">✦ Crochus</a>
+          <a routerLink="/" class="auth-logo mobile-logo">
+            <img src="assets/logo.svg" alt="Crochus" class="auth-logo-img" />
+          </a>
 
           <!-- LOGIN -->
           @if (mode() === 'login') {
@@ -202,20 +207,26 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
     }
 
     .auth-logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.6rem;
-      font-weight: 600;
-      color: white;
+      display: flex;
+      align-items: center;
       text-decoration: none;
-      letter-spacing: 0.04em;
+
+      .auth-logo-img {
+        height: 56px;
+        width: auto;
+        filter: brightness(10) invert(0);
+      }
     }
 
     .mobile-logo {
       display: none;
-      color: var(--text-primary);
       margin-bottom: 32px;
 
-      @media (max-width: 768px) { display: block; }
+      .auth-logo-img {
+        filter: var(--logo-filter, none);
+      }
+
+      @media (max-width: 768px) { display: flex; }
     }
 
     .av-quote {
@@ -335,6 +346,7 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
   `]
 })
 export class AuthComponent implements OnInit {
+  private adminService = inject(AdminService);
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -355,6 +367,11 @@ export class AuthComponent implements OnInit {
     const path = this.route.snapshot.routeConfig?.path;
     if (path === 'register') this.mode.set('register');
 
+    if (this.adminService.isAdminLoggedIn()) {
+      this.router.navigate(['/admin/dashboard']);
+      return;
+    }
+
     if (this.authService.isLoggedIn()) {
       this.router.navigate([this.authService.redirectUrl || '/']);
     }
@@ -369,6 +386,14 @@ export class AuthComponent implements OnInit {
     if (!this.email || !this.password) { this.error.set('Please fill in all fields'); return; }
     this.loading.set(true);
     try {
+      if (this.email.trim().toLowerCase() === 'admin@crochus.com') {
+        await this.adminService.login(this.password);
+        this.loading.set(false);
+        this.toast.success('Welcome admin!');
+        this.router.navigate(['/admin/dashboard']);
+        return;
+      }
+
       await this.authService.login({ email: this.email, password: this.password });
       this.loading.set(false);
       this.toast.success('Welcome back!');

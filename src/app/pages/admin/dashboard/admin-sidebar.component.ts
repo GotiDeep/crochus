@@ -10,7 +10,9 @@ import { ThemeService } from '../../../core/services/theme.service';
   template: `
     <aside class="admin-sidebar">
       <div class="sidebar-header">
-        <a routerLink="/" class="admin-logo">✦ Crochus</a>
+        <a routerLink="/" class="admin-logo">
+          <img src="assets/logo.svg" alt="Crochus" class="sidebar-logo-img" />
+        </a>
         <span class="admin-badge">Admin</span>
       </div>
 
@@ -66,11 +68,16 @@ import { ThemeService } from '../../../core/services/theme.service';
     }
 
     .admin-logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: var(--text-primary);
+      display: flex;
+      align-items: center;
       text-decoration: none;
+      flex: 1;
+
+      .sidebar-logo-img {
+        height: 48px;
+        width: auto;
+        filter: var(--logo-filter, none);
+      }
     }
 
     .admin-badge {

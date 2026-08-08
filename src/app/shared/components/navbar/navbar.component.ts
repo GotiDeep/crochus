@@ -14,8 +14,7 @@ import { AuthService } from '../../../core/services/auth.service';
       <div class="nav-inner container">
         <!-- Logo -->
         <a routerLink="/" class="logo">
-          <span class="logo-icon">✦</span>
-          <span class="logo-text">Crochus</span>
+          <img src="assets/logo.svg" alt="Crochus" class="logo-img" />
         </a>
 
         <!-- Desktop Nav Links -->
@@ -92,17 +91,14 @@ import { AuthService } from '../../../core/services/auth.service';
     .logo {
       display: flex;
       align-items: center;
-      gap: 8px;
       text-decoration: none;
       flex-shrink: 0;
 
-      .logo-icon { color: var(--accent); font-size: 1.2rem; }
-      .logo-text {
-        font-family: 'Cormorant Garamond', serif;
-        font-size: 1.6rem;
-        font-weight: 600;
-        color: var(--text-primary);
-        letter-spacing: 0.04em;
+      .logo-img {
+        height: 56px;
+        width: auto;
+        display: block;
+        filter: var(--logo-filter, none);
       }
     }
 

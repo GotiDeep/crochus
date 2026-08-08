@@ -34,6 +34,7 @@
   --skeleton-shine: #f5f0e0;
   --input-bg: #FDFAF2;
   --scrollbar-thumb: #C8C49A;
+  --logo-filter: none;
 }
 
 [data-theme="dark"] {
@@ -64,6 +65,7 @@
   --skeleton-shine: #2a3218;
   --input-bg: #141a09;
   --scrollbar-thumb: #3A4A22;
+  --logo-filter: brightness(1.8) saturate(0.8);
 }
 
 /* ── Reset & Base ── */
