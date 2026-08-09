@@ -1,7 +1,6 @@
-const fs = require('fs/promises');
-const path = require('path');
 const cloudinary = require('cloudinary').v2;
 const env = require('../config/env');
+const ApiError = require('../lib/apiError');
 
 const hasCloudinaryConfig = Boolean(
   env.cloudinaryCloudName &&
@@ -23,15 +22,25 @@ async function uploadSingleAsset(file, folder, resourceType) {
   }
 
   if (!hasCloudinaryConfig) {
-    return `${env.publicServerUrl}/uploads/${path.basename(file.path)}`;
+    throw new ApiError(503, 'Media storage is not configured');
   }
 
-  const result = await cloudinary.uploader.upload(file.path, {
-    folder,
-    resource_type: resourceType,
+  const result = await new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream({
+      folder,
+      resource_type: resourceType,
+    }, (error, uploadResult) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+
+      resolve(uploadResult);
+    });
+
+    stream.end(file.buffer);
   });
 
-  await fs.unlink(file.path);
   return result.secure_url;
 }
 
@@ -52,4 +61,3 @@ module.exports = {
   uploadImageFiles,
   uploadVideoFile,
 };
-

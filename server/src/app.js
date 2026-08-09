@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const env = require('./config/env');
 const router = require('./routes');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
@@ -25,7 +24,6 @@ function createApp() {
   app.use(cors(createCorsOptions()));
   app.use(express.json({ limit: '5mb' }));
   app.use(express.urlencoded({ extended: true }));
-  app.use('/uploads', express.static(path.join(process.cwd(), 'server', 'uploads')));
   app.use('/api/v1', router);
   app.use(notFoundHandler);
   app.use(errorHandler);
@@ -36,4 +34,3 @@ function createApp() {
 module.exports = {
   createApp,
 };
-
