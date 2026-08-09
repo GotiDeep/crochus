@@ -3,7 +3,8 @@ dist/
 node_modules/
 coverage/
 
-.env
+.env*
+!.env.example
 
 database/local-pg/
 server/uploads/*
