@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const asyncHandler = require('../lib/asyncHandler');
 const ApiError = require('../lib/apiError');
 const { runFunction } = require('../config/db');
@@ -5,7 +6,8 @@ const { signAdminToken } = require('../lib/auth');
 const slugify = require('../lib/slugify');
 const { mapCategoryRow, mapDashboardStats, mapOrderRow, mapProductRow } = require('../lib/mappers');
 const { uploadImageFiles, uploadVideoFile } = require('../services/mediaService');
-const env = require('../config/env');
+
+const ADMIN_EMAIL = 'admin@crochus.com';
 
 function parseStringArray(value) {
   if (!value) {
@@ -80,7 +82,10 @@ exports.login = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Admin password is required');
   }
 
-  if (password !== env.adminPassword) {
+  const rows = await runFunction('sp_get_customer_auth', [ADMIN_EMAIL]);
+  const admin = rows[0];
+
+  if (!admin || !(await bcrypt.compare(password, admin.password_hash))) {
     throw new ApiError(401, 'Incorrect admin password');
   }
 

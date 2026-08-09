@@ -17,12 +17,3 @@ test('GET /api/v1/profile requires authentication', async () => {
   assert.equal(response.body.message, 'Authentication required');
 });
 
-test('POST /api/v1/admin/login rejects invalid credentials', async () => {
-  const response = await request(createApp())
-    .post('/api/v1/admin/login')
-    .send({ password: 'wrong-password' });
-
-  assert.equal(response.status, 401);
-  assert.equal(response.body.message, 'Incorrect admin password');
-});
-

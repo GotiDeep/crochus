@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs/promises');
 const path = require('node:path');
+const bcrypt = require('bcryptjs');
 const request = require('supertest');
 
 const serverSrcRoot = path.join(__dirname, '..', 'src');
@@ -26,8 +27,6 @@ function loadAppWithMocks({
   process.env.NODE_ENV = 'test';
   process.env.JWT_SECRET = 'test-customer-secret';
   process.env.ADMIN_JWT_SECRET = 'test-admin-secret';
-  process.env.ADMIN_PASSWORD = 'admin123';
-
   const db = require('../src/config/db');
   db.runFunction = runFunction;
 
@@ -45,6 +44,7 @@ function loadAppWithMocks({
   return {
     app: createApp(),
     signAdminToken: auth.signAdminToken,
+    verifyAdminToken: auth.verifyAdminToken,
     signCustomerToken: auth.signCustomerToken,
   };
 }
@@ -130,6 +130,38 @@ test('GET /api/v1/settings/whatsapp returns public settings payload', async () =
   assert.equal(response.status, 200);
   assert.equal(response.body.whatsapp_number, '919876543210');
   assert.equal(response.body.contact_email, 'hello@crochus.com');
+});
+
+test('POST /api/v1/admin/login verifies the existing admin password hash', async () => {
+  const password = 'test-admin-password';
+  const passwordHash = await bcrypt.hash(password, 10);
+  const { app, verifyAdminToken } = loadAppWithMocks({
+    runFunction: async (functionName) => {
+      assert.equal(functionName, 'sp_get_customer_auth');
+      return [{ id: 2, password_hash: passwordHash }];
+    },
+  });
+
+  const response = await request(app)
+    .post('/api/v1/admin/login')
+    .send({ password });
+
+  assert.equal(response.status, 200);
+  assert.equal(verifyAdminToken(response.body.token).role, 'admin');
+});
+
+test('POST /api/v1/admin/login rejects an incorrect password', async () => {
+  const passwordHash = await bcrypt.hash('test-admin-password', 10);
+  const { app } = loadAppWithMocks({
+    runFunction: async () => [{ id: 2, password_hash: passwordHash }],
+  });
+
+  const response = await request(app)
+    .post('/api/v1/admin/login')
+    .send({ password: 'incorrect-password' });
+
+  assert.equal(response.status, 401);
+  assert.equal(response.body.message, 'Incorrect admin password');
 });
 
 test('POST /api/v1/auth/register creates OTP workflow response', async () => {
