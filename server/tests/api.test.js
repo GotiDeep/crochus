@@ -331,3 +331,51 @@ test('POST /api/v1/admin/products accepts multipart photos[] uploads', async () 
   assert.equal(response.body.name, 'Test Product');
   assert.equal(response.body.photos.length, 2);
 });
+
+test('PUT /api/v1/admin/products/:id accepts multipart photos[] uploads', async () => {
+  const { app, signAdminToken } = loadAppWithMocks({
+    uploadImageFiles: async (files) => {
+      assert.equal(files.length, 1);
+      return ['https://res.cloudinary.com/crochus/image/upload/product.jpg'];
+    },
+    runFunction: async (functionName, params) => {
+      assert.equal(functionName, 'sp_admin_update_product');
+      assert.equal(params[0], 13);
+      assert.deepEqual(params[10], [
+        'https://assets.example.com/existing-photo.jpg',
+        'https://res.cloudinary.com/crochus/image/upload/product.jpg',
+      ]);
+
+      return [createProductRow({
+        id: params[0],
+        name: params[1],
+        slug: params[2],
+        price: params[3],
+        description: params[4],
+        materials: params[5],
+        category_id: params[6],
+        badge: params[7],
+        in_stock: params[8],
+        video_url: params[9],
+        photos: params[10],
+      })];
+    },
+  });
+
+  const response = await request(app)
+    .put('/api/v1/admin/products/13')
+    .set('Authorization', `Bearer ${signAdminToken()}`)
+    .field('name', 'Updated Product')
+    .field('price', '1999')
+    .field('description', 'Updated product description')
+    .field('category_id', '1')
+    .field('photo_urls', JSON.stringify(['https://assets.example.com/existing-photo.jpg']))
+    .attach('photos[]', Buffer.from('fake-image-content'), 'photo.jpg');
+
+  assert.equal(response.status, 200);
+  assert.equal(response.body.id, 13);
+  assert.deepEqual(response.body.photos, [
+    'https://assets.example.com/existing-photo.jpg',
+    'https://res.cloudinary.com/crochus/image/upload/product.jpg',
+  ]);
+});
