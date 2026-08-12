@@ -51,7 +51,11 @@ interface ProductFormData {
                 @for (product of products(); track product.id) {
                   <tr>
                     <td>
-                      <img [src]="product.photos[0]" [alt]="product.name" class="thumb-img" />
+                      @if (product.photos[0]) {
+                        <img [src]="product.photos[0]" [alt]="product.name" class="thumb-img" (error)="hideBrokenImage($event)" />
+                      } @else {
+                        <span class="missing-thumb">No photo</span>
+                      }
                     </td>
                     <td><span class="product-name-cell">{{ product.name }}</span></td>
                     <td>{{ product.category_name }}</td>
@@ -199,6 +203,7 @@ interface ProductFormData {
     }
     .table-wrap { overflow: hidden; overflow-x: auto; margin-bottom: 32px; }
     .thumb-img { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); }
+    .missing-thumb { display: inline-flex; width: 48px; height: 48px; align-items: center; justify-content: center; border-radius: 6px; background: var(--bg); color: var(--text-secondary); font-size: 0.65rem; }
     .product-name-cell { font-weight: 500; color: var(--text-primary); font-size: 0.9rem; }
     .action-btns { display: flex; gap: 8px; }
     .delete-btn {
@@ -365,6 +370,11 @@ export class AdminProductsComponent implements OnInit {
     this.selectedVideoName.set(this.selectedVideoFile?.name || '');
   }
 
+  hideBrokenImage(event: Event) {
+    const image = event.target as HTMLImageElement;
+    image.style.visibility = 'hidden';
+  }
+
   buildFormData(): FormData {
     const formData = new FormData();
     const photoUrls = this.photoUrlsInput
@@ -457,6 +467,7 @@ export class AdminProductsComponent implements OnInit {
     this.adminService.deleteProduct(id).subscribe({
       next: () => {
         this.products.update((products) => products.filter((product) => product.id !== id));
+        this.refreshProducts();
         this.customAlert.show({
           type: 'success',
           title: 'Product Deleted',

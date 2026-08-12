@@ -205,9 +205,13 @@ CREATE FUNCTION public.sp_admin_delete_product(p_product_id bigint) RETURNS TABL
     LANGUAGE plpgsql
     AS $$
 BEGIN
-  UPDATE products
-  SET is_active = FALSE
-  WHERE id = p_product_id;
+  IF NOT EXISTS (SELECT 1 FROM products WHERE id = p_product_id) THEN
+    RAISE EXCEPTION 'Product not found';
+  END IF;
+
+  DELETE FROM cart_items WHERE product_id = p_product_id;
+  UPDATE order_items SET product_id = NULL WHERE product_id = p_product_id;
+  DELETE FROM products WHERE id = p_product_id;
 
   RETURN QUERY SELECT TRUE;
 END;
@@ -2318,4 +2322,3 @@ ALTER TABLE ONLY public.products
 --
 
 \unrestrict ufiTCeO42MPoyFiaeMgQvlOz9CTxHvEJB1qcbPoSMODnl7h9Lw3asRNdybErqJR
-

@@ -1,6 +1,5 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const fs = require('node:fs/promises');
 const path = require('node:path');
 const bcrypt = require('bcryptjs');
 const request = require('supertest');
@@ -286,13 +285,9 @@ test('POST /api/v1/admin/products accepts multipart photos[] uploads', async () 
   const { app, signAdminToken } = loadAppWithMocks({
     uploadImageFiles: async (files) => {
       assert.equal(files.length, 1);
-      await Promise.all(files.map((file) => fs.unlink(file.path)));
       return ['https://cdn.example.com/uploaded-photo.jpg'];
     },
-    uploadVideoFile: async (file) => {
-      if (file?.path) {
-        await fs.unlink(file.path);
-      }
+    uploadVideoFile: async () => {
       return '';
     },
     runFunction: async (functionName, params) => {

@@ -1,6 +1,8 @@
 const cloudinary = require('cloudinary').v2;
+const fs = require('fs/promises');
+const path = require('path');
+const crypto = require('crypto');
 const env = require('../config/env');
-const ApiError = require('../lib/apiError');
 
 const hasCloudinaryConfig = Boolean(
   env.cloudinaryCloudName &&
@@ -22,7 +24,7 @@ async function uploadSingleAsset(file, folder, resourceType) {
   }
 
   if (!hasCloudinaryConfig) {
-    throw new ApiError(503, 'Media storage is not configured');
+    return saveLocally(file, resourceType);
   }
 
   const result = await new Promise((resolve, reject) => {
@@ -42,6 +44,29 @@ async function uploadSingleAsset(file, folder, resourceType) {
   });
 
   return result.secure_url;
+}
+
+function safeExtension(file, resourceType) {
+  const extension = path.extname(file.originalname || '').toLowerCase();
+  const allowedExtensions = resourceType === 'image'
+    ? new Set(['.avif', '.gif', '.jpeg', '.jpg', '.png', '.webp'])
+    : new Set(['.mov', '.mp4', '.webm']);
+
+  if (allowedExtensions.has(extension)) {
+    return extension;
+  }
+
+  return resourceType === 'image' ? '.jpg' : '.mp4';
+}
+
+async function saveLocally(file, resourceType) {
+  const uploadDir = env.uploadDir;
+  await fs.mkdir(uploadDir, { recursive: true });
+
+  const fileName = `${crypto.randomUUID()}${safeExtension(file, resourceType)}`;
+  await fs.writeFile(path.join(uploadDir, fileName), file.buffer);
+
+  return new URL(`/uploads/${fileName}`, env.publicServerUrl).toString();
 }
 
 async function uploadImageFiles(files, folder = 'crochus/products') {
