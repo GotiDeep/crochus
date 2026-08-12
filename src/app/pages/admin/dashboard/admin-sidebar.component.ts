@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AdminService } from '../../../core/services/admin.service';
-import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
   selector: 'app-admin-sidebar',
@@ -35,10 +34,6 @@ import { ThemeService } from '../../../core/services/theme.service';
       </nav>
 
       <div class="sidebar-footer">
-        <button class="theme-row" (click)="theme.toggle()">
-          <span>{{ theme.isDark() ? '☀️' : '🌙' }}</span>
-          <span>{{ theme.isDark() ? 'Light Mode' : 'Dark Mode' }}</span>
-        </button>
         <button class="logout-btn" (click)="admin.logout()">🚪 Logout</button>
         <a routerLink="/shop" class="view-store">↗ View Store</a>
       </div>
@@ -123,7 +118,7 @@ import { ThemeService } from '../../../core/services/theme.service';
       gap: 4px;
     }
 
-    .theme-row, .logout-btn, .view-store {
+    .logout-btn, .view-store {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -145,5 +140,4 @@ import { ThemeService } from '../../../core/services/theme.service';
 })
 export class AdminSidebarComponent {
   admin = inject(AdminService);
-  theme = inject(ThemeService);
 }

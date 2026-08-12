@@ -6,7 +6,7 @@
 
 /* ── CSS Variables ── */
 :root {
-  /* Light Theme (default) */
+  /* Application theme */
   --bg: #F5F0E0;
   --surface: #FFFFFF;
   --navbar-bg: #FFFFFF;
@@ -37,36 +37,6 @@
   --logo-filter: none;
 }
 
-[data-theme="dark"] {
-  --bg: #0F1408;
-  --surface: #1A1F0F;
-  --navbar-bg: #0F1408;
-  --primary: #4A5C2F;
-  --primary-hover: #5a6e3a;
-  --accent: #D4C98A;
-  --text-primary: #C8D9A0;
-  --text-secondary: #8A9E6A;
-  --border: #3A4A22;
-  --badge-new-bg: #4A5C2F;
-  --badge-new-text: #FFFFFF;
-  --badge-bestseller-bg: #D4C98A;
-  --badge-bestseller-text: #2C3A1A;
-  --badge-featured-bg: #2C3A1A;
-  --badge-featured-text: #F5F0E0;
-  --success-bg: #1A3010;
-  --success-text: #8AC46A;
-  --error-bg: #2A0808;
-  --error-text: #E06A6A;
-  --shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
-  --shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.6);
-  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.3);
-  --overlay: rgba(0, 0, 0, 0.7);
-  --skeleton-base: #1e2410;
-  --skeleton-shine: #2a3218;
-  --input-bg: #141a09;
-  --scrollbar-thumb: #3A4A22;
-  --logo-filter: brightness(1.8) saturate(0.8);
-}
 
 /* ── Reset & Base ── */
 *, *::before, *::after {

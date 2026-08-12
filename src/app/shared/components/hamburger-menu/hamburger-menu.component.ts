@@ -2,7 +2,6 @@ import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
-import { ThemeService } from '../../../core/services/theme.service';
 import { CartService } from '../../../core/services/cart.service';
 
 @Component({
@@ -34,13 +33,6 @@ import { CartService } from '../../../core/services/cart.service';
             <a routerLink="/login" class="btn btn-primary btn-full" (click)="close.emit()">Sign In</a>
             <a routerLink="/register" class="btn btn-outline btn-full" style="margin-top:10px" (click)="close.emit()">Register</a>
           }
-
-          <div class="theme-row" style="margin-top:20px">
-            <span>{{ theme.isDark() ? 'Dark Mode' : 'Light Mode' }}</span>
-            <button class="toggle-pill" [class.on]="theme.isDark()" (click)="theme.toggle()">
-              <span class="toggle-knob"></span>
-            </button>
-          </div>
         </div>
       </nav>
     }
@@ -134,37 +126,6 @@ import { CartService } from '../../../core/services/cart.service';
       padding: 24px;
       border-top: 1px solid var(--border);
     }
-
-    .theme-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-    }
-
-    .toggle-pill {
-      width: 44px; height: 24px;
-      background: var(--border);
-      border: none;
-      border-radius: 12px;
-      position: relative;
-      cursor: pointer;
-      transition: background 0.3s;
-
-      &.on { background: var(--primary); }
-    }
-
-    .toggle-knob {
-      position: absolute;
-      top: 3px; left: 3px;
-      width: 18px; height: 18px;
-      background: white;
-      border-radius: 50%;
-      transition: transform 0.3s;
-
-      .on & { transform: translateX(20px); }
-    }
   `]
 })
 export class HamburgerMenuComponent {
@@ -172,7 +133,6 @@ export class HamburgerMenuComponent {
   @Output() close = new EventEmitter<void>();
 
   auth = inject(AuthService);
-  theme = inject(ThemeService);
   cart = inject(CartService);
 
   logout() {

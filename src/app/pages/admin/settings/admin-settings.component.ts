@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { AdminSidebarComponent } from '../dashboard/admin-sidebar.component';
 import { SettingsService } from '../../../core/services/settings.service';
 import { ToastService } from '../../../core/services/toast.service';
-import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
   selector: 'app-admin-settings',
@@ -34,23 +33,6 @@ import { ThemeService } from '../../../core/services/theme.service';
             <button class="btn btn-primary" [disabled]="savingWa()" (click)="saveWa()">
               {{ savingWa() ? 'Saving…' : 'Save WhatsApp Number' }}
             </button>
-          </div>
-
-          <!-- Theme Settings -->
-          <div class="settings-card card">
-            <div class="settings-icon">🎨</div>
-            <h3>Appearance</h3>
-            <p>Toggle between light and dark mode for the storefront.</p>
-            <div class="theme-toggle-row" style="margin-top:20px">
-              <div class="theme-option" [class.active]="!theme.isDark()" (click)="theme.isDark() && theme.toggle()">
-                <span>☀️</span>
-                <span>Light Mode</span>
-              </div>
-              <div class="theme-option" [class.active]="theme.isDark()" (click)="!theme.isDark() && theme.toggle()">
-                <span>🌙</span>
-                <span>Dark Mode</span>
-              </div>
-            </div>
           </div>
 
           <!-- Store Info (static display) -->
@@ -107,31 +89,6 @@ import { ThemeService } from '../../../core/services/theme.service';
       p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin: 0; }
     }
 
-    .theme-toggle-row {
-      display: flex;
-      gap: 12px;
-    }
-
-    .theme-option {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      padding: 20px 16px;
-      border: 2px solid var(--border);
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.88rem;
-      color: var(--text-secondary);
-      transition: all 0.2s;
-
-      span:first-child { font-size: 1.5rem; }
-
-      &.active { border-color: var(--primary); color: var(--primary); background: rgba(74,92,47,0.06); }
-      &:hover:not(.active) { border-color: var(--text-secondary); }
-    }
-
     .info-list { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
     .info-row {
       display: flex;
@@ -161,7 +118,6 @@ import { ThemeService } from '../../../core/services/theme.service';
 export class AdminSettingsComponent implements OnInit {
   private settingsService = inject(SettingsService);
   private toast = inject(ToastService);
-  theme = inject(ThemeService);
 
   savingWa = signal(false);
   waNumber = '';

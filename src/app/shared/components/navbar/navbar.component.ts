@@ -1,7 +1,6 @@
 import { Component, inject, signal, Output, EventEmitter } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ThemeService } from '../../../core/services/theme.service';
 import { CartService } from '../../../core/services/cart.service';
 import { AuthService } from '../../../core/services/auth.service';
 
@@ -27,11 +26,6 @@ import { AuthService } from '../../../core/services/auth.service';
 
         <!-- Right Actions -->
         <div class="nav-actions">
-          <!-- Theme Toggle -->
-          <button class="icon-btn" (click)="theme.toggle()" [title]="theme.isDark() ? 'Light mode' : 'Dark mode'">
-            <span>{{ theme.isDark() ? '☀️' : '🌙' }}</span>
-          </button>
-
           <!-- Cart -->
           <a routerLink="/cart" class="icon-btn cart-btn" title="Cart">
             <span>🛍</span>
@@ -225,7 +219,6 @@ import { AuthService } from '../../../core/services/auth.service';
   `]
 })
 export class NavbarComponent {
-  theme = inject(ThemeService);
   cart = inject(CartService);
   auth = inject(AuthService);
 
