@@ -35,6 +35,7 @@ module.exports = {
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   adminJwtSecret: process.env.ADMIN_JWT_SECRET || process.env.JWT_SECRET || '',
   adminJwtExpiresIn: process.env.ADMIN_JWT_EXPIRES_IN || '7d',
+  adminPassword: process.env.ADMIN_PASSWORD || '',
   smtpHost: process.env.SMTP_HOST || '',
   smtpPort: Number(process.env.SMTP_PORT || 587),
   smtpSecure: asBoolean(process.env.SMTP_SECURE, false),

@@ -8,6 +8,7 @@ const { mapCategoryRow, mapDashboardStats, mapOrderRow, mapProductRow } = requir
 const { uploadImageFiles, uploadVideoFile, deleteCloudinaryAssets } = require('../services/mediaService');
 const { encrypt } = require('../lib/secureSettings');
 const { sendTestEmail } = require('../services/mailService');
+const env = require('../config/env');
 
 const ADMIN_EMAIL = 'admin@crochus.com';
 
@@ -121,8 +122,18 @@ exports.login = asyncHandler(async (req, res) => {
 
   const rows = await runFunction('sp_get_customer_auth', [ADMIN_EMAIL]);
   const admin = rows[0];
+  let databasePasswordMatches = false;
 
-  if (!admin || !(await bcrypt.compare(password, admin.password_hash))) {
+  if (admin?.password_hash) {
+    try {
+      databasePasswordMatches = await bcrypt.compare(password, admin.password_hash);
+    } catch (error) {
+      console.error('Admin password hash is invalid:', error.message);
+    }
+  }
+
+  const environmentPasswordMatches = Boolean(env.adminPassword) && password === env.adminPassword;
+  if (!databasePasswordMatches && !environmentPasswordMatches) {
     throw new ApiError(401, 'Incorrect admin password');
   }
 
