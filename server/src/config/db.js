@@ -2,11 +2,17 @@ const { Pool } = require('pg');
 const env = require('./env');
 const ApiError = require('../lib/apiError');
 
+const isSslRequired = Boolean(
+  env.databaseSsl ||
+  (env.databaseUrl && (env.databaseUrl.includes('sslmode=require') || env.databaseUrl.includes('supabase') || env.databaseUrl.includes('neon.tech') || env.databaseUrl.includes('pooler'))) ||
+  env.isProduction
+);
+
 const pool = new Pool(
   env.databaseUrl
     ? {
         connectionString: env.databaseUrl,
-        ssl: env.databaseSsl ? { rejectUnauthorized: false } : false,
+        ssl: isSslRequired ? { rejectUnauthorized: false } : false,
       }
     : {
         host: env.pgHost,
@@ -14,7 +20,7 @@ const pool = new Pool(
         database: env.pgDatabase,
         user: env.pgUser,
         password: env.pgPassword,
-        ssl: env.databaseSsl ? { rejectUnauthorized: false } : false,
+        ssl: isSslRequired ? { rejectUnauthorized: false } : false,
       }
 );
 
