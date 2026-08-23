@@ -165,7 +165,7 @@ test('POST /api/v1/admin/login rejects an incorrect password', async () => {
   assert.equal(response.body.message, 'Incorrect admin password');
 });
 
-test('POST /api/v1/auth/register creates OTP workflow response', async () => {
+test('POST /api/v1/auth/register creates an account without an OTP', async () => {
   const calls = [];
   const { app } = loadAppWithMocks({
     runFunction: async (functionName, params) => {
@@ -175,13 +175,14 @@ test('POST /api/v1/auth/register creates OTP workflow response', async () => {
         return [];
       }
 
-      if (functionName === 'sp_create_auth_otp') {
+      if (functionName === 'sp_register_customer') {
         return [{
           id: 1,
-          purpose: 'register',
+          full_name: params[0],
           email: params[1],
-          otp: params[2],
-          expires_at: params[3],
+          mobile: params[2],
+          address: null,
+          created_at: '2026-06-10T00:00:00.000Z',
         }];
       }
 
@@ -197,9 +198,9 @@ test('POST /api/v1/auth/register creates OTP workflow response', async () => {
   });
 
   assert.equal(response.status, 201);
-  assert.equal(response.body.message, 'OTP sent successfully');
-  assert.match(response.body.dev_otp, /^\d{6}$/);
-  assert.deepEqual(calls.map((call) => call.functionName), ['sp_get_customer_auth', 'sp_create_auth_otp']);
+  assert.ok(response.body.token);
+  assert.equal(response.body.user.email, 'new@example.com');
+  assert.deepEqual(calls.map((call) => call.functionName), ['sp_get_customer_auth', 'sp_register_customer']);
 });
 
 test('POST /api/v1/cart returns the refreshed cart for an authenticated customer', async () => {
