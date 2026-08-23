@@ -1,7 +1,10 @@
 [build]
-  command = "npm run build"
+  command = "npx ng build"
   publish = "dist/crochus/browser"
   functions = "netlify/functions"
+
+[build.environment]
+  NODE_ENV = "development"
 
 [functions]
   external_node_modules = ["express"]
