@@ -16,6 +16,8 @@ function withFallback(value, fallback) {
 }
 
 const publicAppUrl = process.env.PUBLIC_APP_URL || 'http://localhost:4200';
+const databaseUrl = process.env.DATABASE_URL || '';
+const databaseUrlRequiresSsl = /[?&]sslmode=(?:require|verify-ca|verify-full)/i.test(databaseUrl);
 
 module.exports = {
   port: Number(process.env.PORT || 3000),
@@ -24,8 +26,10 @@ module.exports = {
   publicServerUrl: process.env.PUBLIC_SERVER_URL || 'http://localhost:3000',
   publicAppUrl,
   uploadDir: path.join(process.cwd(), 'server', 'uploads'),
-  databaseUrl: process.env.DATABASE_URL || '',
-  databaseSsl: asBoolean(process.env.DATABASE_SSL, false),
+  databaseUrl,
+  // Neon pooled URLs include sslmode=require. Respect it even if the
+  // deployment does not separately define DATABASE_SSL.
+  databaseSsl: asBoolean(process.env.DATABASE_SSL, databaseUrlRequiresSsl),
   pgHost: process.env.PGHOST || 'localhost',
   pgPort: Number(process.env.PGPORT || 5432),
   pgDatabase: process.env.PGDATABASE || 'crochus',
