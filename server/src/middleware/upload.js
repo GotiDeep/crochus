@@ -6,7 +6,7 @@ const upload = multer({
     files: 9,
   },
   fileFilter(req, file, callback) {
-    const isPhoto = ['photos', 'photos[]'].includes(file.fieldname);
+    const isPhoto = ['photos', 'photos[]', 'image'].includes(file.fieldname);
     const isAllowed = isPhoto ? file.mimetype.startsWith('image/') : file.mimetype.startsWith('video/');
 
     if (!isAllowed) {
@@ -24,6 +24,9 @@ const productUpload = upload.fields([
   { name: 'video', maxCount: 1 },
 ]);
 
+const categoryUpload = upload.single('image');
+
 module.exports = {
   productUpload,
+  categoryUpload,
 };

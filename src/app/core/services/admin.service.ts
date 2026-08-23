@@ -68,12 +68,12 @@ export class AdminService {
     return this.http.get<Category[]>(`${environment.apiUrl}/admin/categories`);
   }
 
-  addCategory(name: string): Observable<Category> {
-    return this.http.post<Category>(`${environment.apiUrl}/admin/categories`, { name });
+  addCategory(formData: FormData): Observable<Category> {
+    return this.http.post<Category>(`${environment.apiUrl}/admin/categories`, formData);
   }
 
-  updateCategory(id: number, name: string): Observable<Category> {
-    return this.http.put<Category>(`${environment.apiUrl}/admin/categories/${id}`, { name });
+  updateCategory(id: number, formData: FormData): Observable<Category> {
+    return this.http.put<Category>(`${environment.apiUrl}/admin/categories/${id}`, formData);
   }
 
   deleteCategory(id: number): Observable<boolean> {

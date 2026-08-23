@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, signal, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminSidebarComponent } from '../dashboard/admin-sidebar.component';
@@ -20,16 +20,33 @@ import { CustomAlertComponent } from '../../../shared/components/custom-alert/cu
           <button class="btn btn-primary" (click)="showForm.set(true)">+ Add Category</button>
         </div>
 
-        <!-- Add Form -->
+        <!-- Add/Edit Form -->
         @if (showForm()) {
           <div class="add-form card fade-in">
             <h4>{{ editingId() ? 'Edit Category' : 'New Category' }}</h4>
-            <div class="form-row">
+            <div class="form-col">
               <input type="text" class="form-control" [(ngModel)]="newName" placeholder="Category name" />
-              <button class="btn btn-primary" [disabled]="saving()" (click)="save()">
-                {{ saving() ? 'Saving…' : 'Save' }}
-              </button>
-              <button class="btn btn-ghost" (click)="cancelEdit()">Cancel</button>
+
+              <!-- Image Upload -->
+              <div class="image-upload-area" (click)="fileInput.click()">
+                @if (imagePreview()) {
+                  <img [src]="imagePreview()!" class="preview-img" alt="Preview" />
+                  <span class="change-label">Click to change image</span>
+                } @else {
+                  <div class="upload-placeholder">
+                    <span class="upload-icon">🖼️</span>
+                    <span>Click to upload category image</span>
+                  </div>
+                }
+              </div>
+              <input #fileInput type="file" accept="image/*" class="hidden-input" (change)="onFileChange($event)" />
+
+              <div class="form-actions">
+                <button class="btn btn-primary" [disabled]="saving()" (click)="save()">
+                  {{ saving() ? 'Saving…' : 'Save' }}
+                </button>
+                <button class="btn btn-ghost" (click)="cancelEdit()">Cancel</button>
+              </div>
             </div>
           </div>
         }
@@ -43,6 +60,11 @@ import { CustomAlertComponent } from '../../../shared/components/custom-alert/cu
           } @else {
             @for (cat of categories(); track cat.id) {
               <div class="cat-card card">
+                @if (cat.image_url) {
+                  <img [src]="cat.image_url" class="cat-img" [alt]="cat.name" />
+                } @else {
+                  <div class="cat-img-placeholder">🧶</div>
+                }
                 <div class="cat-info">
                   <h4 class="cat-name">{{ cat.name }}</h4>
                   <span class="cat-count">{{ cat.product_count }} products</span>
@@ -77,38 +99,102 @@ import { CustomAlertComponent } from '../../../shared/components/custom-alert/cu
       h4 { margin-bottom: 16px; }
     }
 
-    .form-row {
+    .form-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 400px;
+    }
+
+    .form-actions {
       display: flex;
       gap: 12px;
-      align-items: center;
-
-      .form-control { flex: 1; max-width: 360px; }
-
-      @media (max-width: 600px) { flex-wrap: wrap; .form-control { max-width: 100%; width: 100%; } }
     }
+
+    .image-upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color 0.2s;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+      &:hover { border-color: var(--primary); }
+    }
+
+    .preview-img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .change-label {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    .upload-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      .upload-icon { font-size: 2rem; }
+    }
+
+    .hidden-input { display: none; }
 
     .cats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 16px;
     }
 
-    .cat-skel { height: 80px; border-radius: 8px; }
+    .cat-skel { height: 90px; border-radius: 8px; }
 
     .cat-card {
-      padding: 20px;
+      padding: 16px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+      gap: 14px;
+    }
+
+    .cat-img {
+      width: 56px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+    .cat-img-placeholder {
+      width: 56px;
+      height: 56px;
+      border-radius: 8px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
     }
 
     .cat-info {
+      flex: 1;
       .cat-name { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
       .cat-count { font-size: 0.78rem; color: var(--text-secondary); }
     }
 
-    .cat-actions { display: flex; align-items: center; gap: 8px; }
+    .cat-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 
     .delete-btn {
       background: none; border: none; font-size: 1rem;
@@ -131,6 +217,9 @@ export class AdminCategoriesComponent implements OnInit {
   editingId = signal<number | null>(null);
   categories = signal<Category[]>([]);
   newName = '';
+  imagePreview = signal<string | null>(null);
+  selectedFile: File | null = null;
+  existingImageUrl: string | null = null;
 
   ngOnInit() {
     this.loadCategories();
@@ -150,18 +239,46 @@ export class AdminCategoriesComponent implements OnInit {
     });
   }
 
+  onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.selectedFile = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => this.imagePreview.set(e.target?.result as string);
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+
   startEdit(cat: Category) {
     this.editingId.set(cat.id);
     this.newName = cat.name;
+    this.imagePreview.set(cat.image_url || null);
+    this.existingImageUrl = cat.image_url || null;
+    this.selectedFile = null;
     this.showForm.set(true);
   }
 
-  cancelEdit() { this.showForm.set(false); this.editingId.set(null); this.newName = ''; }
+  cancelEdit() {
+    this.showForm.set(false);
+    this.editingId.set(null);
+    this.newName = '';
+    this.imagePreview.set(null);
+    this.selectedFile = null;
+    this.existingImageUrl = null;
+  }
 
   save() {
     if (!this.newName.trim()) { this.toast.error('Enter a category name'); return; }
     this.saving.set(true);
     const isEdit = this.editingId() !== null;
+
+    const formData = new FormData();
+    formData.append('name', this.newName.trim());
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
+    } else if (this.existingImageUrl) {
+      formData.append('existing_image_url', this.existingImageUrl);
+    }
 
     const handleSuccess = () => {
       this.saving.set(false);
@@ -178,7 +295,7 @@ export class AdminCategoriesComponent implements OnInit {
     };
 
     if (isEdit) {
-      this.adminService.updateCategory(this.editingId()!, this.newName).subscribe({
+      this.adminService.updateCategory(this.editingId()!, formData).subscribe({
         next: () => handleSuccess(),
         error: (error) => {
           this.saving.set(false);
@@ -188,7 +305,7 @@ export class AdminCategoriesComponent implements OnInit {
       return;
     }
 
-    this.adminService.addCategory(this.newName).subscribe({
+    this.adminService.addCategory(formData).subscribe({
       next: () => handleSuccess(),
       error: (error) => {
         this.saving.set(false);

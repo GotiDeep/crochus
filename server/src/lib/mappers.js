@@ -38,6 +38,7 @@ function mapCategoryRow(row) {
     id: Number(row.id),
     name: row.name,
     slug: row.slug,
+    image_url: row.image_url || null,
     product_count: Number(row.product_count || 0),
   };
 }

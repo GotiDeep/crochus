@@ -77,7 +77,7 @@ import { Product, Category, ProductFilter } from '../../core/models';
           <!-- Results -->
           @if (loading()) {
             <div class="product-grid fade-in">
-              <app-product-card-skeleton [count]="9" />
+              <app-product-card-skeleton [count]="10" />
             </div>
           } @else if (products().length === 0) {
             <div class="empty-state">
@@ -220,7 +220,7 @@ export class ShopComponent implements OnInit, OnDestroy {
   categories = signal<Category[]>([]);
   total = signal(0);
   currentPage = signal(1);
-  limit = 9;
+  limit = 10;
 
   activeCategory = signal<number | null>(null);
   sortBy = 'newest';

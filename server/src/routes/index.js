@@ -7,7 +7,7 @@ const orderController = require('../controllers/orderController');
 const contactController = require('../controllers/contactController');
 const adminController = require('../controllers/adminController');
 const { requireAdminAuth, requireCustomerAuth } = require('../middleware/auth');
-const { productUpload } = require('../middleware/upload');
+const { productUpload, categoryUpload } = require('../middleware/upload');
 
 const router = express.Router();
 
@@ -48,8 +48,8 @@ router.post('/admin/products', requireAdminAuth, productUpload, adminController.
 router.put('/admin/products/:id', requireAdminAuth, productUpload, adminController.updateProduct);
 router.delete('/admin/products/:id', requireAdminAuth, adminController.deleteProduct);
 router.get('/admin/categories', requireAdminAuth, adminController.getCategories);
-router.post('/admin/categories', requireAdminAuth, adminController.createCategory);
-router.put('/admin/categories/:id', requireAdminAuth, adminController.updateCategory);
+router.post('/admin/categories', requireAdminAuth, categoryUpload, adminController.createCategory);
+router.put('/admin/categories/:id', requireAdminAuth, categoryUpload, adminController.updateCategory);
 router.delete('/admin/categories/:id', requireAdminAuth, adminController.deleteCategory);
 router.get('/admin/orders', requireAdminAuth, adminController.getOrders);
 router.put('/admin/orders/:id', requireAdminAuth, adminController.updateOrderStatus);

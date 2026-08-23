@@ -19,6 +19,8 @@ import { Component, Input } from '@angular/core';
     }
   `,
   styles: [`
+    :host { display: contents; }
+
     .skeleton-card {
       overflow: hidden;
     }

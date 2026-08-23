@@ -95,12 +95,14 @@ import { SettingsService } from '../../../core/services/settings.service';
       .logo {
         display: flex;
         align-items: center;
-        margin-bottom: 16px;
+        margin-bottom: 20px;
       }
       .footer-logo-img {
-        height: 64px;
+        height: 66px;
         width: auto;
         display: block;
+        transform: scale(1.18);
+        transform-origin: left center;
         filter: var(--logo-filter, none);
       }
 

@@ -1,4 +1,4 @@
-CREATE TABLE customers (
+﻿CREATE TABLE customers (
   id BIGSERIAL PRIMARY KEY,
   full_name TEXT NOT NULL,
   email TEXT NOT NULL UNIQUE,
@@ -1504,4 +1504,4 @@ BEGIN
   IF p_encrypted_password IS NOT NULL THEN INSERT INTO admin_settings (setting_key, setting_value) VALUES ('smtp_password_encrypted', p_encrypted_password) ON CONFLICT (setting_key) DO UPDATE SET setting_value = EXCLUDED.setting_value, updated_at = NOW(); END IF;
   RETURN QUERY SELECT * FROM sp_admin_get_smtp_settings();
 END;
-$$;
+;

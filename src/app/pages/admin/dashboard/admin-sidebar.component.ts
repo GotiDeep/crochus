@@ -69,8 +69,10 @@ import { AdminService } from '../../../core/services/admin.service';
       flex: 1;
 
       .sidebar-logo-img {
-        height: 48px;
+        height: 56px;
         width: auto;
+        transform: scale(1.18);
+        transform-origin: left center;
         filter: var(--logo-filter, none);
       }
     }

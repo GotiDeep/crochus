@@ -13,7 +13,9 @@ import { CartService } from '../../../core/services/cart.service';
       <div class="overlay" (click)="close.emit()"></div>
       <nav class="slide-menu">
         <div class="menu-header">
-          <span class="logo-text">✦ Crochus</span>
+          <a routerLink="/" (click)="close.emit()" class="mobile-logo-link">
+            <img src="assets/logo.svg" alt="Crochus" class="menu-logo-img" />
+          </a>
           <button class="close-btn" (click)="close.emit()">✕</button>
         </div>
 
@@ -73,17 +75,25 @@ import { CartService } from '../../../core/services/cart.service';
 
     .menu-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 24px 24px 20px;
+      align-items: center;
+      padding: 24px;
       border-bottom: 1px solid var(--border);
+    }
 
-      .logo-text {
-        font-family: 'Cormorant Garamond', serif;
-        font-size: 1.4rem;
-        font-weight: 600;
-        color: var(--text-primary);
-      }
+    .mobile-logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .menu-logo-img {
+      height: 66px;
+      width: auto;
+      display: block;
+      transform: scale(1.18);
+      transform-origin: left center;
+      filter: var(--logo-filter, none);
     }
 
     .close-btn {

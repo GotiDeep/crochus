@@ -212,8 +212,10 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
       text-decoration: none;
 
       .auth-logo-img {
-        height: 56px;
+        height: 66px;
         width: auto;
+        transform: scale(1.18);
+        transform-origin: left center;
         filter: brightness(10) invert(0);
       }
     }
@@ -223,6 +225,10 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
       margin-bottom: 32px;
 
       .auth-logo-img {
+        height: 66px;
+        width: auto;
+        transform: scale(1.18);
+        transform-origin: left center;
         filter: var(--logo-filter, none);
       }
 

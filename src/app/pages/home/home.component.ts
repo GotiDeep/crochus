@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
@@ -59,14 +59,26 @@ import { Product, Category } from '../../core/models';
               <span class="section-label">What we make</span>
               <h2 class="section-title">Browse by Category</h2>
             </div>
-            <div class="chips-scroll">
-              <a routerLink="/shop" class="chip">All Items</a>
-              @for (cat of categories(); track cat.id) {
-                <a routerLink="/shop" [queryParams]="{category: cat.id}" class="chip">
-                  {{ cat.name }}
-                  <small>({{ cat.product_count }})</small>
-                </a>
-              }
+            <div class="cat-slider-wrapper">
+              <div
+                class="cat-slider"
+                [style.transform]="'translateX(-' + (sliderOffset() * (100 / visibleCount)) + '%)'"
+                [style.transition]="noTransition() ? 'none' : 'transform 0.5s ease'"
+              >
+                @for (cat of sliderItems(); track $index) {
+                  <a routerLink="/shop" [queryParams]="{category: cat.id}" class="cat-card-img">
+                    <div class="cat-img-wrap">
+                      @if (cat.image_url) {
+                        <img [src]="cat.image_url" [alt]="cat.name" loading="lazy" />
+                      } @else {
+                        <span class="cat-placeholder-icon">🧵</span>
+                      }
+                    </div>
+                    <span class="cat-label">{{ cat.name }}</span>
+                    <span class="cat-count">{{ cat.product_count }}</span>
+                  </a>
+                }
+              </div>
             </div>
           </div>
         </section>
@@ -84,7 +96,7 @@ import { Product, Category } from '../../core/models';
 
             @if (loading()) {
               <div class="product-grid">
-                <app-product-card-skeleton [count]="6" />
+                <app-product-card-skeleton [count]="5" />
               </div>
             } @else {
               <div class="product-grid">
@@ -276,26 +288,81 @@ import { Product, Category } from '../../core/models';
       50% { transform: translateX(-50%) translateY(8px); }
     }
 
-    /* ── Categories ── */
+    /* ── Categories Slider ── */
     .categories-section { padding-top: 48px; padding-bottom: 48px; }
     .section-header { margin-bottom: 24px; }
-    .section-header-row {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 36px;
 
-      @media (max-width: 600px) {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
+    .cat-slider-wrapper {
+      overflow: hidden;
+    }
+
+    .cat-slider {
+      display: flex;
+      gap: 16px;
+      transition: transform 0.5s ease;
+    }
+
+    .cat-card-img {
+      flex: 0 0 calc(100% / 5 - 13px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      cursor: pointer;
+
+      @media (max-width: 900px) { flex: 0 0 calc(100% / 3 - 11px); }
+      @media (max-width: 560px) { flex: 0 0 calc(100% / 2 - 8px); }
+    }
+
+    .cat-img-wrap {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      transition: box-shadow 0.3s, transform 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+      }
+
+      .cat-placeholder-icon { font-size: 2.5rem; }
+
+      .cat-card-img:hover & {
+        box-shadow: var(--shadow-hover);
+        transform: translateY(-4px);
+        img { transform: scale(1.06); }
       }
     }
 
-    .chip small {
-      opacity: 0.7;
-      font-size: 0.75em;
-      margin-left: 4px;
+    .all-items-card {
+      background: var(--primary);
+      border-color: var(--primary);
+      .all-items-icon { font-size: 2.5rem; }
+    }
+
+    .cat-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+
+    .cat-count {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      background: var(--bg);
+      padding: 2px 8px;
+      border-radius: 12px;
     }
 
     /* ── About Banner ── */
@@ -390,7 +457,7 @@ import { Product, Category } from '../../core/models';
     }
   `]
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   private productService = inject(ProductService);
   loading = signal(true);
   featured = signal<Product[]>([]);
@@ -399,14 +466,61 @@ export class HomeComponent implements OnInit {
   categories = signal<Category[]>([]);
   menuOpen = signal(false);
 
+  // Slider state
+  sliderOffset = signal(0);
+  noTransition = signal(false);
+  visibleCount = 5; // show 5 at a time
+  sliderItems = signal<Category[]>([]);
+  private baseItemCount = 0;
+  private sliderInterval: ReturnType<typeof setInterval> | null = null;
+
   ngOnInit() {
     this.productService.getFeaturedProducts().subscribe(products => {
       this.featured.set(products);
       this.loading.set(false);
     });
-    this.productService.getCategories().subscribe(cats => this.categories.set(cats));
+    this.productService.getCategories().subscribe(cats => {
+      this.categories.set(cats);
+      this.setupSlider(cats);
+    });
     this.productService.getHomeProducts('hero').subscribe(products => this.heroProducts.set(products.slice(0, 3)));
     this.productService.getHomeProducts('last_section').subscribe(products => this.lastSectionProducts.set(products.slice(0, 4)));
   }
 
+  setupSlider(cats: Category[]) {
+    this.baseItemCount = cats.length;
+
+    if (this.baseItemCount <= this.visibleCount) {
+      this.sliderItems.set(cats);
+      return;
+    }
+
+    // Clone items to create seamless infinite loop cycle
+    const cloned = [...cats, ...cats.slice(0, this.visibleCount)];
+    this.sliderItems.set(cloned);
+
+    this.startSlider();
+  }
+
+  startSlider() {
+    if (this.sliderInterval) clearInterval(this.sliderInterval);
+
+    this.sliderInterval = setInterval(() => {
+      const nextOffset = this.sliderOffset() + 1;
+      this.noTransition.set(false);
+      this.sliderOffset.set(nextOffset);
+
+      // When reaching the cloned section (past all unique items), snap back silently to 0
+      if (nextOffset >= this.baseItemCount) {
+        setTimeout(() => {
+          this.noTransition.set(true);
+          this.sliderOffset.set(0);
+        }, 500); // Wait for CSS transition (0.5s) to complete before snapping back
+      }
+    }, 2000);
+  }
+
+  ngOnDestroy() {
+    if (this.sliderInterval) clearInterval(this.sliderInterval);
+  }
 }

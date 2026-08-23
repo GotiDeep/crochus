@@ -7,7 +7,9 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink],
   template: `
     <div class="nf-page">
-      <a routerLink="/" class="nf-logo">✦ Crochus</a>
+      <a routerLink="/" class="nf-logo-link">
+        <img src="assets/logo.svg" alt="Crochus" class="nf-logo-img" />
+      </a>
       <div class="nf-content">
         <div class="nf-number">404</div>
         <h1>Lost in the Studio</h1>
@@ -33,14 +35,17 @@ import { RouterLink } from '@angular/router';
       text-align: center;
     }
 
-    .nf-logo {
-      position: absolute;
-      top: 32px; left: 40px;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      text-decoration: none;
+    .nf-logo-link {
+      display: inline-block;
+      margin-bottom: 32px;
+    }
+
+    .nf-logo-img {
+      height: 66px;
+      width: auto;
+      display: block;
+      transform: scale(1.18);
+      filter: var(--logo-filter, none);
     }
 
     .nf-content {

@@ -224,7 +224,13 @@ exports.createCategory = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Category name is required');
   }
 
-  const rows = await runFunction('sp_admin_add_category', [name, slugify(name)]);
+  let image_url = null;
+  if (req.file) {
+    const uploaded = await uploadImageFiles([req.file]);
+    image_url = uploaded[0] || null;
+  }
+
+  const rows = await runFunction('sp_admin_add_category', [name, slugify(name), image_url]);
   res.status(201).json(mapCategoryRow(rows[0]));
 });
 
@@ -236,7 +242,13 @@ exports.updateCategory = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Valid category id and name are required');
   }
 
-  const rows = await runFunction('sp_admin_update_category', [categoryId, name, slugify(name)]);
+  let image_url = req.body.existing_image_url || null;
+  if (req.file) {
+    const uploaded = await uploadImageFiles([req.file]);
+    image_url = uploaded[0] || null;
+  }
+
+  const rows = await runFunction('sp_admin_update_category', [categoryId, name, slugify(name), image_url]);
   res.json(mapCategoryRow(rows[0]));
 });
 
