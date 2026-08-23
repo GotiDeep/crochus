@@ -63,8 +63,18 @@ exports.login = asyncHandler(async (req, res) => {
 
   const rows = await runFunction('sp_get_customer_auth', [email]);
   const user = rows[0];
+  let passwordMatches = false;
 
-  if (!user || !(await bcrypt.compare(password, user.password_hash))) {
+  if (user?.password_hash) {
+    try {
+      passwordMatches = await bcrypt.compare(password, user.password_hash);
+    } catch (error) {
+      // A legacy/corrupt hash must not crash the authentication endpoint.
+      console.error(`Customer password hash is invalid for ${email}:`, error.message);
+    }
+  }
+
+  if (!passwordMatches) {
     throw new ApiError(401, 'Invalid email or password');
   }
 
