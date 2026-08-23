@@ -20,6 +20,7 @@ function loadAppWithMocks({
   sendContactEmail = async () => ({ delivery: 'log' }),
   uploadImageFiles = async () => [],
   uploadVideoFile = async () => '',
+  deleteCloudinaryAssets = async () => {},
 } = {}) {
   clearServerCache();
 
@@ -36,6 +37,7 @@ function loadAppWithMocks({
   const mediaService = require('../src/services/mediaService');
   mediaService.uploadImageFiles = uploadImageFiles;
   mediaService.uploadVideoFile = uploadVideoFile;
+  mediaService.deleteCloudinaryAssets = deleteCloudinaryAssets;
 
   const auth = require('../src/lib/auth');
   const { createApp } = require('../src/app');
@@ -339,6 +341,13 @@ test('PUT /api/v1/admin/products/:id accepts multipart photos[] uploads', async 
       return ['https://res.cloudinary.com/crochus/image/upload/product.jpg'];
     },
     runFunction: async (functionName, params) => {
+      if (functionName === 'sp_get_product_by_id') {
+        return [createProductRow({
+          id: params[0],
+          photos: ['https://assets.example.com/existing-photo.jpg'],
+        })];
+      }
+
       assert.equal(functionName, 'sp_admin_update_product');
       assert.equal(params[0], 13);
       assert.deepEqual(params[10], [
@@ -378,4 +387,34 @@ test('PUT /api/v1/admin/products/:id accepts multipart photos[] uploads', async 
     'https://assets.example.com/existing-photo.jpg',
     'https://res.cloudinary.com/crochus/image/upload/product.jpg',
   ]);
+});
+
+test('DELETE /api/v1/admin/products/:id deletes its database record and Cloudinary assets', async () => {
+  const calls = [];
+  const assets = [];
+  const product = createProductRow({
+    id: 13,
+    photos: ['https://res.cloudinary.com/demo/image/upload/v1/crochus/products/photo.jpg'],
+    video_url: 'https://res.cloudinary.com/demo/video/upload/v1/crochus/videos/demo.mp4',
+  });
+  const { app, signAdminToken } = loadAppWithMocks({
+    deleteCloudinaryAssets: async (urls) => assets.push(...urls),
+    runFunction: async (functionName, params) => {
+      calls.push({ functionName, params });
+      if (functionName === 'sp_get_product_by_id') return [product];
+      if (functionName === 'sp_admin_delete_product') return [{ success: true }];
+      throw new Error(`Unexpected function call: ${functionName}`);
+    },
+  });
+
+  const response = await request(app)
+    .delete('/api/v1/admin/products/13')
+    .set('Authorization', `Bearer ${signAdminToken()}`);
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(calls.map((call) => call.functionName), [
+    'sp_get_product_by_id',
+    'sp_admin_delete_product',
+  ]);
+  assert.deepEqual(assets, [...product.photos, product.video_url]);
 });

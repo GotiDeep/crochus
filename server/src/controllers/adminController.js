@@ -5,7 +5,7 @@ const { runFunction } = require('../config/db');
 const { signAdminToken } = require('../lib/auth');
 const slugify = require('../lib/slugify');
 const { mapCategoryRow, mapDashboardStats, mapOrderRow, mapProductRow } = require('../lib/mappers');
-const { uploadImageFiles, uploadVideoFile } = require('../services/mediaService');
+const { uploadImageFiles, uploadVideoFile, deleteCloudinaryAssets } = require('../services/mediaService');
 
 const ADMIN_EMAIL = 'admin@crochus.com';
 
@@ -75,6 +75,25 @@ async function buildProductPayload(req) {
   return payload;
 }
 
+function productAssetUrls(product) {
+  if (!product) {
+    return [];
+  }
+
+  return [
+    ...(Array.isArray(product.photos) ? product.photos : []),
+    product.video_url,
+  ].filter(Boolean);
+}
+
+function cleanupAssets(urls) {
+  return deleteCloudinaryAssets(urls).catch((error) => {
+    // The database delete/update has already succeeded. Keep the API result accurate
+    // and log any cleanup retry that an operator may need to perform.
+    console.error('Cloudinary asset cleanup failed:', error.message);
+  });
+}
+
 exports.login = asyncHandler(async (req, res) => {
   const password = String(req.body.password || '');
 
@@ -135,6 +154,8 @@ exports.updateProduct = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Valid product id is required');
   }
 
+  const existingRows = await runFunction('sp_get_product_by_id', [productId]);
+  const existingProduct = existingRows[0];
   const payload = await buildProductPayload(req);
   const rows = await runFunction('sp_admin_update_product', [
     productId,
@@ -150,7 +171,10 @@ exports.updateProduct = asyncHandler(async (req, res) => {
     payload.photoUrls,
   ]);
 
-  res.json(mapProductRow(rows[0]));
+  const product = mapProductRow(rows[0]);
+  const retainedUrls = new Set(productAssetUrls(product));
+  await cleanupAssets(productAssetUrls(existingProduct).filter((url) => !retainedUrls.has(url)));
+  res.json(product);
 });
 
 exports.deleteProduct = asyncHandler(async (req, res) => {
@@ -159,7 +183,10 @@ exports.deleteProduct = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Valid product id is required');
   }
 
+  const existingRows = await runFunction('sp_get_product_by_id', [productId]);
+  const existingProduct = existingRows[0];
   await runFunction('sp_admin_delete_product', [productId]);
+  await cleanupAssets(productAssetUrls(existingProduct));
   res.json({ success: true });
 });
 
