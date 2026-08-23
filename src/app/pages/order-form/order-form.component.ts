@@ -101,7 +101,7 @@ import { OrderForm } from '../../core/models';
                           <p class="oi-name">{{ item.product.name }}</p>
                           <p class="oi-qty">Qty: {{ item.quantity }}</p>
                         </div>
-                        <span class="oi-price">₹{{ item.product.price * item.quantity | number }}</span>
+                        <span class="oi-price">₹{{ item.product.price * item.quantity | number:'1.0-0':'en-IN' }}</span>
                       </div>
                     }
                   </div>
@@ -110,7 +110,7 @@ import { OrderForm } from '../../core/models';
 
                   <div class="total-row">
                     <span>Total</span>
-                    <span class="total-amt">₹{{ cart.totalPrice() | number }}</span>
+                    <span class="total-amt">₹{{ cart.totalPrice() | number:'1.0-0':'en-IN' }}</span>
                   </div>
 
                   <div class="wa-info">

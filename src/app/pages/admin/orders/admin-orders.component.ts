@@ -61,7 +61,7 @@ import { Order } from '../../../core/models';
                         }
                       </div>
                     </td>
-                    <td><strong>₹{{ order.total | number }}</strong></td>
+                    <td><strong>₹{{ order.total | number:'1.0-0':'en-IN' }}</strong></td>
                     <td>
                       <select class="status-select" [class]="'status-' + order.status" [ngModel]="order.status" (ngModelChange)="updateStatus(order.id, $event)">
                         <option value="new">New</option>

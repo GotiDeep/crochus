@@ -54,6 +54,13 @@ exports.getFeaturedProducts = asyncHandler(async (req, res) => {
   res.json(rows.map((row) => mapProductRow(row)));
 });
 
+exports.getHomeProducts = asyncHandler(async (req, res) => {
+  const display = String(req.params.display || '');
+  if (!['hero', 'last_section'].includes(display)) throw new ApiError(400, 'Invalid home display section');
+  const rows = await runFunction('sp_get_home_products', [display]);
+  res.json(rows.map((row) => mapProductRow(row)));
+});
+
 exports.getProductBySlug = asyncHandler(async (req, res) => {
   const rows = await runFunction('sp_get_product_by_slug', [req.params.slug]);
   const product = rows[0];
@@ -86,4 +93,3 @@ exports.getPublicSettings = asyncHandler(async (req, res) => {
   const rows = await runFunction('sp_get_public_settings');
   res.json(rows[0] || { whatsapp_number: '', contact_email: '', instagram_url: '' });
 });
-

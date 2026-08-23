@@ -12,6 +12,7 @@ export interface Product {
   video_url?: string;
   badge?: 'new' | 'bestseller' | 'featured' | null;
   in_stock: boolean;
+  home_display?: 'none' | 'hero' | 'last_section';
   created_at?: string;
 }
 

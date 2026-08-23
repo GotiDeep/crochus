@@ -42,6 +42,7 @@ CREATE TABLE products (
   category_id BIGINT NOT NULL REFERENCES categories(id),
   video_url TEXT,
   badge TEXT CHECK (badge IN ('new', 'bestseller', 'featured')),
+  home_display TEXT NOT NULL DEFAULT 'none' CHECK (home_display IN ('none', 'hero', 'last_section')),
   in_stock BOOLEAN NOT NULL DEFAULT TRUE,
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -122,6 +123,12 @@ BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
+$$;
+
+CREATE OR REPLACE FUNCTION sp_get_home_products(p_display TEXT)
+RETURNS TABLE (id BIGINT, name TEXT, slug TEXT, price NUMERIC, description TEXT, materials TEXT, category_id BIGINT, category_name TEXT, photos TEXT[], video_url TEXT, badge TEXT, in_stock BOOLEAN, created_at TIMESTAMPTZ)
+LANGUAGE sql STABLE AS $$
+  SELECT ap.* FROM sp_admin_get_products() ap JOIN products p ON p.id = ap.id WHERE p.home_display = p_display ORDER BY p.updated_at DESC, p.id DESC;
 $$;
 
 CREATE TRIGGER customers_set_updated_at BEFORE UPDATE ON customers FOR EACH ROW EXECUTE FUNCTION set_updated_at();
@@ -503,6 +510,21 @@ BEGIN
   RETURNING customers.id, customers.full_name, customers.email, customers.mobile, customers.address, customers.created_at
   INTO id, full_name, email, mobile, address, created_at;
 
+  RETURN QUERY SELECT id, full_name, email, mobile, address, created_at;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION sp_register_customer(p_full_name TEXT, p_email TEXT, p_mobile TEXT, p_password_hash TEXT)
+RETURNS TABLE (id BIGINT, full_name TEXT, email TEXT, mobile TEXT, address TEXT, created_at TIMESTAMPTZ)
+LANGUAGE plpgsql AS $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM customers WHERE LOWER(customers.email) = LOWER(p_email)) THEN
+    RAISE EXCEPTION 'An account with this email already exists';
+  END IF;
+  INSERT INTO customers (full_name, email, mobile, password_hash)
+  VALUES (p_full_name, LOWER(p_email), p_mobile, p_password_hash)
+  RETURNING customers.id, customers.full_name, customers.email, customers.mobile, customers.address, customers.created_at
+  INTO id, full_name, email, mobile, address, created_at;
   RETURN QUERY SELECT id, full_name, email, mobile, address, created_at;
 END;
 $$;
@@ -1459,5 +1481,27 @@ BEGIN
   SELECT setting_value
   FROM admin_settings
   WHERE setting_key = 'whatsapp_number';
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION sp_admin_get_smtp_settings()
+RETURNS TABLE (smtp_host TEXT, smtp_port INTEGER, smtp_secure BOOLEAN, smtp_user TEXT, smtp_from TEXT, contact_receiver_email TEXT, password_configured BOOLEAN)
+LANGUAGE sql STABLE AS $$
+  SELECT COALESCE(MAX(CASE WHEN setting_key = 'smtp_host' THEN setting_value END), ''), COALESCE(MAX(CASE WHEN setting_key = 'smtp_port' THEN setting_value END)::INTEGER, 587), COALESCE(MAX(CASE WHEN setting_key = 'smtp_secure' THEN setting_value END)::BOOLEAN, FALSE), COALESCE(MAX(CASE WHEN setting_key = 'smtp_user' THEN setting_value END), ''), COALESCE(MAX(CASE WHEN setting_key = 'smtp_from' THEN setting_value END), ''), COALESCE(MAX(CASE WHEN setting_key = 'contact_receiver_email' THEN setting_value END), ''), COALESCE(BOOL_OR(setting_key = 'smtp_password_encrypted'), FALSE) FROM admin_settings;
+$$;
+
+CREATE OR REPLACE FUNCTION sp_get_smtp_settings()
+RETURNS TABLE (smtp_host TEXT, smtp_port INTEGER, smtp_secure BOOLEAN, smtp_user TEXT, smtp_from TEXT, contact_receiver_email TEXT, smtp_password_encrypted TEXT)
+LANGUAGE sql STABLE AS $$
+  SELECT COALESCE(MAX(CASE WHEN setting_key = 'smtp_host' THEN setting_value END), ''), COALESCE(MAX(CASE WHEN setting_key = 'smtp_port' THEN setting_value END)::INTEGER, 587), COALESCE(MAX(CASE WHEN setting_key = 'smtp_secure' THEN setting_value END)::BOOLEAN, FALSE), COALESCE(MAX(CASE WHEN setting_key = 'smtp_user' THEN setting_value END), ''), COALESCE(MAX(CASE WHEN setting_key = 'smtp_from' THEN setting_value END), ''), COALESCE(MAX(CASE WHEN setting_key = 'contact_receiver_email' THEN setting_value END), ''), COALESCE(MAX(CASE WHEN setting_key = 'smtp_password_encrypted' THEN setting_value END), '') FROM admin_settings;
+$$;
+
+CREATE OR REPLACE FUNCTION sp_admin_update_smtp_settings(p_host TEXT, p_port INTEGER, p_secure BOOLEAN, p_user TEXT, p_from TEXT, p_receiver TEXT, p_encrypted_password TEXT DEFAULT NULL)
+RETURNS TABLE (smtp_host TEXT, smtp_port INTEGER, smtp_secure BOOLEAN, smtp_user TEXT, smtp_from TEXT, contact_receiver_email TEXT, password_configured BOOLEAN)
+LANGUAGE plpgsql AS $$
+BEGIN
+  INSERT INTO admin_settings (setting_key, setting_value) VALUES ('smtp_host', p_host), ('smtp_port', p_port::TEXT), ('smtp_secure', p_secure::TEXT), ('smtp_user', p_user), ('smtp_from', p_from), ('contact_receiver_email', p_receiver) ON CONFLICT (setting_key) DO UPDATE SET setting_value = EXCLUDED.setting_value, updated_at = NOW();
+  IF p_encrypted_password IS NOT NULL THEN INSERT INTO admin_settings (setting_key, setting_value) VALUES ('smtp_password_encrypted', p_encrypted_password) ON CONFLICT (setting_key) DO UPDATE SET setting_value = EXCLUDED.setting_value, updated_at = NOW(); END IF;
+  RETURN QUERY SELECT * FROM sp_admin_get_smtp_settings();
 END;
 $$;

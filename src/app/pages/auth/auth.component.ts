@@ -414,15 +414,15 @@ export class AuthComponent implements OnInit {
     if (!/^\d{10}$/.test(this.mobile)) { this.error.set('Enter a valid 10-digit mobile number'); return; }
     this.loading.set(true);
     try {
-      const response = await this.authService.register({
+      await this.authService.register({
         full_name: this.fullName,
         email: this.email,
         mobile: this.mobile,
         password: this.password
       });
       this.loading.set(false);
-      this.toast.info(response.dev_otp ? `Dev OTP: ${response.dev_otp}` : 'OTP sent to your email');
-      this.mode.set('verify');
+      this.toast.success('Account created! Welcome to Crochus');
+      this.router.navigate(['/']);
     } catch (error) {
       this.loading.set(false);
       this.error.set(error instanceof Error ? error.message : 'Registration failed. Please try again.');

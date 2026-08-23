@@ -7,7 +7,6 @@ import { HamburgerMenuComponent } from '../../shared/components/hamburger-menu/h
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
 import { ProductCardSkeletonComponent } from '../../shared/components/product-card-skeleton/product-card-skeleton.component';
 import { ProductService } from '../../core/services/product.service';
-import { SettingsService } from '../../core/services/settings.service';
 import { Product, Category } from '../../core/models';
 
 @Component({
@@ -35,15 +34,11 @@ import { Product, Category } from '../../core/models';
             </div>
             <div class="hero-visual fade-in">
               <div class="hero-img-grid">
-                <div class="img-block main">
-                  <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Handmade" />
-                </div>
-                <div class="img-block secondary">
-                  <img src="https://images.unsplash.com/photo-1602028915047-37269d1a73f7?w=400&q=80" alt="Candle" />
-                </div>
-                <div class="img-block tertiary">
-                  <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&q=80" alt="Pottery" />
-                </div>
+                @for (product of heroProducts(); track product.id; let index = $index) {
+                  <a [routerLink]="['/product', product.slug]" class="img-block" [class.main]="index === 0" [class.secondary]="index === 1" [class.tertiary]="index === 2">
+                    <img [src]="product.photos[0]" [alt]="product.name" />
+                  </a>
+                }
               </div>
               <div class="hero-badge">
                 <span class="badge-num">200+</span>
@@ -123,15 +118,15 @@ import { Product, Category } from '../../core/models';
         <section class="section insta-section">
           <div class="container">
             <div class="section-header" style="text-align:center">
-              <span class="section-label">📸 Follow us</span>
-              <h2 class="section-title">&#64;crochus on Instagram</h2>
-              <p style="margin-bottom:32px">See how people are styling their Crochus pieces</p>
+              <span class="section-label">Made for you</span>
+              <h2 class="section-title">More Handmade Favourites</h2>
+              <p style="margin-bottom:32px">Discover more pieces selected by Crochus</p>
             </div>
             <div class="insta-grid">
-              @for (img of instaPhotos; track img) {
-                <a [href]="instagramUrl()" target="_blank" class="insta-cell">
-                  <img [src]="img" alt="Instagram" loading="lazy" />
-                  <div class="insta-overlay">📸</div>
+              @for (product of lastSectionProducts(); track product.id) {
+                <a [routerLink]="['/product', product.slug]" class="insta-cell">
+                  <img [src]="product.photos[0]" [alt]="product.name" loading="lazy" />
+                  <div class="insta-overlay">{{ product.name }}</div>
                 </a>
               }
             </div>
@@ -397,18 +392,12 @@ import { Product, Category } from '../../core/models';
 })
 export class HomeComponent implements OnInit {
   private productService = inject(ProductService);
-  private settings = inject(SettingsService);
   loading = signal(true);
   featured = signal<Product[]>([]);
+  heroProducts = signal<Product[]>([]);
+  lastSectionProducts = signal<Product[]>([]);
   categories = signal<Category[]>([]);
   menuOpen = signal(false);
-
-  instaPhotos = [
-    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80',
-    'https://images.unsplash.com/photo-1602028915047-37269d1a73f7?w=400&q=80',
-    'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&q=80',
-    'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&q=80',
-  ];
 
   ngOnInit() {
     this.productService.getFeaturedProducts().subscribe(products => {
@@ -416,9 +405,8 @@ export class HomeComponent implements OnInit {
       this.loading.set(false);
     });
     this.productService.getCategories().subscribe(cats => this.categories.set(cats));
+    this.productService.getHomeProducts('hero').subscribe(products => this.heroProducts.set(products.slice(0, 3)));
+    this.productService.getHomeProducts('last_section').subscribe(products => this.lastSectionProducts.set(products.slice(0, 4)));
   }
 
-  instagramUrl() {
-    return this.settings.settings().instagram_url || 'https://instagram.com/crochus';
-  }
 }

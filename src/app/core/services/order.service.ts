@@ -8,6 +8,10 @@ import { environment } from '../../../environments/environment';
 export class OrderService {
   private http = inject(HttpClient);
 
+  private formatPrice(amount: number): string {
+    return `₹${Number(amount).toLocaleString('en-IN')}`;
+  }
+
   async submitOrder(payload: OrderSubmissionPayload): Promise<OrderSubmissionResponse> {
     return firstValueFrom(
       this.http.post<OrderSubmissionResponse>(`${environment.apiUrl}/orders`, payload)
@@ -18,7 +22,7 @@ export class OrderService {
     const itemLines = order.items
       .map(
         (item, index) =>
-          `${index + 1}. ${item.product.name} - INR ${item.product.price} (Qty: ${item.quantity})`
+          `${index + 1}. ${item.product.name} - ${this.formatPrice(item.product.price)} (Qty: ${item.quantity})`
       )
       .join('\n');
 
@@ -34,7 +38,7 @@ export class OrderService {
 Items Ordered:
 ${itemLines}
 
-Order Total: INR ${order.total.toLocaleString('en-IN')}
+Order Total: ${this.formatPrice(order.total)}
 
 Customer Details:
 Name: ${order.customer_name}
@@ -63,6 +67,6 @@ ${productLinks}`;
   }
 
   getWhatsAppShareMessage(product: Pick<Product, 'name' | 'price' | 'slug'>): string {
-    return `Check out this handmade piece from Crochus!\n\n${product.name}\nPrice: INR ${product.price}\n\n${environment.siteUrl}/product/${product.slug}`;
+    return `Check out this handmade piece from Crochus!\n\n${product.name}\nPrice: ${this.formatPrice(product.price)}\n\n${environment.siteUrl}/product/${product.slug}`;
   }
 }

@@ -94,7 +94,7 @@ import { DashboardOverview, DashboardStats, Order, Product } from '../../../core
                     <td>#{{ order.id }}</td>
                     <td>{{ order.customer_name }}</td>
                     <td>{{ order.items.length }} item(s)</td>
-                    <td>Rs.{{ order.total | number }}</td>
+                    <td>₹{{ order.total | number:'1.0-0':'en-IN' }}</td>
                     <td><span class="status-badge" [class]="'status-' + order.status">{{ order.status }}</span></td>
                     <td>{{ order.created_at | date:'mediumDate' }}</td>
                   </tr>
@@ -124,7 +124,7 @@ import { DashboardOverview, DashboardStats, Order, Product } from '../../../core
                   <tr>
                     <td>{{ product.name }}</td>
                     <td>{{ product.category_name }}</td>
-                    <td>Rs.{{ product.price | number }}</td>
+                    <td>₹{{ product.price | number:'1.0-0':'en-IN' }}</td>
                     <td>{{ product.in_stock ? 'In Stock' : 'Out of Stock' }}</td>
                   </tr>
                 }

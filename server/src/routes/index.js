@@ -14,6 +14,7 @@ const router = express.Router();
 router.get('/health', publicController.getHealth);
 
 router.get('/products/featured', publicController.getFeaturedProducts);
+router.get('/products/home/:display', publicController.getHomeProducts);
 router.get('/products/:slug/similar', publicController.getSimilarProducts);
 router.get('/products/:slug', publicController.getProductBySlug);
 router.get('/products', publicController.getProducts);
@@ -53,5 +54,8 @@ router.delete('/admin/categories/:id', requireAdminAuth, adminController.deleteC
 router.get('/admin/orders', requireAdminAuth, adminController.getOrders);
 router.put('/admin/orders/:id', requireAdminAuth, adminController.updateOrderStatus);
 router.put('/admin/settings/whatsapp', requireAdminAuth, adminController.updateWhatsappNumber);
+router.get('/admin/settings/smtp', requireAdminAuth, adminController.getSmtpSettings);
+router.put('/admin/settings/smtp', requireAdminAuth, adminController.updateSmtpSettings);
+router.post('/admin/settings/smtp/test', requireAdminAuth, adminController.testSmtpSettings);
 
 module.exports = router;

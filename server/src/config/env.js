@@ -42,6 +42,7 @@ module.exports = {
   smtpPass: process.env.SMTP_PASS || '',
   smtpFrom: process.env.SMTP_FROM || 'Crochus <no-reply@crochus.local>',
   contactReceiverEmail: process.env.CONTACT_RECEIVER_EMAIL || 'hello@crochus.com',
+  settingsEncryptionKey: process.env.SETTINGS_ENCRYPTION_KEY || '',
   cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '',
   cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',

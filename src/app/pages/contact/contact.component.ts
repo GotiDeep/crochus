@@ -22,7 +22,7 @@ import { SettingsService } from '../../core/services/settings.service';
           <div class="page-header">
             <span class="section-label">Say Hello</span>
             <h1>Get in Touch</h1>
-            <p>We'd love to hear from you â€” whether it's a question, a custom order, or just to share your love for handmade things.</p>
+            <p>We'd love to hear from you — whether it's a question, a custom order, or just to share your love for handmade things.</p>
           </div>
 
           <div class="contact-layout">
@@ -65,13 +65,13 @@ import { SettingsService } from '../../core/services/settings.service';
                 </div>
                 <div class="form-group">
                   <label class="form-label">Message</label>
-                  <textarea class="form-control" [(ngModel)]="form.message" rows="5" placeholder="Write your message hereâ€¦"></textarea>
+                  <textarea class="form-control" [(ngModel)]="form.message" rows="5" placeholder="Write your message here…"></textarea>
                 </div>
 
                 @if (error()) { <div class="auth-error">{{ error() }}</div> }
 
                 <button class="btn btn-primary btn-full" [disabled]="sending()" (click)="send()">
-                  {{ sending() ? 'Sendingâ€¦' : 'Send Message' }}
+                  {{ sending() ? 'Sending…' : 'Send Message' }}
                 </button>
               } @else {
                 <div class="success-msg fade-in">

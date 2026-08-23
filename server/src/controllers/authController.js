@@ -27,25 +27,9 @@ exports.register = asyncHandler(async (req, res) => {
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
-  const otp = generateOtp();
-  const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
-
-  await runFunction('sp_create_auth_otp', [
-    'register',
-    email,
-    otp,
-    expiresAt,
-    fullName,
-    mobile,
-    passwordHash,
-  ]);
-
-  const mailResult = await sendOtpEmail({ email, otp, purpose: 'register' });
-
-  res.status(201).json({
-    message: 'OTP sent successfully',
-    dev_otp: mailResult.dev_otp,
-  });
+  const rows = await runFunction('sp_register_customer', [fullName, email, mobile, passwordHash]);
+  const user = rows[0];
+  res.status(201).json({ token: signCustomerToken(user), user: mapUserRow(user) });
 });
 
 exports.verifyOtp = asyncHandler(async (req, res) => {
@@ -131,4 +115,3 @@ exports.resetPassword = asyncHandler(async (req, res) => {
     message: 'Password reset successfully',
   });
 });
-

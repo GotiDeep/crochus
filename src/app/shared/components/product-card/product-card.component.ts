@@ -31,7 +31,7 @@ import { Router } from '@angular/router';
         <p class="card-category">{{ product.category_name }}</p>
         <a [routerLink]="['/product', product.slug]" class="card-title">{{ product.name }}</a>
         <div class="card-footer">
-          <span class="price">₹{{ product.price | number }}</span>
+          <span class="price">₹{{ product.price | number:'1.0-0':'en-IN' }}</span>
           <button
             class="btn btn-primary btn-sm add-btn"
             [disabled]="!product.in_stock"

@@ -16,6 +16,7 @@ interface ProductFormData {
   badge: string;
   in_stock: boolean;
   video_url: string;
+  home_display: 'none' | 'hero' | 'last_section';
 }
 
 @Component({
@@ -33,7 +34,7 @@ interface ProductFormData {
 
         <div class="table-wrap card">
           @if (loading()) {
-            <div style="padding:40px; text-align:center; color:var(--text-secondary)">Loading productsâ€¦</div>
+            <div style="padding:40px; text-align:center; color:var(--text-secondary)">Loading products…</div>
           } @else {
             <table class="data-table">
               <thead>
@@ -59,11 +60,11 @@ interface ProductFormData {
                     </td>
                     <td><span class="product-name-cell">{{ product.name }}</span></td>
                     <td>{{ product.category_name }}</td>
-                    <td>â‚¹{{ product.price | number }}</td>
+                    <td>₹{{ product.price | number:'1.0-0':'en-IN' }}</td>
                     <td>
                       @if (product.badge) {
                         <span class="badge" [class]="'badge-' + product.badge">{{ product.badge }}</span>
-                      } @else { â€” }
+                      } @else { — }
                     </td>
                     <td>
                       <span class="status-badge" [class]="product.in_stock ? 'status-confirmed' : 'status-new'">
@@ -88,7 +89,7 @@ interface ProductFormData {
             <div class="modal" (click)="$event.stopPropagation()">
               <div class="modal-head">
                 <h3>{{ editingId() ? 'Edit Product' : 'Add Product' }}</h3>
-                <button class="close-btn" (click)="closeForm()">âœ•</button>
+                <button class="close-btn" type="button" aria-label="Close product form" title="Close" (click)="closeForm()">×</button>
               </div>
 
               <div class="modal-body">
@@ -98,7 +99,7 @@ interface ProductFormData {
                     <input type="text" class="form-control" [(ngModel)]="formData.name" />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Price (â‚¹) *</label>
+                    <label class="form-label">Price (₹) *</label>
                     <input type="number" class="form-control" [(ngModel)]="formData.price" />
                   </div>
                 </div>
@@ -131,6 +132,15 @@ interface ProductFormData {
                 <div class="form-group">
                   <label class="form-label">Materials</label>
                   <input type="text" class="form-control" [(ngModel)]="formData.materials" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Display on Home</label>
+                  <select class="form-control" [(ngModel)]="formData.home_display">
+                    <option value="none">Do not display</option>
+                    <option value="hero">Show to Hero Section (max 3)</option>
+                    <option value="last_section">Show to Home Last Section (max 4)</option>
+                  </select>
                 </div>
 
                 <div class="form-group">
@@ -180,7 +190,7 @@ interface ProductFormData {
               <div class="modal-footer">
                 <button class="btn btn-ghost" (click)="closeForm()">Cancel</button>
                 <button class="btn btn-primary" [disabled]="saving()" (click)="saveProduct()">
-                  {{ saving() ? 'Savingâ€¦' : (editingId() ? 'Update Product' : 'Add Product') }}
+                  {{ saving() ? 'Saving…' : (editingId() ? 'Update Product' : 'Add Product') }}
                 </button>
               </div>
             </div>
@@ -226,7 +236,7 @@ interface ProductFormData {
     }
     .close-btn {
       width: 32px; height: 32px; background: var(--bg); border: 1px solid var(--border);
-      border-radius: 50%; cursor: pointer; font-size: 0.8rem; color: var(--text-secondary);
+      border-radius: 50%; cursor: pointer; font-size: 1.5rem; font-weight: 300; line-height: 1; color: var(--text-secondary);
       display: flex; align-items: center; justify-content: center; transition: all 0.2s;
       &:hover { border-color: var(--primary); color: var(--primary); }
     }
@@ -306,6 +316,7 @@ export class AdminProductsComponent implements OnInit {
       badge: '',
       in_stock: true,
       video_url: ''
+      , home_display: 'none'
     };
   }
 
@@ -345,6 +356,7 @@ export class AdminProductsComponent implements OnInit {
       badge: product.badge || '',
       in_stock: product.in_stock,
       video_url: product.video_url || ''
+      , home_display: product.home_display || 'none'
     };
     this.photoUrlsInput = product.photos.join(', ');
     this.selectedPhotoFiles = [];
@@ -391,6 +403,7 @@ export class AdminProductsComponent implements OnInit {
     formData.append('in_stock', String(this.formData.in_stock));
     formData.append('video_url', this.formData.video_url.trim());
     formData.append('photo_urls', JSON.stringify(photoUrls));
+    formData.append('home_display', this.formData.home_display);
 
     this.selectedPhotoFiles.forEach((file) => formData.append('photos[]', file));
     if (this.selectedVideoFile) {

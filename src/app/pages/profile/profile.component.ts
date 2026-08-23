@@ -136,7 +136,7 @@ import { Order, User } from '../../core/models';
                             }
                           </div>
                           <div class="order-foot">
-                            <span class="order-total">Total: ₹{{ order.total | number }}</span>
+                            <span class="order-total">Total: ₹{{ order.total | number:'1.0-0':'en-IN' }}</span>
                           </div>
                         </div>
                       }

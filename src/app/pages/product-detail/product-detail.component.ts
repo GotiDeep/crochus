@@ -75,7 +75,7 @@ import { Router } from '@angular/router';
                 </div>
 
                 <h1 class="product-name">{{ product()!.name }}</h1>
-                <div class="product-price">₹{{ product()!.price | number }}</div>
+                <div class="product-price">₹{{ product()!.price | number:'1.0-0':'en-IN' }}</div>
 
                 <!-- Stock Status -->
                 @if (product()!.in_stock) {

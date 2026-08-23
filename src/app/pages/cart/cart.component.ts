@@ -41,7 +41,7 @@ import { CartService } from '../../core/services/cart.service';
                     <div class="item-info">
                       <p class="item-category">{{ item.product.category_name }}</p>
                       <a [routerLink]="['/product', item.product.slug]" class="item-name">{{ item.product.name }}</a>
-                      <p class="item-price">₹{{ item.product.price | number }}</p>
+                      <p class="item-price">₹{{ item.product.price | number:'1.0-0':'en-IN' }}</p>
                     </div>
                     <div class="item-controls">
                       <div class="qty-selector">
@@ -49,7 +49,7 @@ import { CartService } from '../../core/services/cart.service';
                         <span>{{ item.quantity }}</span>
                         <button (click)="cart.updateQuantity(item.product.id, item.quantity + 1)">+</button>
                       </div>
-                      <p class="item-subtotal">₹{{ item.product.price * item.quantity | number }}</p>
+                      <p class="item-subtotal">₹{{ item.product.price * item.quantity | number:'1.0-0':'en-IN' }}</p>
                       <button class="remove-btn" (click)="cart.removeItem(item.product.id)" title="Remove">🗑</button>
                     </div>
                   </div>
@@ -70,7 +70,7 @@ import { CartService } from '../../core/services/cart.service';
                   @for (item of cart.items(); track item.product.id) {
                     <div class="summary-line">
                       <span>{{ item.product.name }} × {{ item.quantity }}</span>
-                      <span>₹{{ item.product.price * item.quantity | number }}</span>
+                      <span>₹{{ item.product.price * item.quantity | number:'1.0-0':'en-IN' }}</span>
                     </div>
                   }
                 </div>
@@ -79,7 +79,7 @@ import { CartService } from '../../core/services/cart.service';
 
                 <div class="summary-total">
                   <span>Total</span>
-                  <span class="total-price">₹{{ cart.totalPrice() | number }}</span>
+                  <span class="total-price">₹{{ cart.totalPrice() | number:'1.0-0':'en-IN' }}</span>
                 </div>
 
                 <p class="summary-note">🌿 Shipping & taxes calculated at checkout via WhatsApp</p>

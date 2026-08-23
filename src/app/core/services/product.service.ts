@@ -52,6 +52,10 @@ export class ProductService {
     });
   }
 
+  getHomeProducts(display: 'hero' | 'last_section'): Observable<Product[]> {
+    return this.http.get<Product[]>(`${environment.apiUrl}/products/home/${display}`);
+  }
+
   getSimilarProducts(categoryId: number, excludeId: number): Observable<Product[]> {
     const params = new HttpParams()
       .set('category_id', String(categoryId))

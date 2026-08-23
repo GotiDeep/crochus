@@ -60,10 +60,11 @@ export class AuthService {
     this.persistSession(response);
   }
 
-  async register(payload: RegisterPayload): Promise<AuthOtpResponse> {
-    return firstValueFrom(
-      this.http.post<AuthOtpResponse>(`${environment.apiUrl}/auth/register`, payload)
+  async register(payload: RegisterPayload): Promise<void> {
+    const response = await firstValueFrom(
+      this.http.post<AuthResponse>(`${environment.apiUrl}/auth/register`, payload)
     );
+    this.persistSession(response);
   }
 
   async verifyOtp(email: string, otp: string): Promise<AuthResponse> {
