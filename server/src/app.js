@@ -8,12 +8,13 @@ const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 function createCorsOptions() {
   return {
     origin(origin, callback) {
-      if (!origin || env.corsOrigins.includes(origin)) {
+      // Allow same-origin, local dev, netlify previews, and configured domains
+      if (!origin || origin.includes('localhost') || origin.includes('netlify.app') || env.corsOrigins.includes(origin)) {
         callback(null, true);
         return;
       }
 
-      callback(new Error('Origin not allowed by CORS'));
+      callback(null, true); // Permissive for API routes
     },
     credentials: true,
   };
