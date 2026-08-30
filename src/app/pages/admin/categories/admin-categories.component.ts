@@ -58,7 +58,7 @@ import { CustomAlertComponent } from '../../../shared/components/custom-alert/cu
               <div class="skeleton cat-skel"></div>
             }
           } @else {
-            @for (cat of categories(); track cat.id) {
+            @for (cat of paginatedCategories(); track cat.id) {
               <div class="cat-card card">
                 @if (cat.image_url) {
                   <img [src]="cat.image_url" class="cat-img" [alt]="cat.name" />
@@ -77,6 +77,17 @@ import { CustomAlertComponent } from '../../../shared/components/custom-alert/cu
             }
           }
         </div>
+
+        <!-- Pagination -->
+        @if (totalPages() > 1) {
+          <div class="pagination">
+            <button class="page-btn" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">‹</button>
+            @for (p of pageNumbers(); track p) {
+              <button class="page-btn" [class.active]="p === currentPage()" (click)="goToPage(p)">{{ p }}</button>
+            }
+            <button class="page-btn" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">›</button>
+          </div>
+        }
       </main>
     </div>
 
@@ -216,6 +227,17 @@ export class AdminCategoriesComponent implements OnInit {
   showForm = signal(false);
   editingId = signal<number | null>(null);
   categories = signal<Category[]>([]);
+  currentPage = signal(1);
+  limit = 10;
+
+  totalPages = () => Math.ceil(this.categories().length / this.limit);
+  pageNumbers = () => Array.from({ length: this.totalPages() }, (_, i) => i + 1);
+
+  paginatedCategories = () => {
+    const start = (this.currentPage() - 1) * this.limit;
+    return this.categories().slice(start, start + this.limit);
+  };
+
   newName = '';
   imagePreview = signal<string | null>(null);
   selectedFile: File | null = null;
@@ -230,6 +252,7 @@ export class AdminCategoriesComponent implements OnInit {
     this.adminService.getCategories().subscribe({
       next: (categories) => {
         this.categories.set(categories);
+        this.currentPage.set(1);
         this.loading.set(false);
       },
       error: (error) => {
@@ -237,6 +260,10 @@ export class AdminCategoriesComponent implements OnInit {
         this.toast.error(error instanceof Error ? error.message : 'Could not load categories');
       }
     });
+  }
+
+  goToPage(p: number) {
+    this.currentPage.set(p);
   }
 
   onFileChange(event: Event) {

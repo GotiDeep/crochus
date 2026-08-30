@@ -37,10 +37,21 @@ import { FooterComponent } from '../../shared/components/footer/footer.component
             </div>
           } @else {
             <div class="product-grid fade-in">
-              @for (product of wishlistedProducts(); track product.id) {
+              @for (product of paginatedProducts(); track product.id) {
                 <app-product-card [product]="product" />
               }
             </div>
+
+            <!-- Pagination -->
+            @if (totalPages() > 1) {
+              <div class="pagination">
+                <button class="page-btn" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">‹</button>
+                @for (p of pageNumbers(); track p) {
+                  <button class="page-btn" [class.active]="p === currentPage()" (click)="goToPage(p)">{{ p }}</button>
+                }
+                <button class="page-btn" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">›</button>
+              </div>
+            }
           }
         </div>
       </main>
@@ -61,6 +72,16 @@ export class WishlistComponent implements OnInit {
   
   loading = signal(true);
   wishlistedProducts = signal<Product[]>([]);
+  currentPage = signal(1);
+  limit = 10;
+
+  totalPages = () => Math.ceil(this.wishlistedProducts().length / this.limit);
+  pageNumbers = () => Array.from({ length: this.totalPages() }, (_, i) => i + 1);
+
+  paginatedProducts = () => {
+    const start = (this.currentPage() - 1) * this.limit;
+    return this.wishlistedProducts().slice(start, start + this.limit);
+  };
 
   ngOnInit() {
     this.loadWishlist();
@@ -68,7 +89,6 @@ export class WishlistComponent implements OnInit {
 
   loadWishlist() {
     this.loading.set(true);
-    // Note: Since this is local storage based right now, we get all and filter
     this.productService.getProducts({ limit: 1000 }).subscribe(res => {
       const allProducts = res.data;
       const wishlistIds = Object.keys(localStorage)
@@ -76,7 +96,13 @@ export class WishlistComponent implements OnInit {
         .map(key => String(key.replace('wishlist_', '')));
 
       this.wishlistedProducts.set(allProducts.filter(p => wishlistIds.includes(String(p.id))));
+      this.currentPage.set(1);
       this.loading.set(false);
     });
+  }
+
+  goToPage(p: number) {
+    this.currentPage.set(p);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }

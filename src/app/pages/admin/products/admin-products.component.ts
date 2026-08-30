@@ -49,7 +49,7 @@ interface ProductFormData {
                 </tr>
               </thead>
               <tbody>
-                @for (product of products(); track product.id) {
+                @for (product of paginatedProducts(); track product.id) {
                   <tr>
                     <td>
                       @if (product.photos[0]) {
@@ -81,6 +81,17 @@ interface ProductFormData {
                 }
               </tbody>
             </table>
+
+            <!-- Pagination -->
+            @if (totalPages() > 1) {
+              <div class="pagination">
+                <button class="page-btn" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">‹</button>
+                @for (p of pageNumbers(); track p) {
+                  <button class="page-btn" [class.active]="p === currentPage()" (click)="goToPage(p)">{{ p }}</button>
+                }
+                <button class="page-btn" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">›</button>
+              </div>
+            }
           }
         </div>
 
@@ -290,6 +301,16 @@ export class AdminProductsComponent implements OnInit {
   categories = signal<Category[]>([]);
   selectedPhotoNames = signal<string[]>([]);
   selectedVideoName = signal('');
+  currentPage = signal(1);
+  limit = 10;
+
+  totalPages = () => Math.ceil(this.products().length / this.limit);
+  pageNumbers = () => Array.from({ length: this.totalPages() }, (_, i) => i + 1);
+
+  paginatedProducts = () => {
+    const start = (this.currentPage() - 1) * this.limit;
+    return this.products().slice(start, start + this.limit);
+  };
 
   formData: ProductFormData = this.emptyForm();
   photoUrlsInput = '';
@@ -315,8 +336,8 @@ export class AdminProductsComponent implements OnInit {
       category_id: 1,
       badge: '',
       in_stock: true,
-      video_url: ''
-      , home_display: 'none'
+      video_url: '',
+      home_display: 'none'
     };
   }
 
@@ -325,6 +346,7 @@ export class AdminProductsComponent implements OnInit {
     this.adminService.getProducts().subscribe({
       next: (products) => {
         this.products.set(products);
+        this.currentPage.set(1);
         this.loading.set(false);
       },
       error: (error) => {
@@ -332,6 +354,10 @@ export class AdminProductsComponent implements OnInit {
         this.toast.error(error instanceof Error ? error.message : 'Could not load products');
       },
     });
+  }
+
+  goToPage(p: number) {
+    this.currentPage.set(p);
   }
 
   openForm() {

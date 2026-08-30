@@ -118,7 +118,7 @@ import { Order, User } from '../../core/models';
                     </div>
                   } @else {
                     <div class="orders-list">
-                      @for (order of orders(); track order.id) {
+                      @for (order of paginatedOrders(); track order.id) {
                         <div class="order-card">
                           <div class="order-head">
                             <div>
@@ -141,6 +141,17 @@ import { Order, User } from '../../core/models';
                         </div>
                       }
                     </div>
+
+                    <!-- Pagination -->
+                    @if (totalPages() > 1) {
+                      <div class="pagination">
+                        <button class="page-btn" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">‹</button>
+                        @for (p of pageNumbers(); track p) {
+                          <button class="page-btn" [class.active]="p === currentPage()" (click)="goToPage(p)">{{ p }}</button>
+                        }
+                        <button class="page-btn" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">›</button>
+                      </div>
+                    }
                   }
                 </div>
               }
@@ -316,6 +327,16 @@ export class ProfileComponent implements OnInit {
   saving = signal(false);
   ordersLoading = signal(false);
   orders = signal<Order[]>([]);
+  currentPage = signal(1);
+  limit = 10;
+
+  totalPages = () => Math.ceil(this.orders().length / this.limit);
+  pageNumbers = () => Array.from({ length: this.totalPages() }, (_, i) => i + 1);
+
+  paginatedOrders = () => {
+    const start = (this.currentPage() - 1) * this.limit;
+    return this.orders().slice(start, start + this.limit);
+  };
 
   editData: Partial<User> = {};
 
@@ -337,6 +358,7 @@ export class ProfileComponent implements OnInit {
     this.orderService.getOrderHistory().subscribe({
       next: (orders) => {
         this.orders.set(orders);
+        this.currentPage.set(1);
         this.ordersLoading.set(false);
       },
       error: (error) => {
@@ -344,6 +366,10 @@ export class ProfileComponent implements OnInit {
         this.toast.error(error instanceof Error ? error.message : 'Could not load order history');
       }
     });
+  }
+
+  goToPage(p: number) {
+    this.currentPage.set(p);
   }
 
   async saveProfile() {
