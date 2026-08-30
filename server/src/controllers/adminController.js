@@ -309,6 +309,39 @@ exports.updateOrderStatus = asyncHandler(async (req, res) => {
   res.json({ success: true });
 });
 
+exports.getGeneralSettings = asyncHandler(async (req, res) => {
+  const rows = await runFunction('sp_get_public_settings');
+  res.json(rows[0] || {
+    whatsapp_number: '918200502248',
+    contact_email: 'hello@crochus.com',
+    instagram_url: 'https://instagram.com/crochus',
+    facebook_url: 'https://facebook.com/crochus',
+    studio_address: 'Surat, Gujarat, India 395007',
+  });
+});
+
+exports.updateGeneralSettings = asyncHandler(async (req, res) => {
+  const whatsappNumber = String(req.body.whatsapp_number || '').trim();
+  const contactEmail = String(req.body.contact_email || '').trim();
+  const instagramUrl = String(req.body.instagram_url || '').trim();
+  const facebookUrl = String(req.body.facebook_url || '').trim();
+  const studioAddress = String(req.body.studio_address || '').trim();
+
+  if (whatsappNumber && !/^\d{10,15}$/.test(whatsappNumber)) {
+    throw new ApiError(400, 'Enter a valid WhatsApp number with country code (10-15 digits)');
+  }
+
+  const rows = await runFunction('sp_admin_update_social_settings', [
+    whatsappNumber || '918200502248',
+    contactEmail || 'hello@crochus.com',
+    instagramUrl || 'https://instagram.com/crochus',
+    facebookUrl || 'https://facebook.com/crochus',
+    studioAddress || 'Surat, Gujarat, India 395007',
+  ]);
+
+  res.json(rows[0]);
+});
+
 exports.updateWhatsappNumber = asyncHandler(async (req, res) => {
   const whatsappNumber = String(req.body.whatsapp_number || '').trim();
 

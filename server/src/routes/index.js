@@ -53,6 +53,8 @@ router.put('/admin/categories/:id', requireAdminAuth, categoryUpload, adminContr
 router.delete('/admin/categories/:id', requireAdminAuth, adminController.deleteCategory);
 router.get('/admin/orders', requireAdminAuth, adminController.getOrders);
 router.put('/admin/orders/:id', requireAdminAuth, adminController.updateOrderStatus);
+router.get('/admin/settings/general', requireAdminAuth, adminController.getGeneralSettings);
+router.put('/admin/settings/general', requireAdminAuth, adminController.updateGeneralSettings);
 router.put('/admin/settings/whatsapp', requireAdminAuth, adminController.updateWhatsappNumber);
 router.get('/admin/settings/smtp', requireAdminAuth, adminController.getSmtpSettings);
 router.put('/admin/settings/smtp', requireAdminAuth, adminController.updateSmtpSettings);

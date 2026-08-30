@@ -108,6 +108,8 @@ export interface SiteSettings {
   whatsapp_number: string;
   contact_email?: string;
   instagram_url?: string;
+  facebook_url?: string;
+  studio_address?: string;
 }
 
 // ============ PAGINATION ============

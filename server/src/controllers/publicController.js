@@ -112,5 +112,11 @@ exports.getCategories = asyncHandler(async (req, res) => {
 
 exports.getPublicSettings = asyncHandler(async (req, res) => {
   const rows = await runFunction('sp_get_public_settings');
-  res.json(rows[0] || { whatsapp_number: '', contact_email: '', instagram_url: '' });
+  res.json(rows[0] || {
+    whatsapp_number: '918200502248',
+    contact_email: 'hello@crochus.com',
+    instagram_url: 'https://instagram.com/crochus',
+    facebook_url: 'https://facebook.com/crochus',
+    studio_address: 'Surat, Gujarat, India 395007',
+  });
 });

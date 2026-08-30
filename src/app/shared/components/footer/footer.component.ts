@@ -17,12 +17,21 @@ import { SettingsService } from '../../../core/services/settings.service';
             </div>
             <p>Handmade with love and intention. Every piece tells a story — made by artisans, for those who value craft.</p>
             <div class="social-links">
-              <a [href]="instagramUrl()" target="_blank" rel="noopener" class="social-btn">
-                📸 Instagram
-              </a>
-              <a [href]="whatsappUrl()" target="_blank" rel="noopener" class="social-btn wa">
-                💬 WhatsApp
-              </a>
+              @if (instagramUrl()) {
+                <a [href]="instagramUrl()" target="_blank" rel="noopener" class="social-btn">
+                  📸 Instagram
+                </a>
+              }
+              @if (facebookUrl()) {
+                <a [href]="facebookUrl()" target="_blank" rel="noopener" class="social-btn fb">
+                  🌐 Facebook
+                </a>
+              }
+              @if (whatsappUrl()) {
+                <a [href]="whatsappUrl()" target="_blank" rel="noopener" class="social-btn wa">
+                  💬 WhatsApp
+                </a>
+              }
             </div>
           </div>
 
@@ -191,6 +200,10 @@ export class FooterComponent {
 
   instagramUrl() {
     return this.settings.settings().instagram_url || 'https://instagram.com/crochus';
+  }
+
+  facebookUrl() {
+    return this.settings.settings().facebook_url || 'https://facebook.com/crochus';
   }
 
   whatsappUrl() {

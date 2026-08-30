@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -40,8 +40,21 @@ import { SettingsService } from '../../core/services/settings.service';
               <div class="social-block">
                 <p class="social-label">Follow us</p>
                 <div class="social-row">
-                  <a [href]="instagramUrl()" target="_blank" class="social-pill">ðŸ“¸ Instagram</a>
-                  <a [href]="whatsappUrl()" target="_blank" class="social-pill wa">ðŸ’¬ WhatsApp</a>
+                  @if (instagramUrl()) {
+                    <a [href]="instagramUrl()" target="_blank" rel="noopener" class="social-pill">
+                      📸 Instagram
+                    </a>
+                  }
+                  @if (facebookUrl()) {
+                    <a [href]="facebookUrl()" target="_blank" rel="noopener" class="social-pill fb">
+                      🌐 Facebook
+                    </a>
+                  }
+                  @if (whatsappUrl()) {
+                    <a [href]="whatsappUrl()" target="_blank" rel="noopener" class="social-pill wa">
+                      💬 WhatsApp
+                    </a>
+                  }
                 </div>
               </div>
             </div>
@@ -170,7 +183,7 @@ import { SettingsService } from '../../core/services/settings.service';
     }
   `]
 })
-export class ContactComponent {
+export class ContactComponent implements OnInit {
   private contactService = inject(ContactService);
   private settings = inject(SettingsService);
 
@@ -181,33 +194,41 @@ export class ContactComponent {
 
   form = { name: '', email: '', subject: '', message: '' };
 
+  ngOnInit() {
+    this.settings.refreshPublicSettings().subscribe();
+  }
+
   get contactItems() {
     const settings = this.settings.settings();
 
     return [
       {
-        icon: 'ðŸ’¬',
+        icon: '💬',
         title: 'WhatsApp',
         detail: `+${this.settings.whatsappNumber()}`,
         href: this.whatsappUrl(),
       },
       {
-        icon: 'ðŸ“§',
+        icon: '✉️',
         title: 'Email',
         detail: settings.contact_email || 'hello@crochus.com',
         href: `mailto:${settings.contact_email || 'hello@crochus.com'}`,
       },
       {
-        icon: 'ðŸ“',
+        icon: '📍',
         title: 'Studio',
-        detail: 'Surat, Gujarat, India 395007',
-        href: 'https://maps.google.com',
+        detail: settings.studio_address || 'Surat, Gujarat, India 395007',
+        href: 'https://maps.google.com/?q=' + encodeURIComponent(settings.studio_address || 'Surat, Gujarat, India 395007'),
       },
     ];
   }
 
   instagramUrl() {
     return this.settings.settings().instagram_url || 'https://instagram.com/crochus';
+  }
+
+  facebookUrl() {
+    return this.settings.settings().facebook_url || 'https://facebook.com/crochus';
   }
 
   whatsappUrl() {

@@ -5,9 +5,11 @@ import { SiteSettings } from '../models';
 import { environment } from '../../../environments/environment';
 
 const DEFAULT_SETTINGS: SiteSettings = {
-  whatsapp_number: '919876543210',
+  whatsapp_number: '918200502248',
   contact_email: 'hello@crochus.com',
   instagram_url: 'https://instagram.com/crochus',
+  facebook_url: 'https://facebook.com/crochus',
+  studio_address: 'Surat, Gujarat, India 395007',
 };
 
 export interface SmtpSettings {
@@ -26,6 +28,16 @@ export class SettingsService {
     return this.http
       .get<SiteSettings>(`${environment.apiUrl}/settings/whatsapp`)
       .pipe(tap((settings) => this.settings.set({ ...DEFAULT_SETTINGS, ...settings })));
+  }
+
+  getGeneralSettings(): Observable<SiteSettings> {
+    return this.http.get<SiteSettings>(`${environment.apiUrl}/admin/settings/general`);
+  }
+
+  updateGeneralSettings(settings: SiteSettings): Observable<SiteSettings> {
+    return this.http
+      .put<SiteSettings>(`${environment.apiUrl}/admin/settings/general`, settings)
+      .pipe(tap((updated) => this.settings.set({ ...this.settings(), ...updated })));
   }
 
   getWhatsappNumber(): Observable<string> {
