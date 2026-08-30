@@ -49,7 +49,7 @@ import { Product, Category, ProductFilter } from '../../core/models';
 
           <!-- Filters Row -->
           <div class="filters-row">
-            <!-- Category Chips -->
+            <!-- Category Chips (Desktop) -->
             <div class="chips-scroll category-chips">
               <button
                 class="chip"
@@ -65,13 +65,29 @@ import { Product, Category, ProductFilter } from '../../core/models';
               }
             </div>
 
-            <!-- Sort -->
-            <select class="form-control sort-select" [(ngModel)]="sortBy" (ngModelChange)="onSortChange()">
+            <!-- Desktop Sort -->
+            <select class="form-control sort-select hide-mobile" [(ngModel)]="sortBy" (ngModelChange)="onSortChange()">
               <option value="newest">Newest First</option>
               <option value="price_asc">Price: Low → High</option>
               <option value="price_desc">Price: High → Low</option>
               <option value="popular">Most Popular</option>
             </select>
+
+            <!-- Mobile Filter & Sort Bar -->
+            <div class="mobile-filter-bar">
+              <button class="mobile-filter-btn" (click)="menuOpen.set(true)">
+                <span>🏷 Categories</span>
+                @if (activeCategoryName()) {
+                  <strong>({{ activeCategoryName() }})</strong>
+                }
+              </button>
+              <select class="form-control sort-select" [(ngModel)]="sortBy" (ngModelChange)="onSortChange()">
+                <option value="newest">Newest First</option>
+                <option value="price_asc">Price: Low → High</option>
+                <option value="price_desc">Price: High → Low</option>
+                <option value="popular">Most Popular</option>
+              </select>
+            </div>
           </div>
 
           <!-- Results -->
@@ -165,14 +181,51 @@ import { Product, Category, ProductFilter } from '../../core/models';
     .filters-row {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 16px;
-      margin-bottom: 36px;
+      margin-bottom: 32px;
       flex-wrap: wrap;
+
+      @media (max-width: 600px) {
+        margin-bottom: 20px;
+      }
     }
 
     .category-chips {
       flex: 1;
       min-width: 0;
+
+      @media (max-width: 768px) {
+        display: none; /* Hidden on mobile/tablet because it is inside hamburger menu */
+      }
+    }
+
+    .mobile-filter-bar {
+      display: none;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+
+      @media (max-width: 768px) {
+        display: flex;
+      }
+    }
+
+    .mobile-filter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--primary);
+      cursor: pointer;
+      flex: 1;
+      justify-content: center;
     }
 
     .sort-select {
@@ -180,6 +233,11 @@ import { Product, Category, ProductFilter } from '../../core/models';
       padding: 10px 16px;
       font-size: 0.85rem;
       min-width: 180px;
+
+      @media (max-width: 768px) {
+        flex: 1;
+        min-width: 0;
+      }
     }
 
     .pagination {
@@ -227,17 +285,25 @@ export class ShopComponent implements OnInit, OnDestroy {
   searchInput = '';
   searchQuery = signal('');
 
+  activeCategoryName = () => {
+    const cat = this.categories().find(c => c.id === this.activeCategory());
+    return cat ? cat.name : '';
+  };
+
   totalPages = () => Math.ceil(this.total() / this.limit);
   pageNumbers = () => Array.from({ length: this.totalPages() }, (_, i) => i + 1);
 
   ngOnInit() {
     this.productService.getCategories().subscribe(cats => this.categories.set(cats));
 
-    // Handle query params (from homepage category chips)
+    // Handle query params (from homepage category chips / hamburger menu)
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
       if (params['category']) {
         this.activeCategory.set(+params['category']);
+      } else {
+        this.activeCategory.set(null);
       }
+      this.currentPage.set(1);
       this.loadProducts();
     });
 

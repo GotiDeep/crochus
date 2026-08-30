@@ -96,11 +96,16 @@ import { ToastService } from '../../../core/services/toast.service';
     }
 
     .card-body {
-      padding: 16px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
       flex: 1;
+
+      @media (max-width: 560px) {
+        padding: 10px;
+        gap: 2px;
+      }
     }
 
     .card-category {
@@ -109,6 +114,10 @@ import { ToastService } from '../../../core/services/toast.service';
       text-transform: uppercase;
       color: var(--accent);
       font-weight: 500;
+
+      @media (max-width: 560px) {
+        font-size: 0.65rem;
+      }
     }
 
     .card-title {
@@ -116,17 +125,38 @@ import { ToastService } from '../../../core/services/toast.service';
       font-size: 1.1rem;
       font-weight: 500;
       color: var(--text-primary);
-      line-height: 1.3;
+      line-height: 1.25;
       transition: color 0.2s;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
       &:hover { color: var(--primary); }
+
+      @media (max-width: 560px) {
+        font-size: 0.95rem;
+      }
     }
 
     .card-footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 8px;
-      gap: 10px;
+      margin-top: 6px;
+      gap: 6px;
+
+      @media (max-width: 560px) {
+        margin-top: 4px;
+      }
+    }
+
+    .price {
+      font-size: 0.95rem;
+      font-weight: 600;
+
+      @media (max-width: 560px) {
+        font-size: 0.88rem;
+      }
     }
 
     .card-image-wrapper {
@@ -136,13 +166,13 @@ import { ToastService } from '../../../core/services/toast.service';
 
     .wishlist-btn {
       position: absolute;
-      top: 12px;
-      right: 12px;
+      top: 10px;
+      right: 10px;
       background: white;
       border: none;
       border-radius: 50%;
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -150,6 +180,14 @@ import { ToastService } from '../../../core/services/toast.service';
       box-shadow: var(--shadow-card);
       transition: transform 0.2s, box-shadow 0.2s;
       z-index: 2;
+
+      @media (max-width: 560px) {
+        top: 8px;
+        right: 8px;
+        width: 26px;
+        height: 26px;
+        svg { width: 16px; height: 16px; }
+      }
     }
 
     .wishlist-btn:hover {
@@ -159,8 +197,14 @@ import { ToastService } from '../../../core/services/toast.service';
 
     .add-btn {
       flex-shrink: 0;
-      padding: 8px 14px;
-      font-size: 0.75rem;
+      padding: 6px 12px;
+      font-size: 0.72rem;
+
+      @media (max-width: 560px) {
+        padding: 5px 8px;
+        font-size: 0.65rem;
+        letter-spacing: 0.04em;
+      }
     }
   `]
 })

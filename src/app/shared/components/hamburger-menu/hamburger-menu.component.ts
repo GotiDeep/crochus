@@ -1,8 +1,10 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, Input, Output, EventEmitter, inject, signal, OnInit } from '@angular/core';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 import { CartService } from '../../../core/services/cart.service';
+import { ProductService } from '../../../core/services/product.service';
+import { Category } from '../../../core/models';
 
 @Component({
   selector: 'app-hamburger-menu',
@@ -21,8 +23,36 @@ import { CartService } from '../../../core/services/cart.service';
 
         <ul class="menu-links">
           <li><a routerLink="/" (click)="close.emit()">Home</a></li>
-          <li><a routerLink="/shop" (click)="close.emit()">Shop</a></li>
-          <li><a routerLink="/about" (click)="close.emit()">About</a></li>
+          <li><a routerLink="/shop" (click)="close.emit()">Shop All</a></li>
+
+          <!-- Filters Collapsible Submenu -->
+          <li class="filter-menu-item">
+            <button class="filter-toggle-btn" (click)="toggleFilters()">
+              <span>🏷 Filter by Category</span>
+              <span class="chevron" [class.open]="filtersOpen()">▾</span>
+            </button>
+            @if (filtersOpen()) {
+              <ul class="filter-submenu">
+                <li>
+                  <a (click)="selectCategory(null)" class="sub-link">
+                    ✨ All Products
+                  </a>
+                </li>
+                @for (cat of categories(); track cat.id) {
+                  <li>
+                    <a (click)="selectCategory(cat.id)" class="sub-link">
+                      {{ cat.name }}
+                      @if (cat.product_count) {
+                        <span class="cat-count">({{ cat.product_count }})</span>
+                      }
+                    </a>
+                  </li>
+                }
+              </ul>
+            }
+          </li>
+
+          <li><a routerLink="/about" (click)="close.emit()">About Us</a></li>
           <li><a routerLink="/contact" (click)="close.emit()">Contact</a></li>
           <li><a routerLink="/cart" (click)="close.emit()">Cart ({{ cart.totalItems() }})</a></li>
         </ul>
@@ -123,6 +153,7 @@ import { CartService } from '../../../core/services/cart.service';
         letter-spacing: 0.04em;
         border-left: 3px solid transparent;
         transition: all 0.2s;
+        cursor: pointer;
 
         &:hover {
           background: var(--bg);
@@ -132,18 +163,101 @@ import { CartService } from '../../../core/services/cart.service';
       }
     }
 
+    .filter-menu-item {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin: 6px 0;
+    }
+
+    .filter-toggle-btn {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 24px;
+      background: none;
+      border: none;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--primary);
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.2s;
+
+      &:hover { background: var(--bg); }
+    }
+
+    .chevron {
+      font-size: 1.1rem;
+      transition: transform 0.25s ease;
+      display: inline-block;
+
+      &.open { transform: rotate(180deg); }
+    }
+
+    .filter-submenu {
+      list-style: none;
+      background: rgba(74, 92, 47, 0.04);
+      padding: 6px 0;
+
+      li a.sub-link {
+        padding: 10px 24px 10px 36px;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        &:hover {
+          color: var(--primary);
+          background: rgba(74, 92, 47, 0.08);
+        }
+      }
+
+      .cat-count {
+        font-size: 0.75rem;
+        color: var(--accent);
+        font-weight: 600;
+      }
+    }
+
     .menu-footer {
       padding: 24px;
       border-top: 1px solid var(--border);
     }
   `]
 })
-export class HamburgerMenuComponent {
+export class HamburgerMenuComponent implements OnInit {
   @Input() isOpen = false;
   @Output() close = new EventEmitter<void>();
 
   auth = inject(AuthService);
   cart = inject(CartService);
+  private productService = inject(ProductService);
+  private router = inject(Router);
+
+  filtersOpen = signal(true);
+  categories = signal<Category[]>([]);
+
+  ngOnInit() {
+    this.productService.getCategories().subscribe({
+      next: (cats) => this.categories.set(cats),
+      error: () => {}
+    });
+  }
+
+  toggleFilters() {
+    this.filtersOpen.update((v) => !v);
+  }
+
+  selectCategory(categoryId: number | null) {
+    this.close.emit();
+    if (categoryId === null) {
+      this.router.navigate(['/shop'], { queryParams: {} });
+    } else {
+      this.router.navigate(['/shop'], { queryParams: { category: categoryId } });
+    }
+  }
 
   logout() {
     this.auth.logout();
