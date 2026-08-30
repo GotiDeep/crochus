@@ -68,9 +68,13 @@ async function buildProductPayload(req) {
   const mergedPhotoUrls = [...photoUrls, ...uploadedPhotos].filter(Boolean);
   const uploadedVideoUrl = await uploadVideoFile(req.files?.video?.[0]);
 
+  const baseSlug = slugify(req.body.name || '');
+  const uniqueSuffix = Date.now().toString(36).slice(-5); // short unique suffix e.g. 'k7m2x'
+  const generatedSlug = `${baseSlug}-${uniqueSuffix}`;
+
   const payload = {
     name: String(req.body.name || '').trim(),
-    slug: slugify(req.body.name || ''),
+    slug: generatedSlug,
     price: parseNumber(req.body.price),
     description: String(req.body.description || '').trim(),
     materials: String(req.body.materials || '').trim(),
@@ -190,10 +194,12 @@ exports.updateProduct = asyncHandler(async (req, res) => {
   const existingRows = await runFunction('sp_get_product_by_id', [productId]);
   const existingProduct = existingRows[0];
   const payload = await buildProductPayload(req);
+  // Keep existing slug on update to avoid URL changes and duplicate slug errors
+  const slugToUse = existingProduct?.slug || payload.slug;
   const rows = await runFunction('sp_admin_update_product', [
     productId,
     payload.name,
-    payload.slug,
+    slugToUse,
     payload.price,
     payload.description,
     payload.materials || null,

@@ -49,8 +49,8 @@ exports.getProducts = asyncHandler(async (req, res) => {
 });
 
 exports.getFeaturedProducts = asyncHandler(async (req, res) => {
-  const limit = parseOptionalNumber(req.query.limit) || 6;
-  const rows = await runFunction('sp_get_products', [null, null, 'popular', 1, limit, true, null]);
+  const limit = parseOptionalNumber(req.query.limit) || 10;
+  const rows = await runFunction('sp_get_products', [null, null, 'newest', 1, limit, false, null]);
   res.json(rows.map((row) => mapProductRow(row)));
 });
 

@@ -96,7 +96,7 @@ import { Product, Category } from '../../core/models';
 
             @if (loading()) {
               <div class="product-grid">
-                <app-product-card-skeleton [count]="5" />
+              <app-product-card-skeleton [count]="10" />
               </div>
             } @else {
               <div class="product-grid">
