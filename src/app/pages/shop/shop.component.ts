@@ -257,8 +257,14 @@ export class ShopComponent implements OnInit, OnDestroy {
 
   loadProducts() {
     this.loading.set(true);
+
+    // If selected category is "All Items" (special category), treat as no filter
+    const selectedCat = this.categories().find(c => c.id === this.activeCategory());
+    const isAllItems = selectedCat && selectedCat.name.trim().toLowerCase() === 'all items';
+    const effectiveCategoryId = isAllItems ? undefined : (this.activeCategory() || undefined);
+
     const filter: ProductFilter = {
-      category_id: this.activeCategory() || undefined,
+      category_id: effectiveCategoryId,
       search: this.searchQuery() || undefined,
       sort: this.sortBy as ProductFilter['sort'],
       page: this.currentPage(),

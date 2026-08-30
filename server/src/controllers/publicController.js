@@ -22,11 +22,19 @@ exports.getHealth = asyncHandler(async (req, res) => {
 exports.getProducts = asyncHandler(async (req, res) => {
   const page = parseOptionalNumber(req.query.page) || 1;
   const limit = parseOptionalNumber(req.query.limit) || 9;
-  const categoryId = parseOptionalNumber(req.query.category_id);
+  let categoryId = parseOptionalNumber(req.query.category_id);
   const excludeId = parseOptionalNumber(req.query.exclude_id);
   const search = String(req.query.search || '').trim() || null;
   const sort = String(req.query.sort || 'newest').trim() || 'newest';
   const featured = String(req.query.featured || '').toLowerCase() === 'true';
+
+  if (categoryId) {
+    const catRows = await runFunction('sp_get_categories');
+    const matched = catRows.find((c) => Number(c.id) === Number(categoryId));
+    if (matched && String(matched.name || '').trim().toLowerCase() === 'all items') {
+      categoryId = null; // Do not filter, return all products!
+    }
+  }
 
   const rows = await runFunction('sp_get_products', [
     categoryId,
@@ -86,7 +94,20 @@ exports.getSimilarProducts = asyncHandler(async (req, res) => {
 
 exports.getCategories = asyncHandler(async (req, res) => {
   const rows = await runFunction('sp_get_categories');
-  res.json(rows.map((row) => mapCategoryRow(row)));
+  const allCategories = rows.map((row) => mapCategoryRow(row));
+
+  // If there's an 'All Items' category, its count should be total count of all products
+  const totalProductsRow = await runFunction('sp_get_products', [null, null, 'newest', 1, 1, false, null]);
+  const totalCount = totalProductsRow[0] ? Number(totalProductsRow[0].total_count || 0) : 0;
+
+  const categoriesWithAdjustedCounts = allCategories.map((cat) => {
+    if (String(cat.name || '').trim().toLowerCase() === 'all items') {
+      return { ...cat, product_count: totalCount };
+    }
+    return cat;
+  });
+
+  res.json(categoriesWithAdjustedCounts);
 });
 
 exports.getPublicSettings = asyncHandler(async (req, res) => {
