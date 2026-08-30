@@ -232,7 +232,19 @@ exports.deleteProduct = asyncHandler(async (req, res) => {
 
 exports.getCategories = asyncHandler(async (req, res) => {
   const rows = await runFunction('sp_get_categories');
-  res.json(rows.map((row) => mapCategoryRow(row)));
+  const allCategories = rows.map((row) => mapCategoryRow(row));
+
+  const totalProductsRow = await runFunction('sp_get_products', [null, null, 'newest', 1, 1, false, null]);
+  const totalCount = totalProductsRow[0] ? Number(totalProductsRow[0].total_count || 0) : 0;
+
+  const categoriesWithAdjustedCounts = allCategories.map((cat) => {
+    if (String(cat.name || '').trim().toLowerCase() === 'all items') {
+      return { ...cat, product_count: totalCount };
+    }
+    return cat;
+  });
+
+  res.json(categoriesWithAdjustedCounts);
 });
 
 exports.createCategory = asyncHandler(async (req, res) => {
