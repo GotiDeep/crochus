@@ -7,8 +7,12 @@ import { ToastService } from '../../../core/services/toast.service';
 import { Category, Product } from '../../../core/models';
 import { CustomAlertComponent } from '../../../shared/components/custom-alert/custom-alert.component';
 
+import { ProductGalleryComponent } from '../../../shared/components/product-gallery/product-gallery.component';
+import { BadgeComponent } from '../../../shared/components/badge/badge.component';
+
 interface ProductFormData {
   name: string;
+  product_code: string;
   price: number;
   description: string;
   materials: string;
@@ -22,7 +26,7 @@ interface ProductFormData {
 @Component({
   selector: 'app-admin-products',
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminSidebarComponent, CustomAlertComponent],
+  imports: [CommonModule, FormsModule, AdminSidebarComponent, CustomAlertComponent, ProductGalleryComponent, BadgeComponent],
   template: `
     <div class="admin-layout">
       <app-admin-sidebar />
@@ -40,6 +44,7 @@ interface ProductFormData {
               <thead>
                 <tr>
                   <th>Photo</th>
+                  <th>Code</th>
                   <th>Name</th>
                   <th>Category</th>
                   <th>Price</th>
@@ -50,7 +55,7 @@ interface ProductFormData {
               </thead>
               <tbody>
                 @for (product of paginatedProducts(); track product.id) {
-                  <tr>
+                  <tr class="clickable-row" (click)="openPreview(product)">
                     <td>
                       @if (product.photos[0]) {
                         <img [src]="product.photos[0]" [alt]="product.name" class="thumb-img" (error)="hideBrokenImage($event)" />
@@ -58,6 +63,7 @@ interface ProductFormData {
                         <span class="missing-thumb">No photo</span>
                       }
                     </td>
+                    <td><span class="product-code-badge">{{ product.product_code || '—' }}</span></td>
                     <td><span class="product-name-cell">{{ product.name }}</span></td>
                     <td>{{ product.category_name }}</td>
                     <td>₹{{ product.price | number:'1.0-0':'en-IN' }}</td>
@@ -71,7 +77,7 @@ interface ProductFormData {
                         {{ product.in_stock ? 'In Stock' : 'Out' }}
                       </span>
                     </td>
-                    <td>
+                    <td (click)="$event.stopPropagation()">
                       <div class="action-btns">
                         <button class="btn btn-ghost btn-sm" (click)="editProduct(product)">Edit</button>
                         <button class="btn btn-sm delete-btn" (click)="deleteProduct(product.id)">Delete</button>
@@ -110,9 +116,15 @@ interface ProductFormData {
                     <input type="text" class="form-control" [(ngModel)]="formData.name" />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Price (₹) *</label>
-                    <input type="number" class="form-control" [(ngModel)]="formData.price" />
+                    <label class="form-label">Product Code (Unique) *</label>
+                    <input type="text" class="form-control" [(ngModel)]="formData.product_code" placeholder="e.g. CRO-001" />
+                    <span class="hint-text">Each product must have a distinct code.</span>
                   </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Price (₹) *</label>
+                  <input type="number" class="form-control" [(ngModel)]="formData.price" />
                 </div>
 
                 <div class="form-group">
@@ -207,6 +219,84 @@ interface ProductFormData {
             </div>
           </div>
         }
+
+        <!-- Product Preview Modal -->
+        @if (showPreview() && previewProduct()) {
+          <div class="modal-overlay" (click)="closePreview()">
+            <div class="modal preview-modal" (click)="$event.stopPropagation()">
+              <div class="modal-head">
+                <div class="preview-header-meta">
+                  <span class="preview-tag">Product Preview</span>
+                  @if (previewProduct()!.product_code) {
+                    <span class="product-code-badge large">{{ previewProduct()!.product_code }}</span>
+                  }
+                </div>
+                <button class="close-btn" type="button" aria-label="Close product preview" title="Close" (click)="closePreview()">×</button>
+              </div>
+
+              <div class="modal-body preview-body">
+                <div class="preview-layout">
+                  <!-- Left: Gallery -->
+                  <div class="preview-gallery">
+                    <app-product-gallery
+                      [images]="previewProduct()!.photos"
+                      [videoUrl]="previewProduct()!.video_url"
+                    />
+                  </div>
+
+                  <!-- Right: Product Info -->
+                  <div class="preview-info">
+                    <div class="preview-meta">
+                      <span class="category-label">{{ previewProduct()!.category_name || 'Uncategorized' }}</span>
+                      @if (previewProduct()!.badge) {
+                        <app-badge [type]="previewProduct()!.badge ?? null" />
+                      }
+                    </div>
+
+                    <h2 class="preview-title">{{ previewProduct()!.name }}</h2>
+                    <div class="preview-price">₹{{ previewProduct()!.price | number:'1.0-0':'en-IN' }}</div>
+
+                    <div class="stock-row">
+                      @if (previewProduct()!.in_stock) {
+                        <span class="stock-badge in-stock">✓ In Stock</span>
+                      } @else {
+                        <span class="stock-badge out-of-stock">✕ Out of Stock</span>
+                      }
+                      @if (previewProduct()!.home_display && previewProduct()!.home_display !== 'none') {
+                        <span class="home-display-tag">
+                          📍 {{ previewProduct()!.home_display === 'hero' ? 'Hero Section' : 'Last Section' }}
+                        </span>
+                      }
+                    </div>
+
+                    <div class="preview-divider"></div>
+
+                    <p class="preview-desc">{{ previewProduct()!.description }}</p>
+
+                    @if (previewProduct()!.materials) {
+                      <div class="preview-materials">
+                        <span class="mat-label">Materials:</span>
+                        <span class="mat-value">{{ previewProduct()!.materials }}</span>
+                      </div>
+                    }
+
+                    <div class="preview-slug">
+                      <span class="mat-label">Store URL:</span>
+                      <code>/product/{{ previewProduct()!.slug }}</code>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button class="btn btn-ghost" (click)="closePreview()">Close</button>
+                <button class="btn btn-primary" (click)="editFromPreview()">
+                  ✏️ Edit Product
+                </button>
+              </div>
+            </div>
+          </div>
+        }
       </main>
     </div>
 
@@ -284,6 +374,153 @@ interface ProductFormData {
       font-size: 0.75rem;
       color: var(--text-primary);
     }
+    .clickable-row {
+      cursor: pointer;
+      transition: background 0.15s ease;
+      &:hover {
+        background: rgba(74, 92, 47, 0.05) !important;
+      }
+    }
+    .product-code-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--primary);
+      letter-spacing: 0.05em;
+      &.large {
+        font-size: 0.82rem;
+        padding: 4px 10px;
+        background: rgba(74, 92, 47, 0.08);
+      }
+    }
+    .preview-modal {
+      max-width: 900px;
+    }
+    .preview-header-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .preview-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .preview-body {
+      padding: 24px 28px;
+    }
+    .preview-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+    }
+    .preview-gallery {
+      width: 100%;
+    }
+    .preview-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .preview-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .category-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .preview-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      line-height: 1.25;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+    }
+    .preview-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .stock-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .stock-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      &.in-stock { background: var(--success-bg); color: var(--success-text); }
+      &.out-of-stock { background: var(--error-bg); color: var(--error-text); }
+    }
+    .home-display-tag {
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-secondary);
+    }
+    .preview-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 16px 0;
+    }
+    .preview-desc {
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      white-space: pre-line;
+    }
+    .preview-materials {
+      font-size: 0.85rem;
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      .mat-label { font-weight: 600; color: var(--text-primary); }
+      .mat-value { color: var(--text-secondary); }
+    }
+    .preview-slug {
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      .mat-label { font-weight: 600; color: var(--text-primary); }
+      code {
+        padding: 2px 6px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+      }
+    }
   `]
 })
 export class AdminProductsComponent implements OnInit {
@@ -297,6 +534,8 @@ export class AdminProductsComponent implements OnInit {
   saving = signal(false);
   showForm = signal(false);
   editingId = signal<number | null>(null);
+  showPreview = signal(false);
+  previewProduct = signal<Product | null>(null);
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);
   selectedPhotoNames = signal<string[]>([]);
@@ -330,6 +569,7 @@ export class AdminProductsComponent implements OnInit {
   emptyForm(): ProductFormData {
     return {
       name: '',
+      product_code: '',
       price: 0,
       description: '',
       materials: '',
@@ -339,6 +579,24 @@ export class AdminProductsComponent implements OnInit {
       video_url: '',
       home_display: 'none'
     };
+  }
+
+  openPreview(product: Product) {
+    this.previewProduct.set(product);
+    this.showPreview.set(true);
+  }
+
+  closePreview() {
+    this.showPreview.set(false);
+    this.previewProduct.set(null);
+  }
+
+  editFromPreview() {
+    const product = this.previewProduct();
+    this.closePreview();
+    if (product) {
+      this.editProduct(product);
+    }
   }
 
   refreshProducts() {
@@ -375,14 +633,15 @@ export class AdminProductsComponent implements OnInit {
     this.editingId.set(product.id);
     this.formData = {
       name: product.name,
+      product_code: product.product_code || '',
       price: product.price,
       description: product.description,
       materials: product.materials || '',
       category_id: product.category_id,
       badge: product.badge || '',
       in_stock: product.in_stock,
-      video_url: product.video_url || ''
-      , home_display: product.home_display || 'none'
+      video_url: product.video_url || '',
+      home_display: product.home_display || 'none'
     };
     this.photoUrlsInput = product.photos.join(', ');
     this.selectedPhotoFiles = [];
@@ -421,6 +680,7 @@ export class AdminProductsComponent implements OnInit {
       .filter(Boolean);
 
     formData.append('name', this.formData.name.trim());
+    formData.append('product_code', this.formData.product_code.trim());
     formData.append('price', String(this.formData.price));
     formData.append('description', this.formData.description.trim());
     formData.append('materials', this.formData.materials.trim());

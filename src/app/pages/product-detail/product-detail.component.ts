@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 import { HamburgerMenuComponent } from '../../shared/components/hamburger-menu/hamburger-menu.component';
-import { ImageSliderComponent } from '../../shared/components/image-slider/image-slider.component';
+import { ProductGalleryComponent } from '../../shared/components/product-gallery/product-gallery.component';
 import { BadgeComponent } from '../../shared/components/badge/badge.component';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
 import { ProductService } from '../../core/services/product.service';
@@ -18,7 +18,7 @@ import { Router } from '@angular/router';
   selector: 'app-product-detail',
   standalone: true,
   imports: [RouterLink, CommonModule, NavbarComponent, FooterComponent,
-    HamburgerMenuComponent, ImageSliderComponent, BadgeComponent, ProductCardComponent],
+    HamburgerMenuComponent, ProductGalleryComponent, BadgeComponent, ProductCardComponent],
   template: `
     <div class="page-wrapper">
       <app-navbar (openMenu)="menuOpen.set(true)" />
@@ -49,20 +49,12 @@ import { Router } from '@angular/router';
 
             <!-- Main Product -->
             <div class="product-layout">
-              <!-- Left: Slider -->
+              <!-- Left: Gallery -->
               <div class="product-gallery">
-                <app-image-slider [images]="product()!.photos" />
-
-                <!-- Video (only if exists) -->
-                @if (product()!.video_url) {
-                  <div class="video-section">
-                    <video
-                      [src]="product()!.video_url"
-                      autoplay muted loop playsinline
-                      class="product-video"
-                    ></video>
-                  </div>
-                }
+                <app-product-gallery
+                  [images]="product()!.photos"
+                  [videoUrl]="product()!.video_url"
+                />
               </div>
 
               <!-- Right: Info -->
@@ -181,19 +173,6 @@ import { Router } from '@angular/router';
       top: 96px;
 
       @media (max-width: 900px) { position: static; }
-    }
-
-    .video-section {
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-
-    .product-video {
-      width: 100%;
-      display: block;
-      max-height: 280px;
-      object-fit: cover;
     }
 
     .product-info {

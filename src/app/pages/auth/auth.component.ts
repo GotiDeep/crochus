@@ -210,12 +210,16 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
       display: flex;
       align-items: center;
       text-decoration: none;
+      user-select: none;
 
       .auth-logo-img {
-        height: 66px;
+        /* Change --logo-height-auth in styles.scss or change 48px here to resize */
+        height: var(--logo-height-auth, 48px);
         width: auto;
-        transform: scale(1.18);
-        transform-origin: left center;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-user-drag: none;
+        pointer-events: none;
         filter: brightness(10) invert(0);
       }
     }
@@ -223,12 +227,16 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
     .mobile-logo {
       display: none;
       margin-bottom: 32px;
+      user-select: none;
 
       .auth-logo-img {
-        height: 66px;
+        /* Change --logo-height-navbar in styles.scss or change 42px here to resize */
+        height: var(--logo-height-navbar, 42px);
         width: auto;
-        transform: scale(1.18);
-        transform-origin: left center;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-user-drag: none;
+        pointer-events: none;
         filter: var(--logo-filter, none);
       }
 

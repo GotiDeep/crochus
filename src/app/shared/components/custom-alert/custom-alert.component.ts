@@ -110,12 +110,18 @@ export interface AlertConfig {
       display: flex;
       justify-content: center;
       margin-bottom: 16px;
+      user-select: none;
     }
 
     .alert-logo {
-      height: 56px;
+      /* Change --logo-height-alert in styles.scss or change 36px here to resize */
+      height: var(--logo-height-alert, 36px);
       width: auto;
       opacity: 0.85;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none;
       filter: var(--logo-filter, none);
     }
 

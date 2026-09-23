@@ -29,9 +29,11 @@ function mapProductRow(row) {
     video_url: row.video_url || undefined,
     badge: row.badge ?? null,
     in_stock: Boolean(row.in_stock),
+    product_code: row.product_code || undefined,
     created_at: row.created_at instanceof Date ? row.created_at.toISOString() : row.created_at,
   };
 }
+
 
 function mapCategoryRow(row) {
   return {

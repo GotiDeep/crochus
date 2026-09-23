@@ -1,4 +1,4 @@
-﻿CREATE TABLE customers (
+CREATE TABLE customers (
   id BIGSERIAL PRIMARY KEY,
   full_name TEXT NOT NULL,
   email TEXT NOT NULL UNIQUE,
@@ -126,7 +126,7 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION sp_get_home_products(p_display TEXT)
-RETURNS TABLE (id BIGINT, name TEXT, slug TEXT, price NUMERIC, description TEXT, materials TEXT, category_id BIGINT, category_name TEXT, photos TEXT[], video_url TEXT, badge TEXT, in_stock BOOLEAN, created_at TIMESTAMPTZ)
+RETURNS TABLE (id BIGINT, name TEXT, slug TEXT, price NUMERIC, description TEXT, materials TEXT, category_id BIGINT, category_name TEXT, photos TEXT[], video_url TEXT, badge TEXT, in_stock BOOLEAN, created_at TIMESTAMPTZ, product_code TEXT)
 LANGUAGE sql STABLE AS $$
   SELECT ap.* FROM sp_admin_get_products() ap JOIN products p ON p.id = ap.id WHERE p.home_display = p_display ORDER BY p.updated_at DESC, p.id DESC;
 $$;

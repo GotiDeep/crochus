@@ -7,7 +7,7 @@ const slugify = require('../lib/slugify');
 const { mapCategoryRow, mapDashboardStats, mapOrderRow, mapProductRow } = require('../lib/mappers');
 const { uploadImageFiles, uploadVideoFile, deleteCloudinaryAssets } = require('../services/mediaService');
 const { encrypt } = require('../lib/secureSettings');
-const { sendTestEmail } = require('../services/mailService');
+const { sendTestEmail, sendOrderDeliveredEmail } = require('../services/mailService');
 const env = require('../config/env');
 
 const ADMIN_EMAIL = 'admin@crochus.com';
@@ -85,7 +85,9 @@ async function buildProductPayload(req) {
     photoUrls: mergedPhotoUrls,
     homeDisplay: parseHomeDisplay(req.body.home_display),
     homeDisplayProvided: req.body.home_display !== undefined,
+    productCode: String(req.body.product_code || '').trim() || null,
   };
+
 
   if (!payload.name || !payload.description || !payload.categoryId || payload.price <= 0) {
     throw new ApiError(400, 'Please provide a valid product name, price, description, and category');
@@ -167,23 +169,33 @@ exports.getProducts = asyncHandler(async (req, res) => {
 
 exports.createProduct = asyncHandler(async (req, res) => {
   const payload = await buildProductPayload(req);
-  const rows = await runFunction('sp_admin_add_product', [
-    payload.name,
-    payload.slug,
-    payload.price,
-    payload.description,
-    payload.materials || null,
-    payload.categoryId,
-    payload.badge,
-    payload.inStock,
-    payload.videoUrl,
-    payload.photoUrls,
-  ]);
+  let rows;
+  try {
+    rows = await runFunction('sp_admin_add_product', [
+      payload.name,
+      payload.slug,
+      payload.price,
+      payload.description,
+      payload.materials || null,
+      payload.categoryId,
+      payload.badge,
+      payload.inStock,
+      payload.videoUrl,
+      payload.photoUrls,
+      payload.productCode,
+    ]);
+  } catch (err) {
+    if (err.code === '23505' && (err.constraint || '').includes('product_code')) {
+      throw new ApiError(409, 'Product code already in use. Please choose a unique code.');
+    }
+    throw err;
+  }
 
   const product = mapProductRow(rows[0]);
   if (payload.homeDisplayProvided) await setHomeDisplay(product.id, payload.homeDisplay);
   res.status(201).json({ ...product, home_display: payload.homeDisplay });
 });
+
 
 exports.updateProduct = asyncHandler(async (req, res) => {
   const productId = Number(req.params.id);
@@ -196,19 +208,28 @@ exports.updateProduct = asyncHandler(async (req, res) => {
   const payload = await buildProductPayload(req);
   // Keep existing slug on update to avoid URL changes and duplicate slug errors
   const slugToUse = existingProduct?.slug || payload.slug;
-  const rows = await runFunction('sp_admin_update_product', [
-    productId,
-    payload.name,
-    slugToUse,
-    payload.price,
-    payload.description,
-    payload.materials || null,
-    payload.categoryId,
-    payload.badge,
-    payload.inStock,
-    payload.videoUrl,
-    payload.photoUrls,
-  ]);
+  let rows;
+  try {
+    rows = await runFunction('sp_admin_update_product', [
+      productId,
+      payload.name,
+      slugToUse,
+      payload.price,
+      payload.description,
+      payload.materials || null,
+      payload.categoryId,
+      payload.badge,
+      payload.inStock,
+      payload.videoUrl,
+      payload.photoUrls,
+      payload.productCode,
+    ]);
+  } catch (err) {
+    if (err.code === '23505' && (err.constraint || '').includes('product_code')) {
+      throw new ApiError(409, 'Product code already in use. Please choose a unique code.');
+    }
+    throw err;
+  }
 
   const product = mapProductRow(rows[0]);
   if (payload.homeDisplayProvided) await setHomeDisplay(productId, payload.homeDisplay);
@@ -306,6 +327,21 @@ exports.updateOrderStatus = asyncHandler(async (req, res) => {
   }
 
   await runFunction('sp_admin_update_order_status', [orderId, status]);
+
+  // If status is updated to 'delivered', send delivery confirmation email to the customer
+  if (status === 'delivered') {
+    runFunction('sp_get_order_detail', [orderId, null])
+      .then((rows) => {
+        if (rows && rows[0]) {
+          const order = mapOrderRow(rows[0]);
+          return sendOrderDeliveredEmail(order);
+        }
+      })
+      .catch((err) => {
+        console.error(`[AdminController] Failed to send order delivered email for order #${orderId}:`, err.message);
+      });
+  }
+
   res.json({ success: true });
 });
 

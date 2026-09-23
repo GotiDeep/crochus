@@ -79,9 +79,15 @@ import { AdminService } from '../../../core/services/admin.service';
       display: flex;
       justify-content: center;
       margin-bottom: 20px;
+      user-select: none;
       .login-logo-img {
-        height: 72px;
+        /* Change --logo-height-login in styles.scss or change 48px here to resize */
+        height: var(--logo-height-login, 48px);
         width: auto;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-user-drag: none;
+        pointer-events: none;
         filter: var(--logo-filter, none);
       }
     }

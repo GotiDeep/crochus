@@ -94,14 +94,17 @@ import { AuthService } from '../../../core/services/auth.service';
       align-items: center;
       text-decoration: none;
       flex-shrink: 0;
-      overflow: visible;
+      user-select: none;
 
       .logo-img {
-        height: 66px;
+        /* Change --logo-height-navbar in styles.scss or change 42px here to resize */
+        height: var(--logo-height-navbar, 42px);
         width: auto;
         display: block;
-        transform: scale(1.18);
-        transform-origin: left center;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-user-drag: none;
+        pointer-events: none;
         filter: var(--logo-filter, none);
       }
     }

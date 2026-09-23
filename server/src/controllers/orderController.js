@@ -2,6 +2,7 @@ const asyncHandler = require('../lib/asyncHandler');
 const ApiError = require('../lib/apiError');
 const { runFunction } = require('../config/db');
 const { mapOrderRow } = require('../lib/mappers');
+const { sendCustomerOrderEmail, sendAdminOrderNotificationEmail } = require('../services/mailService');
 
 function validateOrderPayload(body) {
   return (
@@ -29,9 +30,23 @@ exports.createOrder = asyncHandler(async (req, res) => {
   const createdOrder = orderRows[0];
   const detailRows = await runFunction('sp_get_order_detail', [createdOrder.order_id, req.auth.sub]);
   const settingRows = await runFunction('sp_get_whatsapp_number');
+  const mappedOrder = mapOrderRow(detailRows[0]);
+
+  // Asynchronously dispatch both Customer and Admin emails (never block response or fail order placement)
+  Promise.allSettled([
+    sendCustomerOrderEmail(mappedOrder),
+    sendAdminOrderNotificationEmail(mappedOrder),
+  ]).then((results) => {
+    results.forEach((result, idx) => {
+      const type = idx === 0 ? 'Customer' : 'Admin';
+      if (result.status === 'rejected') {
+        console.error(`[OrderController] Failed to send ${type} order email for order #${mappedOrder.id}:`, result.reason?.message || result.reason);
+      }
+    });
+  });
 
   res.status(201).json({
-    order: mapOrderRow(detailRows[0]),
+    order: mappedOrder,
     whatsapp_number: settingRows[0]?.whatsapp_number || '',
   });
 });

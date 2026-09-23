@@ -179,8 +179,10 @@ import { Product, Category } from '../../core/models';
 
       @media (max-width: 900px) {
         grid-template-columns: 1fr;
-        gap: 48px;
-        padding-top: 100px;
+        gap: 28px;
+        padding-top: 88px;
+        padding-bottom: 24px;
+        text-align: center;
       }
     }
 
@@ -196,12 +198,28 @@ import { Product, Category } from '../../core/models';
         line-height: 1.8;
         margin-bottom: 32px;
       }
+
+      @media (max-width: 900px) {
+        h1 {
+          font-size: 2.2rem;
+          margin: 8px 0 16px;
+        }
+        p {
+          margin: 0 auto 24px;
+          font-size: 0.95rem;
+          line-height: 1.6;
+        }
+      }
     }
 
     .hero-actions {
       display: flex;
       gap: 16px;
       flex-wrap: wrap;
+
+      @media (max-width: 900px) {
+        justify-content: center;
+      }
     }
 
     .hero-visual {
@@ -215,8 +233,15 @@ import { Product, Category } from '../../core/models';
       gap: 12px;
 
       @media (max-width: 900px) {
-        max-width: 480px;
+        max-width: 360px;
+        grid-template-rows: 150px 130px;
+        gap: 8px;
         margin: 0 auto;
+      }
+      @media (max-width: 420px) {
+        max-width: 310px;
+        grid-template-rows: 135px 115px;
+        gap: 6px;
       }
     }
 
@@ -256,6 +281,14 @@ import { Product, Category } from '../../core/models';
         opacity: 0.85;
         margin-top: 4px;
         display: block;
+      }
+
+      @media (max-width: 900px) {
+        bottom: -10px;
+        left: -10px;
+        padding: 10px 14px;
+        .badge-num { font-size: 1.4rem; }
+        .badge-text { font-size: 0.62rem; }
       }
     }
 
@@ -311,8 +344,8 @@ import { Product, Category } from '../../core/models';
       text-decoration: none;
       cursor: pointer;
 
-      @media (max-width: 900px) { flex: 0 0 calc(100% / 3 - 11px); }
-      @media (max-width: 560px) { flex: 0 0 calc(100% / 2 - 8px); }
+      @media (max-width: 900px) { flex: 0 0 calc(100% / 4 - 12px); }
+      @media (max-width: 560px) { flex: 0 0 calc(100% / 3.2 - 10px); }
     }
 
     .cat-img-wrap {
@@ -381,7 +414,8 @@ import { Product, Category } from '../../core/models';
 
       @media (max-width: 900px) {
         grid-template-columns: 1fr;
-        gap: 48px;
+        gap: 32px;
+        text-align: center;
       }
     }
 
@@ -395,6 +429,11 @@ import { Product, Category } from '../../core/models';
 
     .about-img {
       position: relative;
+
+      @media (max-width: 900px) {
+        max-width: 360px;
+        margin: 0 auto;
+      }
 
       img {
         width: 100%;
@@ -421,7 +460,14 @@ import { Product, Category } from '../../core/models';
       grid-template-columns: repeat(4, 1fr);
       gap: 12px;
 
-      @media (max-width: 768px) { grid-template-columns: repeat(2, 1fr); }
+      @media (max-width: 768px) {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+      }
+      @media (max-width: 440px) {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+      }
     }
 
     .insta-cell {
@@ -478,13 +524,34 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.productService.getFeaturedProducts().subscribe(products => {
       this.featured.set(products);
       this.loading.set(false);
+      // If hero or last_section haven't loaded, provide immediate fallback
+      if (this.heroProducts().length === 0 && products.length > 0) {
+        this.heroProducts.set(products.slice(0, 3));
+      }
+      if (this.lastSectionProducts().length === 0 && products.length > 3) {
+        this.lastSectionProducts.set(products.slice(3, 7));
+      }
     });
     this.productService.getCategories().subscribe(cats => {
       this.categories.set(cats);
       this.setupSlider(cats);
     });
-    this.productService.getHomeProducts('hero').subscribe(products => this.heroProducts.set(products.slice(0, 3)));
-    this.productService.getHomeProducts('last_section').subscribe(products => this.lastSectionProducts.set(products.slice(0, 4)));
+    this.productService.getHomeProducts('hero').subscribe({
+      next: (products) => {
+        if (products && products.length > 0) {
+          this.heroProducts.set(products.slice(0, 3));
+        }
+      },
+      error: (err) => console.error('Error loading hero products:', err)
+    });
+    this.productService.getHomeProducts('last_section').subscribe({
+      next: (products) => {
+        if (products && products.length > 0) {
+          this.lastSectionProducts.set(products.slice(0, 4));
+        }
+      },
+      error: (err) => console.error('Error loading last section products:', err)
+    });
   }
 
   setupSlider(cats: Category[]) {

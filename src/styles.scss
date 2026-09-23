@@ -35,6 +35,31 @@
   --input-bg: #FDFAF2;
   --scrollbar-thumb: #C8C49A;
   --logo-filter: none;
+
+  /* ── Logo Sizing Controls (Change values here to adjust logo size anywhere) ── */
+  --logo-height-navbar: 42px;    /* Navbar logo height (desktop/mobile) */
+  --logo-height-footer: 44px;    /* Footer brand logo height */
+  --logo-height-menu: 38px;      /* Hamburger drawer menu logo */
+  --logo-height-auth: 48px;      /* Login/Register desktop quote panel logo */
+  --logo-height-sidebar: 36px;   /* Admin dashboard sidebar logo */
+  --logo-height-login: 48px;     /* Admin login card logo */
+  --logo-height-notfound: 46px;  /* 404 Not found page logo */
+  --logo-height-alert: 36px;     /* Custom alert modal logo */
+}
+
+/* ── Global Logo Unselectable & Anti-Drag (renders like clean brand mark) ── */
+.logo-img,
+.footer-logo-img,
+.menu-logo-img,
+.auth-logo-img,
+.sidebar-logo-img,
+.login-logo-img,
+.nf-logo-img,
+.alert-logo {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
 }
 
 

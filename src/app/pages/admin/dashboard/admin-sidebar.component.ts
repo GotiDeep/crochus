@@ -67,12 +67,16 @@ import { AdminService } from '../../../core/services/admin.service';
       align-items: center;
       text-decoration: none;
       flex: 1;
+      user-select: none;
 
       .sidebar-logo-img {
-        height: 56px;
+        /* Change --logo-height-sidebar in styles.scss or change 36px here to resize */
+        height: var(--logo-height-sidebar, 36px);
         width: auto;
-        transform: scale(1.18);
-        transform-origin: left center;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-user-drag: none;
+        pointer-events: none;
         filter: var(--logo-filter, none);
       }
     }

@@ -38,13 +38,18 @@ import { RouterLink } from '@angular/router';
     .nf-logo-link {
       display: inline-block;
       margin-bottom: 32px;
+      user-select: none;
     }
 
     .nf-logo-img {
-      height: 66px;
+      /* Change --logo-height-notfound in styles.scss or change 46px here to resize */
+      height: var(--logo-height-notfound, 46px);
       width: auto;
       display: block;
-      transform: scale(1.18);
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none;
       filter: var(--logo-filter, none);
     }
 
