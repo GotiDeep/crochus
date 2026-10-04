@@ -23,6 +23,9 @@ import { Component, Input } from '@angular/core';
 
     .skeleton-card {
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
 
     .img-skel {
@@ -35,6 +38,7 @@ import { Component, Input } from '@angular/core';
       padding: 16px;
       display: flex;
       flex-direction: column;
+      flex: 1;
       gap: 10px;
     }
 

@@ -3,15 +3,17 @@ import { RouterOutlet } from '@angular/router';
 import { ToastContainerComponent } from './shared/components/toast-container/toast-container.component';
 import { SettingsService } from './core/services/settings.service';
 import { PageLoaderComponent } from './shared/components/page-loader/page-loader.component';
+import { SessionModalComponent } from './shared/components/session-modal/session-modal.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ToastContainerComponent, PageLoaderComponent],
+  imports: [RouterOutlet, ToastContainerComponent, PageLoaderComponent, SessionModalComponent],
   template: `
     <router-outlet />
     <app-toast-container />
     <app-page-loader />
+    <app-session-modal />
   `
 })
 export class AppComponent {

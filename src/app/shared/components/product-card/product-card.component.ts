@@ -36,26 +36,63 @@ import { ToastService } from '../../../core/services/toast.service';
 
       <!-- Info -->
       <div class="card-body">
-        <p class="card-category">{{ product.category_name }}</p>
-        <a [routerLink]="['/product', product.slug]" class="card-title">{{ product.name }}</a>
-        <div class="card-footer">
+        <p class="card-category">{{ product.category_name || 'Handmade' }}</p>
+        <div class="card-title-row">
+          <a [routerLink]="['/product', product.slug]" class="card-title" [title]="product.name">{{ product.name }}</a>
           <span class="price">₹{{ product.price | number:'1.0-0':'en-IN' }}</span>
+        </div>
+
+        <div class="card-divider"></div>
+
+        <div class="card-actions">
           <button
-            class="btn btn-primary btn-sm add-btn"
+            class="card-action-btn cart-btn"
+            [class.in-cart]="inCart"
             [disabled]="!product.in_stock"
-            (click)="toggleCart()"
+            (click)="toggleCart($event)"
+            [title]="!product.in_stock ? 'Out of Stock' : (inCart ? 'In Cart (Click to Remove)' : 'Add to Cart')"
           >
-            {{ product.in_stock ? (inCart ? 'Remove' : 'Add to Cart') : 'Out of Stock' }}
+            @if (inCart) {
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            } @else {
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1.5"></circle>
+                <circle cx="20" cy="21" r="1.5"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+            }
           </button>
         </div>
       </div>
     </div>
   `,
   styles: [`
+    :host {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-width: 0;
+      width: 100%;
+    }
+
     .product-card {
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      height: 100%;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .card-image-wrapper {
+      position: relative;
+      display: block;
+      width: 100%;
+      overflow: hidden;
+      flex-shrink: 0;
     }
 
     .card-image {
@@ -63,12 +100,17 @@ import { ToastService } from '../../../core/services/toast.service';
       position: relative;
       overflow: hidden;
       aspect-ratio: 3/4;
+      width: 100%;
       background: var(--bg);
 
       img {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
+        display: block;
         transition: transform 0.5s ease;
       }
 
@@ -79,6 +121,7 @@ import { ToastService } from '../../../core/services/toast.service';
       position: absolute;
       top: 12px;
       left: 12px;
+      z-index: 1;
     }
 
     .oos-overlay {
@@ -93,18 +136,18 @@ import { ToastService } from '../../../core/services/toast.service';
       font-weight: 600;
       letter-spacing: 0.1em;
       text-transform: uppercase;
+      z-index: 1;
     }
 
     .card-body {
-      padding: 14px;
+      padding: 14px 16px 16px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
       flex: 1;
+      min-height: 0;
 
       @media (max-width: 560px) {
-        padding: 10px;
-        gap: 2px;
+        padding: 10px 12px 12px;
       }
     }
 
@@ -112,51 +155,79 @@ import { ToastService } from '../../../core/services/toast.service';
       font-size: 0.72rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--accent);
+      color: #9E9687;
       font-weight: 500;
+      margin-bottom: 4px;
+      height: 1.2em;
+      line-height: 1.2em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
       @media (max-width: 560px) {
         font-size: 0.65rem;
       }
     }
 
+    .card-title-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      height: 1.6em;
+      line-height: 1.6em;
+    }
+
     .card-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: var(--text-primary);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1A1A1A;
       line-height: 1.25;
       transition: color 0.2s;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      flex: 1;
+      min-width: 0;
 
       &:hover { color: var(--primary); }
 
       @media (max-width: 560px) {
-        font-size: 0.95rem;
-      }
-    }
-
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 6px;
-      gap: 6px;
-
-      @media (max-width: 560px) {
-        margin-top: 4px;
+        font-size: 1.05rem;
       }
     }
 
     .price {
-      font-size: 0.95rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
       font-weight: 600;
+      color: #2F3E1E;
+      white-space: nowrap;
+      line-height: 1;
+      flex-shrink: 0;
 
       @media (max-width: 560px) {
-        font-size: 0.88rem;
+        font-size: 1.15rem;
       }
+    }
+
+    .card-divider {
+      height: 1px;
+      background: #E8E2D5;
+      margin: 12px 0 12px;
+      margin-top: auto;
+      width: 100%;
+
+      @media (max-width: 560px) {
+        margin: 8px 0 10px;
+        margin-top: auto;
+      }
+    }
+
+    .card-actions {
+      display: flex;
+      width: 100%;
     }
 
     .card-image-wrapper {
@@ -195,15 +266,46 @@ import { ToastService } from '../../../core/services/toast.service';
       box-shadow: var(--shadow-hover);
     }
 
-    .add-btn {
-      flex-shrink: 0;
-      padding: 6px 12px;
-      font-size: 0.72rem;
+    .card-action-btn {
+      width: 100%;
+      height: 44px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      padding: 0;
 
       @media (max-width: 560px) {
-        padding: 5px 8px;
-        font-size: 0.65rem;
-        letter-spacing: 0.04em;
+        height: 38px;
+        border-radius: 6px;
+        svg { width: 17px; height: 17px; }
+      }
+    }
+
+    .cart-btn {
+      background: #FAF7F2;
+      border: 1.5px solid #435427;
+      color: #435427;
+
+      &:hover:not(:disabled) {
+        background: #435427;
+        color: #FFFFFF;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(67, 84, 39, 0.2);
+      }
+
+      &.in-cart {
+        background: #435427;
+        color: #FFFFFF;
+      }
+
+      &:disabled {
+        border-color: var(--border);
+        color: var(--text-muted, #888);
+        background: var(--bg);
+        cursor: not-allowed;
       }
     }
   `]
@@ -235,7 +337,11 @@ export class ProductCardComponent {
     }
   }
 
-  toggleCart() {
+  toggleCart(event?: Event) {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
     if (!this.auth.isLoggedIn()) {
       this.auth.redirectUrl = '/cart';
       this.router.navigate(['/login']);

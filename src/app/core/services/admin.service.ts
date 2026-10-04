@@ -24,7 +24,16 @@ export class AdminService {
   isAdminLoggedIn = signal(false);
 
   constructor() {
-    this.isAdminLoggedIn.set(Boolean(localStorage.getItem(this.ADMIN_TOKEN_KEY)));
+    this.cleanLegacyStorage();
+    this.isAdminLoggedIn.set(Boolean(sessionStorage.getItem(this.ADMIN_TOKEN_KEY)));
+  }
+
+  private cleanLegacyStorage() {
+    try {
+      localStorage.removeItem(this.ADMIN_TOKEN_KEY);
+    } catch {
+      // Storage access safety
+    }
   }
 
   async login(password: string): Promise<void> {
@@ -32,12 +41,13 @@ export class AdminService {
       this.http.post<AdminLoginResponse>(`${environment.apiUrl}/admin/login`, { password })
     );
 
-    localStorage.setItem(this.ADMIN_TOKEN_KEY, response.token);
+    sessionStorage.setItem(this.ADMIN_TOKEN_KEY, response.token);
     this.isAdminLoggedIn.set(true);
   }
 
   logout() {
-    localStorage.removeItem(this.ADMIN_TOKEN_KEY);
+    sessionStorage.removeItem(this.ADMIN_TOKEN_KEY);
+    this.cleanLegacyStorage();
     this.isAdminLoggedIn.set(false);
     this.router.navigate(['/admin']);
   }

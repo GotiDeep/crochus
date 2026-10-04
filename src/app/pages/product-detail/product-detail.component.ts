@@ -252,6 +252,7 @@ import { Router } from '@angular/router';
       @media (max-width: 560px) {
         flex-direction: column;
         align-items: stretch;
+        gap: 10px;
       }
     }
 

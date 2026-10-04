@@ -8,22 +8,45 @@ import { ProductCardComponent } from '../../shared/components/product-card/produ
 import { ProductCardSkeletonComponent } from '../../shared/components/product-card-skeleton/product-card-skeleton.component';
 import { ProductService } from '../../core/services/product.service';
 import { Product, Category } from '../../core/models';
+import { MarqueeRibbonComponent } from '../../shared/animations/marquee-ribbon.component';
+import { ThreadLogoComponent } from '../../shared/animations/thread-logo.component';
+import { BouquetBloomComponent } from '../../shared/animations/bouquet-bloom.component';
+import { TeddyBuildComponent } from '../../shared/animations/teddy-build.component';
+import { HangingCharmsComponent } from '../../shared/animations/hanging-charms.component';
+import { TiltDirective } from '../../shared/animations/tilt.directive';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, CommonModule, NavbarComponent, FooterComponent,
-    HamburgerMenuComponent, ProductCardComponent, ProductCardSkeletonComponent],
+  imports: [
+    RouterLink,
+    CommonModule,
+    NavbarComponent,
+    FooterComponent,
+    HamburgerMenuComponent,
+    ProductCardComponent,
+    ProductCardSkeletonComponent,
+    MarqueeRibbonComponent,
+    ThreadLogoComponent,
+    BouquetBloomComponent,
+    TeddyBuildComponent,
+    HangingCharmsComponent,
+    TiltDirective
+  ],
   template: `
     <div class="page-wrapper">
       <app-navbar (openMenu)="menuOpen.set(true)" />
       <app-hamburger-menu [isOpen]="menuOpen()" (close)="menuOpen.set(false)" />
 
       <main class="main-content">
+        <!-- Top Marquee Ribbon -->
+        <app-marquee-ribbon />
+
         <!-- Hero -->
         <section class="hero">
           <div class="hero-content container">
             <div class="hero-text fade-in">
+              <app-thread-logo class="hero-thread" />
               <span class="section-label">✦ Handcrafted with Love</span>
               <h1>Art that Speaks,<br><em>Crafted to Last</em></h1>
               <p>Discover one-of-a-kind handmade pieces that carry the warmth of the artisan's hands. Each item is crafted with intention, never mass-produced.</p>
@@ -46,10 +69,6 @@ import { Product, Category } from '../../core/models';
               </div>
             </div>
           </div>
-          <div class="hero-scroll-hint">
-            <span>Scroll to explore</span>
-            <div class="scroll-line"></div>
-          </div>
         </section>
 
         <!-- Browse Categories -->
@@ -66,7 +85,7 @@ import { Product, Category } from '../../core/models';
                 [style.transition]="noTransition() ? 'none' : 'transform 0.5s ease'"
               >
                 @for (cat of sliderItems(); track $index) {
-                  <a routerLink="/shop" [queryParams]="{category: cat.id}" class="cat-card-img">
+                  <a routerLink="/shop" [queryParams]="{category: cat.id}" class="cat-card-img" appTilt>
                     <div class="cat-img-wrap">
                       @if (cat.image_url) {
                         <img [src]="cat.image_url" [alt]="cat.name" loading="lazy" />
@@ -83,6 +102,13 @@ import { Product, Category } from '../../core/models';
           </div>
         </section>
 
+        <!-- Bouquet Bloom Animation Section -->
+        <section class="section bouquet-section">
+          <div class="container">
+            <app-bouquet-bloom />
+          </div>
+        </section>
+
         <!-- Featured Products -->
         <section class="section">
           <div class="container">
@@ -96,12 +122,12 @@ import { Product, Category } from '../../core/models';
 
             @if (loading()) {
               <div class="product-grid">
-              <app-product-card-skeleton [count]="10" />
+                <app-product-card-skeleton [count]="10" />
               </div>
             } @else {
               <div class="product-grid">
                 @for (product of featured(); track product.id) {
-                  <app-product-card [product]="product" />
+                  <app-product-card appTilt [product]="product" />
                 }
               </div>
             }
@@ -119,16 +145,17 @@ import { Product, Category } from '../../core/models';
                 <a routerLink="/about" class="btn btn-primary" style="margin-top:16px">Read Our Story</a>
               </div>
               <div class="about-img">
-                <img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=600&q=80" alt="Artisan at work" />
+                <app-teddy-build />
                 <div class="about-accent"></div>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- Instagram Strip -->
+        <!-- Instagram Strip with Hanging Charms -->
         <section class="section insta-section">
           <div class="container">
+            <app-hanging-charms />
             <div class="section-header" style="text-align:center">
               <span class="section-label">Made for you</span>
               <h2 class="section-title">More Handmade Favourites</h2>
@@ -144,15 +171,21 @@ import { Product, Category } from '../../core/models';
             </div>
           </div>
         </section>
+
+        <!-- Bottom Marquee Ribbon (Reverse) -->
+        <app-marquee-ribbon [reverse]="true" />
       </main>
 
       <app-footer />
     </div>
   `,
   styles: [`
+    :host { display: block; width: 100%; overflow-x: hidden; }
+    app-product-card { display: block; }
+
     /* ── Hero ── */
     .hero {
-      min-height: 100vh;
+      min-height: calc(100vh - 72px);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -175,14 +208,22 @@ import { Product, Category } from '../../core/models';
       grid-template-columns: 1fr 1fr;
       gap: 80px;
       align-items: center;
-      padding-top: 80px;
+      padding-top: 24px;
+      padding-bottom: 40px;
 
       @media (max-width: 900px) {
         grid-template-columns: 1fr;
-        gap: 28px;
-        padding-top: 88px;
+        gap: 24px;
+        padding-top: 24px;
         padding-bottom: 24px;
         text-align: center;
+      }
+    }
+
+    .hero-thread {
+      margin-bottom: 12px;
+      @media (max-width: 900px) {
+        margin: 0 auto 10px;
       }
     }
 
@@ -251,8 +292,18 @@ import { Product, Category } from '../../core/models';
       img { width: 100%; height: 100%; object-fit: cover; }
 
       &.main { grid-row: 1 / 3; }
-      &.secondary { border-radius: 8px 8px 0 0; }
-      &.tertiary { border-radius: 0 0 8px 8px; }
+      &.secondary {
+        border-radius: 8px 8px 0 0;
+        animation: floatImg 6s ease-in-out infinite;
+      }
+      &.tertiary {
+        border-radius: 0 0 8px 8px;
+        animation: floatImg 7s ease-in-out -2s infinite;
+      }
+    }
+
+    @keyframes floatImg {
+      50% { transform: translateY(-8px); }
     }
 
     .hero-badge {
@@ -265,6 +316,7 @@ import { Product, Category } from '../../core/models';
       border-radius: 8px;
       text-align: center;
       box-shadow: var(--shadow-hover);
+      animation: floatBadge 5s ease-in-out -1s infinite;
 
       .badge-num {
         display: block;
@@ -292,37 +344,17 @@ import { Product, Category } from '../../core/models';
       }
     }
 
-    .hero-scroll-hint {
-      position: absolute;
-      bottom: 32px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: var(--text-secondary);
-      font-size: 0.75rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      animation: bounce 2s infinite;
-
-      @media (max-width: 768px) { display: none; }
+    @keyframes floatBadge {
+      50% { transform: translateY(-6px); }
     }
 
-    .scroll-line {
-      width: 1px;
-      height: 40px;
-      background: linear-gradient(to bottom, var(--text-secondary), transparent);
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50% { transform: translateX(-50%) translateY(8px); }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-badge, .img-block.secondary, .img-block.tertiary { animation: none; }
     }
 
     /* ── Categories Slider ── */
-    .categories-section { padding-top: 48px; padding-bottom: 48px; }
+    .categories-section { padding-top: 48px; padding-bottom: 24px; }
+    .bouquet-section { padding-top: 24px; padding-bottom: 24px; }
     .section-header { margin-bottom: 24px; }
 
     .cat-slider-wrapper {

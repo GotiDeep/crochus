@@ -3,10 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, firstValueFrom } from 'rxjs';
 import { Order, OrderSubmissionPayload, OrderSubmissionResponse, Product } from '../models';
 import { environment } from '../../../environments/environment';
+import { SettingsService } from './settings.service';
 
 @Injectable({ providedIn: 'root' })
 export class OrderService {
   private http = inject(HttpClient);
+  private settings = inject(SettingsService);
 
   private formatPrice(amount: number): string {
     return `₹${Number(amount).toLocaleString('en-IN')}`;
@@ -67,6 +69,32 @@ ${productLinks}`;
   }
 
   getWhatsAppShareMessage(product: Pick<Product, 'name' | 'price' | 'slug'>): string {
-    return `Check out this handmade piece from Crochus!\n\n${product.name}\nPrice: ${this.formatPrice(product.price)}\n\n${environment.siteUrl}/product/${product.slug}`;
+    const siteUrl = typeof window !== 'undefined' ? window.location.origin : environment.siteUrl;
+    return `Check out this handmade piece from Crochus!\n\n${product.name}\nPrice: ${this.formatPrice(product.price)}\n\n${siteUrl}/product/${product.slug}`;
+  }
+
+  generateDirectBuyWhatsAppMessage(product: Product, quantity = 1): string {
+    const siteUrl = typeof window !== 'undefined' ? window.location.origin : environment.siteUrl;
+    const formattedPrice = this.formatPrice(product.price);
+    const totalAmount = this.formatPrice(product.price * quantity);
+    const codeLine = product.product_code ? `\nCode: ${product.product_code}` : '';
+
+    return `New Order - Crochus 🌿
+
+Item Ordered:
+1. ${product.name}${codeLine} - ${formattedPrice} (Qty: ${quantity})
+
+Order Total: ${totalAmount}
+
+Product Link:
+1. ${siteUrl}/product/${product.slug}
+
+Please confirm my order and share payment & delivery details!`;
+  }
+
+  buyNowWhatsApp(product: Product, quantity = 1): boolean {
+    const num = this.settings.whatsappNumber() || '918200502248';
+    const message = this.generateDirectBuyWhatsAppMessage(product, quantity);
+    return this.openWhatsApp(message, num);
   }
 }

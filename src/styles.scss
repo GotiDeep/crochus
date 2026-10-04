@@ -386,20 +386,29 @@ textarea.form-control {
 /* ── Grid Utilities ── */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 28px;
+  align-items: stretch;
+
+  & > * {
+    min-width: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
 
   @media (max-width: 1200px) {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   @media (max-width: 900px) {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 20px;
   }
 
   @media (max-width: 560px) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
   }
 }
@@ -690,4 +699,22 @@ textarea.form-control {
     opacity: 0.35;
     cursor: not-allowed;
   }
+}
+
+/* ── Scroll-driven helpers (host needs [scrollProgress]) ── */
+.sp-pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  --t: clamp(0, calc((var(--p, 0) - var(--s, 0)) * var(--k, 6)), 1);
+  transform: scale(var(--t));
+  opacity: var(--t);
+}
+.sp-top { transform-origin: 50% 0; }
+.sp-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - clamp(0, calc((var(--p, 0) - var(--s, 0)) * var(--k, 3)), 1));
+}
+@media (prefers-reduced-motion: reduce) {
+  .sp-pop { transform: none; opacity: 1; }
+  .sp-draw { stroke-dashoffset: 0; }
 }

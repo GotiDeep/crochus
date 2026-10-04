@@ -36,7 +36,7 @@ module.exports = {
   pgUser: process.env.PGUSER || 'postgres',
   pgPassword: withFallback(process.env.PGPASSWORD, 'postgres'),
   jwtSecret: process.env.JWT_SECRET || '',
-  jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || '2h',
   adminJwtSecret: process.env.ADMIN_JWT_SECRET || process.env.JWT_SECRET || '',
   adminJwtExpiresIn: process.env.ADMIN_JWT_EXPIRES_IN || '7d',
   adminPassword: process.env.ADMIN_PASSWORD || '',

@@ -19,21 +19,60 @@ export class AuthService {
 
   private readonly TOKEN_KEY = 'crochus_token';
   private readonly USER_KEY = 'crochus_user';
+  private readonly SESSION_EXPIRY_KEY = 'crochus_session_expiry';
+  // 2 hours in milliseconds
+  private readonly SESSION_DURATION_MS = 2 * 60 * 60 * 1000;
 
   currentUser = signal<User | null>(null);
   isLoggedIn = signal(false);
+  isSessionExpired = signal(false);
   redirectUrl: string | null = null;
+  private sessionTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
+    this.cleanLegacyStorage();
     this.loadFromStorage();
   }
 
+  /**
+   * Remove any legacy persistent tokens previously saved in localStorage
+   * so sessions are strictly managed via sessionStorage.
+   */
+  private cleanLegacyStorage() {
+    try {
+      localStorage.removeItem(this.TOKEN_KEY);
+      localStorage.removeItem(this.USER_KEY);
+      localStorage.removeItem(this.SESSION_EXPIRY_KEY);
+    } catch {
+      // Storage access safety
+    }
+  }
+
   private loadFromStorage() {
-    const token = localStorage.getItem(this.TOKEN_KEY);
-    const userValue = localStorage.getItem(this.USER_KEY);
+    const token = sessionStorage.getItem(this.TOKEN_KEY);
+    const userValue = sessionStorage.getItem(this.USER_KEY);
+    const expiryValue = sessionStorage.getItem(this.SESSION_EXPIRY_KEY);
 
     if (!token || !userValue) {
       return;
+    }
+
+    // Check if the 2-hour session has already expired
+    if (expiryValue) {
+      const expiry = Number(expiryValue);
+      const remainingTime = expiry - Date.now();
+
+      if (remainingTime <= 0) {
+        this.handleSessionExpired();
+        return;
+      }
+
+      this.startSessionTimer(remainingTime);
+    } else {
+      // If legacy or missing expiry, set it now
+      const newExpiry = Date.now() + this.SESSION_DURATION_MS;
+      sessionStorage.setItem(this.SESSION_EXPIRY_KEY, String(newExpiry));
+      this.startSessionTimer(this.SESSION_DURATION_MS);
     }
 
     try {
@@ -46,10 +85,48 @@ export class AuthService {
   }
 
   private persistSession(response: AuthResponse) {
-    localStorage.setItem(this.TOKEN_KEY, response.token);
-    localStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
+    const expiry = Date.now() + this.SESSION_DURATION_MS;
+    sessionStorage.setItem(this.TOKEN_KEY, response.token);
+    sessionStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
+    sessionStorage.setItem(this.SESSION_EXPIRY_KEY, String(expiry));
+
     this.currentUser.set(response.user);
     this.isLoggedIn.set(true);
+    this.isSessionExpired.set(false);
+
+    this.startSessionTimer(this.SESSION_DURATION_MS);
+  }
+
+  private startSessionTimer(durationMs: number) {
+    this.clearSessionTimer();
+    this.sessionTimer = setTimeout(() => {
+      this.handleSessionExpired();
+    }, durationMs);
+  }
+
+  private clearSessionTimer() {
+    if (this.sessionTimer) {
+      clearTimeout(this.sessionTimer);
+      this.sessionTimer = null;
+    }
+  }
+
+  /**
+   * Called when 2 hours elapse or when backend returns 401 Unauthorized
+   */
+  handleSessionExpired() {
+    this.clearSessionTimer();
+    sessionStorage.removeItem(this.TOKEN_KEY);
+    sessionStorage.removeItem(this.USER_KEY);
+    sessionStorage.removeItem(this.SESSION_EXPIRY_KEY);
+
+    this.currentUser.set(null);
+    this.isLoggedIn.set(false);
+    this.isSessionExpired.set(true);
+  }
+
+  dismissSessionExpired() {
+    this.isSessionExpired.set(false);
   }
 
   async login(payload: LoginPayload): Promise<void> {
@@ -97,20 +174,25 @@ export class AuthService {
       this.http.put<User>(`${environment.apiUrl}/profile`, data)
     );
 
-    localStorage.setItem(this.USER_KEY, JSON.stringify(updatedUser));
+    sessionStorage.setItem(this.USER_KEY, JSON.stringify(updatedUser));
     this.currentUser.set(updatedUser);
     return updatedUser;
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+    return sessionStorage.getItem(this.TOKEN_KEY);
   }
 
   logout() {
-    localStorage.removeItem(this.TOKEN_KEY);
-    localStorage.removeItem(this.USER_KEY);
+    this.clearSessionTimer();
+    sessionStorage.removeItem(this.TOKEN_KEY);
+    sessionStorage.removeItem(this.USER_KEY);
+    sessionStorage.removeItem(this.SESSION_EXPIRY_KEY);
+    this.cleanLegacyStorage();
+
     this.currentUser.set(null);
     this.isLoggedIn.set(false);
+    this.isSessionExpired.set(false);
     this.router.navigate(['/']);
   }
 }
