@@ -309,31 +309,51 @@ interface ProductFormData {
   `,
   styles: [`
     .admin-topbar {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 24px; h2 { margin: 0; }
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 12px;
+      flex-wrap: wrap;
+
+      h2 { margin: 0; font-size: 1.4rem; }
     }
-    .table-wrap { overflow: hidden; overflow-x: auto; margin-bottom: 32px; }
-    .thumb-img { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); }
-    .missing-thumb { display: inline-flex; width: 48px; height: 48px; align-items: center; justify-content: center; border-radius: 6px; background: var(--bg); color: var(--text-secondary); font-size: 0.65rem; }
-    .product-name-cell { font-weight: 500; color: var(--text-primary); font-size: 0.9rem; }
-    .action-btns { display: flex; gap: 8px; }
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 32px;
+      border-radius: 8px;
+    }
+    .thumb-img { width: 44px; height: 44px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); }
+    .missing-thumb { display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 6px; background: var(--bg); color: var(--text-secondary); font-size: 0.65rem; }
+    .product-name-cell { font-weight: 500; color: var(--text-primary); font-size: 0.9rem; white-space: nowrap; }
+    .action-btns { display: flex; gap: 6px; white-space: nowrap; }
     .delete-btn {
       background: var(--error-bg); color: var(--error-text);
       border: 1px solid var(--error-text); padding: 6px 12px; font-size: 0.78rem;
+      border-radius: 6px;
+      cursor: pointer;
       &:hover { background: var(--error-text); color: white; }
     }
     .modal-overlay {
       position: fixed; inset: 0; background: var(--overlay);
-      z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px;
+      z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px;
     }
     .modal {
       background: var(--surface); border-radius: 12px;
       width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto;
       box-shadow: var(--shadow-hover); animation: fadeIn 0.2s ease;
+      box-sizing: border-box;
+
+      @media (max-width: 480px) {
+        max-height: 94vh;
+        border-radius: 8px;
+      }
     }
     .modal-head {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 20px 24px; border-bottom: 1px solid var(--border); h3 { margin: 0; }
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      h3 { margin: 0; font-size: 1.2rem; }
     }
     .close-btn {
       width: 32px; height: 32px; background: var(--bg); border: 1px solid var(--border);
@@ -341,11 +361,16 @@ interface ProductFormData {
       display: flex; align-items: center; justify-content: center; transition: all 0.2s;
       &:hover { border-color: var(--primary); color: var(--primary); }
     }
-    .modal-body { padding: 24px; }
-    .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; }
+    .modal-body {
+      padding: 20px;
+      @media (max-width: 480px) { padding: 14px; }
+    }
+    .modal-footer {
+      padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px;
+    }
     .form-row {
       display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-      @media (max-width: 560px) { grid-template-columns: 1fr; }
+      @media (max-width: 600px) { grid-template-columns: 1fr; gap: 12px; }
     }
     .form-check {
       display: flex; align-items: center; gap: 8px; margin-bottom: 16px;

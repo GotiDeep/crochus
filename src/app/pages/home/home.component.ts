@@ -9,10 +9,8 @@ import { ProductCardSkeletonComponent } from '../../shared/components/product-ca
 import { ProductService } from '../../core/services/product.service';
 import { Product, Category } from '../../core/models';
 import { MarqueeRibbonComponent } from '../../shared/animations/marquee-ribbon.component';
-import { ThreadLogoComponent } from '../../shared/animations/thread-logo.component';
 import { BouquetBloomComponent } from '../../shared/animations/bouquet-bloom.component';
 import { TeddyBuildComponent } from '../../shared/animations/teddy-build.component';
-import { HangingCharmsComponent } from '../../shared/animations/hanging-charms.component';
 import { TiltDirective } from '../../shared/animations/tilt.directive';
 
 @Component({
@@ -27,10 +25,8 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
     ProductCardComponent,
     ProductCardSkeletonComponent,
     MarqueeRibbonComponent,
-    ThreadLogoComponent,
     BouquetBloomComponent,
     TeddyBuildComponent,
-    HangingCharmsComponent,
     TiltDirective
   ],
   template: `
@@ -46,7 +42,6 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
         <section class="hero">
           <div class="hero-content container">
             <div class="hero-text fade-in">
-              <app-thread-logo class="hero-thread" />
               <span class="section-label">✦ Handcrafted with Love</span>
               <h1>Art that Speaks,<br><em>Crafted to Last</em></h1>
               <p>Discover one-of-a-kind handmade pieces that carry the warmth of the artisan's hands. Each item is crafted with intention, never mass-produced.</p>
@@ -152,10 +147,9 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
           </div>
         </section>
 
-        <!-- Instagram Strip with Hanging Charms -->
+        <!-- Instagram Strip -->
         <section class="section insta-section">
           <div class="container">
-            <app-hanging-charms />
             <div class="section-header" style="text-align:center">
               <span class="section-label">Made for you</span>
               <h2 class="section-title">More Handmade Favourites</h2>
@@ -217,13 +211,6 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
         padding-top: 24px;
         padding-bottom: 24px;
         text-align: center;
-      }
-    }
-
-    .hero-thread {
-      margin-bottom: 12px;
-      @media (max-width: 900px) {
-        margin: 0 auto 10px;
       }
     }
 

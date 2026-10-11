@@ -192,22 +192,29 @@ interface SmtpSettings {
     </div>
   `,
   styles: [`
-    .admin-topbar { margin-bottom: 24px; h2 { margin: 0; } }
+    .admin-topbar { margin-bottom: 20px; h2 { margin: 0; font-size: 1.4rem; } }
     .settings-tabs {
       display: flex; gap: 8px; border-bottom: 1px solid var(--border); margin-bottom: 24px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      &::-webkit-scrollbar { display: none; }
+
       button {
-        border: 0; background: transparent; padding: 12px 18px; cursor: pointer;
-        color: var(--text-secondary); border-bottom: 2px solid transparent; font: inherit; font-size: 0.95rem;
+        border: 0; background: transparent; padding: 10px 14px; cursor: pointer;
+        color: var(--text-secondary); border-bottom: 2px solid transparent; font: inherit; font-size: 0.9rem;
+        white-space: nowrap; flex-shrink: 0;
       }
       button.active { color: var(--primary); border-color: var(--primary); font-weight: 600; }
     }
     .settings-card {
-      padding: 28px; max-width: 860px;
-      h3 { margin: 0 0 8px; }
-      p { color: var(--text-secondary); font-size: .88rem; margin: 0; line-height: 1.55; }
+      padding: 24px 20px; max-width: 860px;
+      @media (max-width: 480px) { padding: 16px 14px; }
+      h3 { margin: 0 0 8px; font-size: 1.15rem; }
+      p { color: var(--text-secondary); font-size: .86rem; margin: 0; line-height: 1.55; }
     }
     .section-head {
-      display: flex; justify-content: space-between; gap: 16px; margin-bottom: 24px;
+      display: flex; justify-content: space-between; gap: 16px; margin-bottom: 20px;
     }
     .status {
       align-self: start; white-space: nowrap; background: var(--error-bg);
@@ -215,17 +222,17 @@ interface SmtpSettings {
     }
     .status.ready { background: var(--success-bg); color: var(--success-text); }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .form-group { margin-bottom: 18px; }
+    .form-group { margin-bottom: 16px; }
     .hint-text { display: block; font-size: 0.76rem; color: var(--text-secondary); margin-top: 4px; }
-    .checkbox { display: flex; align-items: center; gap: 8px; font-size: .88rem; margin: 4px 0 22px; }
+    .checkbox { display: flex; align-items: center; gap: 8px; font-size: .88rem; margin: 4px 0 20px; }
     .actions { padding-top: 8px; }
     .test-box {
       margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);
       display: grid; grid-template-columns: 1fr 220px auto; align-items: end; gap: 12px;
       strong { display: block; margin-bottom: 6px; }
     }
-    @media (max-width: 640px) {
-      .form-row, .test-box { grid-template-columns: 1fr; }
+    @media (max-width: 768px) {
+      .form-row, .test-box { grid-template-columns: 1fr; gap: 12px; }
       .section-head { flex-direction: column; }
     }
   `]
