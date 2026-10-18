@@ -14,92 +14,201 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
   imports: [RouterLink, CommonModule, FormsModule],
   template: `
     <div class="auth-page">
-      <!-- Left Panel -->
-      <div class="auth-visual">
+      <!-- Left Panel: Visual & Brand Story -->
+      <aside class="auth-visual">
+        <div class="av-overlay"></div>
         <div class="av-inner">
-          <a routerLink="/" class="auth-logo">
+          <a routerLink="/" class="auth-logo" aria-label="Crochus Home">
             <img src="assets/logo.svg" alt="Crochus" class="auth-logo-img" />
           </a>
-          <div class="av-quote">
-            <blockquote>"Every handmade piece carries a piece of the maker's soul."</blockquote>
-          </div>
-          <img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=800&q=80" alt="Artisan" class="av-img" />
-        </div>
-      </div>
 
-      <!-- Right Panel -->
-      <div class="auth-form-panel">
-        <div class="auth-form-inner">
-          <a routerLink="/" class="auth-logo mobile-logo">
-            <img src="assets/logo.svg" alt="Crochus" class="auth-logo-img" />
-          </a>
+          <div class="av-quote">
+            <blockquote>"Every stitch carries patience, intention, and a piece of the maker's soul."</blockquote>
+            <p class="av-attribution">— The Crochus Artisan Studio</p>
+          </div>
+
+          <div class="av-badges">
+            <div class="av-badge"><span>🌿</span> 100% Hand-Crocheted</div>
+            <div class="av-badge"><span>✨</span> Small-Batch Pieces</div>
+            <div class="av-badge"><span>💬</span> WhatsApp Order Help</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Panel: Form -->
+      <main class="auth-form-panel">
+        <div class="auth-form-inner fade-in">
+          <header class="mobile-brand">
+            <a routerLink="/" class="auth-logo mobile-logo" aria-label="Crochus Home">
+              <img src="assets/logo.svg" alt="Crochus" class="auth-logo-img" />
+            </a>
+          </header>
+
+          <a routerLink="/" class="back-home-link">← Back to Boutique</a>
 
           <!-- LOGIN -->
           @if (mode() === 'login') {
-            <h2>Welcome back</h2>
-            <p class="auth-sub">Sign in to your account to continue shopping</p>
-
-            <div class="form-group">
-              <label class="form-label">Email</label>
-              <input type="email" class="form-control" [(ngModel)]="email" placeholder="you@example.com" />
+            <div class="form-title-group">
+              <span class="section-label">Account Access</span>
+              <h2>Welcome Back</h2>
+              <p class="auth-sub">Sign in to view your orders, save favorites, and track custom pieces.</p>
             </div>
-            <div class="form-group">
-              <label class="form-label">Password</label>
-              <div class="pass-wrap">
-                <input [type]="showPass() ? 'text' : 'password'" class="form-control" [(ngModel)]="password" placeholder="Your password" />
-                <button class="pass-toggle" type="button" (click)="togglePassword()">{{ showPass() ? '🙈' : '👁' }}</button>
+
+            <form (ngSubmit)="login()" novalidate>
+              <div class="form-group">
+                <label class="form-label" for="login-email">Email Address</label>
+                <input
+                  id="login-email"
+                  type="email"
+                  class="form-control"
+                  [(ngModel)]="email"
+                  name="email"
+                  placeholder="you@example.com"
+                  autocomplete="email"
+                  required
+                />
               </div>
-            </div>
 
-            <button class="forgot-link" (click)="mode.set('forgot')">Forgot password?</button>
+              <div class="form-group">
+                <div class="label-with-action">
+                  <label class="form-label" for="login-pass">Password</label>
+                  <button type="button" class="forgot-link-inline" (click)="mode.set('forgot')">Forgot password?</button>
+                </div>
+                <div class="pass-wrap">
+                  <input
+                    id="login-pass"
+                    [type]="showPass() ? 'text' : 'password'"
+                    class="form-control"
+                    [(ngModel)]="password"
+                    name="password"
+                    placeholder="Your account password"
+                    autocomplete="current-password"
+                    required
+                  />
+                  <button
+                    class="pass-toggle"
+                    type="button"
+                    (click)="togglePassword()"
+                    [attr.aria-label]="showPass() ? 'Hide password' : 'Show password'"
+                  >
+                    {{ showPass() ? '🙈' : '👁' }}
+                  </button>
+                </div>
+              </div>
 
-            @if (error()) { <div class="auth-error">{{ error() }}</div> }
+              @if (error()) {
+                <div class="auth-error" role="alert">{{ error() }}</div>
+              }
 
-            <button class="btn btn-primary btn-full btn-lg" [disabled]="loading()" (click)="login()">
-              {{ loading() ? 'Signing in…' : 'Sign In' }}
-            </button>
+              <button type="submit" class="btn btn-primary btn-full btn-lg" [disabled]="loading()">
+                {{ loading() ? 'Signing in…' : 'Sign In' }}
+              </button>
+            </form>
 
-            <p class="auth-switch">Don't have an account? <button (click)="mode.set('register')">Register</button></p>
+            <p class="auth-switch">
+              Don't have an account yet?
+              <button type="button" (click)="mode.set('register')">Create an account</button>
+            </p>
           }
 
           <!-- REGISTER -->
           @if (mode() === 'register') {
-            <h2>Create account</h2>
-            <p class="auth-sub">Join Crochus to start collecting handmade treasures</p>
+            <div class="form-title-group">
+              <span class="section-label">New Collector</span>
+              <h2>Create Your Account</h2>
+              <p class="auth-sub">Join the Crochus circle to curate wishlists and order handmade pieces.</p>
+            </div>
 
-            <div class="form-group">
-              <label class="form-label">Full Name</label>
-              <input type="text" class="form-control" [(ngModel)]="fullName" placeholder="Your full name" />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Email</label>
-              <input type="email" class="form-control" [(ngModel)]="email" placeholder="you@example.com" />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Mobile</label>
-              <input type="tel" class="form-control" [(ngModel)]="mobile" placeholder="10-digit mobile number" maxlength="10" />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Password</label>
-              <div class="pass-wrap">
-                <input [type]="showPass() ? 'text' : 'password'" class="form-control" [(ngModel)]="password" placeholder="Min. 6 characters" />
-                <button class="pass-toggle" type="button" (click)="togglePassword()">{{ showPass() ? '🙈' : '👁' }}</button>
+            <form (ngSubmit)="register()" novalidate>
+              <div class="form-group">
+                <label class="form-label" for="reg-name">Full Name</label>
+                <input
+                  id="reg-name"
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="fullName"
+                  name="fullName"
+                  placeholder="Your full name"
+                  autocomplete="name"
+                  required
+                />
               </div>
-            </div>
 
-            @if (error()) { <div class="auth-error">{{ error() }}</div> }
+              <div class="form-group">
+                <label class="form-label" for="reg-email">Email Address</label>
+                <input
+                  id="reg-email"
+                  type="email"
+                  class="form-control"
+                  [(ngModel)]="email"
+                  name="email"
+                  placeholder="you@example.com"
+                  autocomplete="email"
+                  required
+                />
+              </div>
 
-            <button class="btn btn-primary btn-full btn-lg" [disabled]="loading()" (click)="register()">
-              {{ loading() ? 'Creating account…' : 'Create Account' }}
-            </button>
+              <div class="form-group">
+                <label class="form-label" for="reg-mobile">WhatsApp Mobile Number</label>
+                <input
+                  id="reg-mobile"
+                  type="tel"
+                  class="form-control"
+                  [(ngModel)]="mobile"
+                  name="mobile"
+                  placeholder="10-digit mobile number"
+                  maxlength="10"
+                  autocomplete="tel"
+                  required
+                />
+              </div>
 
-            <p class="auth-switch">Already have an account? <button (click)="mode.set('login')">Sign In</button></p>
+              <div class="form-group">
+                <label class="form-label" for="reg-pass">Password</label>
+                <div class="pass-wrap">
+                  <input
+                    id="reg-pass"
+                    [type]="showPass() ? 'text' : 'password'"
+                    class="form-control"
+                    [(ngModel)]="password"
+                    name="password"
+                    placeholder="Min. 6 characters"
+                    autocomplete="new-password"
+                    required
+                  />
+                  <button
+                    class="pass-toggle"
+                    type="button"
+                    (click)="togglePassword()"
+                    [attr.aria-label]="showPass() ? 'Hide password' : 'Show password'"
+                  >
+                    {{ showPass() ? '🙈' : '👁' }}
+                  </button>
+                </div>
+              </div>
+
+              @if (error()) {
+                <div class="auth-error" role="alert">{{ error() }}</div>
+              }
+
+              <button type="submit" class="btn btn-primary btn-full btn-lg" [disabled]="loading()">
+                {{ loading() ? 'Creating account…' : 'Create Account' }}
+              </button>
+            </form>
+
+            <p class="auth-switch">
+              Already have an account?
+              <button type="button" (click)="mode.set('login')">Sign In</button>
+            </p>
           }
 
           <!-- OTP VERIFY -->
           @if (mode() === 'verify') {
-            <h2>Verify your email</h2>
-            <p class="auth-sub">We sent a 6-digit OTP to <strong>{{ email }}</strong></p>
+            <div class="form-title-group">
+              <span class="section-label">Verification</span>
+              <h2>Verify Your Email</h2>
+              <p class="auth-sub">Enter the 6-digit code sent to <strong>{{ email }}</strong></p>
+            </div>
 
             <div class="otp-inputs">
               @for (i of [0,1,2,3,4,5]; track i) {
@@ -111,90 +220,143 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
                   (input)="onOtpInput($event, i)"
                   (keydown)="onOtpKeydown($event, i)"
                   [id]="'otp-' + i"
+                  aria-label="OTP digit"
                 />
               }
             </div>
 
-            @if (error()) { <div class="auth-error">{{ error() }}</div> }
+            @if (error()) {
+              <div class="auth-error" role="alert">{{ error() }}</div>
+            }
 
-            <button class="btn btn-primary btn-full btn-lg" [disabled]="loading()" (click)="verifyOtp()">
-              {{ loading() ? 'Verifying…' : 'Verify OTP' }}
+            <button type="button" class="btn btn-primary btn-full btn-lg" [disabled]="loading()" (click)="verifyOtp()">
+              {{ loading() ? 'Verifying…' : 'Verify Code' }}
             </button>
 
-            <button class="forgot-link" (click)="mode.set('login')" style="margin-top:12px; display:block; text-align:center">
-              ← Back to Login
+            <button type="button" class="btn-text-link" (click)="mode.set('login')">
+              ← Return to Sign In
             </button>
           }
 
           <!-- FORGOT PASSWORD -->
           @if (mode() === 'forgot') {
-            <h2>Reset password</h2>
-            <p class="auth-sub">Enter your email and we'll send an OTP to reset your password</p>
-
-            <div class="form-group">
-              <label class="form-label">Email</label>
-              <input type="email" class="form-control" [(ngModel)]="email" placeholder="you@example.com" />
+            <div class="form-title-group">
+              <span class="section-label">Password Recovery</span>
+              <h2>Reset Password</h2>
+              <p class="auth-sub">Enter your account email and we'll send a code to reset your password.</p>
             </div>
 
-            @if (error()) { <div class="auth-error">{{ error() }}</div> }
+            <div class="form-group">
+              <label class="form-label" for="forgot-email">Account Email</label>
+              <input
+                id="forgot-email"
+                type="email"
+                class="form-control"
+                [(ngModel)]="email"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
 
-            <button class="btn btn-primary btn-full btn-lg" [disabled]="loading()" (click)="sendForgotOtp()">
-              {{ loading() ? 'Sending OTP…' : 'Send OTP' }}
+            @if (error()) {
+              <div class="auth-error" role="alert">{{ error() }}</div>
+            }
+
+            <button type="button" class="btn btn-primary btn-full btn-lg" [disabled]="loading()" (click)="sendForgotOtp()">
+              {{ loading() ? 'Sending OTP…' : 'Send Reset Code' }}
             </button>
 
-            <button class="forgot-link" (click)="mode.set('login')" style="margin-top:12px; display:block; text-align:center">
-              ← Back to Login
+            <button type="button" class="btn-text-link" (click)="mode.set('login')">
+              ← Return to Sign In
             </button>
           }
 
           <!-- RESET PASSWORD -->
           @if (mode() === 'reset') {
-            <h2>Set new password</h2>
-            <p class="auth-sub">Enter the OTP sent to <strong>{{ email }}</strong> and your new password</p>
+            <div class="form-title-group">
+              <span class="section-label">New Credentials</span>
+              <h2>Set New Password</h2>
+              <p class="auth-sub">Enter the code sent to <strong>{{ email }}</strong> along with your new password.</p>
+            </div>
 
-            <div class="otp-inputs" style="margin-bottom:20px">
+            <div class="otp-inputs">
               @for (i of [0,1,2,3,4,5]; track i) {
-                <input type="text" maxlength="1" class="otp-box"
+                <input
+                  type="text"
+                  maxlength="1"
+                  class="otp-box"
                   [(ngModel)]="otpDigits[i]"
                   (input)="onOtpInput($event, i)"
                   (keydown)="onOtpKeydown($event, i)"
-                  [id]="'otp-' + i" />
+                  [id]="'otp-' + i"
+                  aria-label="OTP digit"
+                />
               }
             </div>
 
             <div class="form-group">
-              <label class="form-label">New Password</label>
+              <label class="form-label" for="reset-pass">New Password</label>
               <div class="pass-wrap">
-                <input [type]="showPass() ? 'text' : 'password'" class="form-control" [(ngModel)]="password" placeholder="Min. 6 characters" />
-                <button class="pass-toggle" type="button" (click)="togglePassword()">{{ showPass() ? '🙈' : '👁' }}</button>
+                <input
+                  id="reset-pass"
+                  [type]="showPass() ? 'text' : 'password'"
+                  class="form-control"
+                  [(ngModel)]="password"
+                  placeholder="Min. 6 characters"
+                  required
+                />
+                <button
+                  class="pass-toggle"
+                  type="button"
+                  (click)="togglePassword()"
+                  [attr.aria-label]="showPass() ? 'Hide password' : 'Show password'"
+                >
+                  {{ showPass() ? '🙈' : '👁' }}
+                </button>
               </div>
             </div>
 
-            @if (error()) { <div class="auth-error">{{ error() }}</div> }
+            @if (error()) {
+              <div class="auth-error" role="alert">{{ error() }}</div>
+            }
 
-            <button class="btn btn-primary btn-full btn-lg" [disabled]="loading()" (click)="resetPassword()">
-              {{ loading() ? 'Updating…' : 'Update Password' }}
+            <button type="button" class="btn btn-primary btn-full btn-lg" [disabled]="loading()" (click)="resetPassword()">
+              {{ loading() ? 'Updating Password…' : 'Save New Password' }}
             </button>
           }
         </div>
-      </div>
+      </main>
     </div>
   `,
   styles: [`
     .auth-page {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1.15fr;
       min-height: 100vh;
+      background: var(--bg);
 
-      @media (max-width: 768px) { grid-template-columns: 1fr; }
+      @media (max-width: 860px) {
+        grid-template-columns: 1fr;
+      }
     }
 
     .auth-visual {
-      background: var(--primary);
+      background: linear-gradient(135deg, #2C3A1A 0%, #4A5C2F 60%, #5E723D 100%);
       position: relative;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
 
-      @media (max-width: 768px) { display: none; }
+      @media (max-width: 860px) {
+        display: none;
+      }
+    }
+
+    .av-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.15), transparent 70%);
+      pointer-events: none;
     }
 
     .av-inner {
@@ -202,45 +364,21 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
       height: 100%;
       display: flex;
       flex-direction: column;
-      padding: 48px;
+      padding: clamp(32px, 5vw, 64px);
       z-index: 2;
+      color: #FFFFFF;
     }
 
     .auth-logo {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       text-decoration: none;
-      user-select: none;
 
       .auth-logo-img {
-        /* Change --logo-height-auth in styles.scss or change 48px here to resize */
         height: var(--logo-height-auth, 48px);
         width: auto;
-        user-select: none;
-        -webkit-user-select: none;
-        -webkit-user-drag: none;
-        pointer-events: none;
-        filter: brightness(10) invert(0);
+        filter: brightness(0) invert(1);
       }
-    }
-
-    .mobile-logo {
-      display: none;
-      margin-bottom: 32px;
-      user-select: none;
-
-      .auth-logo-img {
-        /* Change --logo-height-navbar in styles.scss or change 42px here to resize */
-        height: var(--logo-height-navbar, 42px);
-        width: auto;
-        user-select: none;
-        -webkit-user-select: none;
-        -webkit-user-drag: none;
-        pointer-events: none;
-        filter: var(--logo-filter, none);
-      }
-
-      @media (max-width: 768px) { display: flex; }
     }
 
     .av-quote {
@@ -248,24 +386,42 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
       margin-bottom: 32px;
 
       blockquote {
-        font-family: 'Cormorant Garamond', serif;
-        font-size: 1.4rem;
+        font-family: var(--font-heading);
+        font-size: clamp(1.4rem, 2.2vw, 1.85rem);
         font-style: italic;
-        color: rgba(255,255,255,0.9);
-        line-height: 1.5;
+        color: rgba(255, 255, 255, 0.96);
+        line-height: 1.4;
         border: none;
         padding: 0;
+        margin: 0 0 10px;
+      }
+
+      .av-attribution {
+        font-size: 0.88rem;
+        color: rgba(255, 255, 255, 0.75);
+        letter-spacing: 0.05em;
         margin: 0;
       }
     }
 
-    .av-img {
-      position: absolute;
-      inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      opacity: 0.2;
-      z-index: -1;
+    .av-badges {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+
+      .av-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 6px 14px;
+        border-radius: var(--radius-full);
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: #FFFFFF;
+      }
     }
 
     .auth-form-panel {
@@ -273,89 +429,185 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
       align-items: center;
       justify-content: center;
       background: var(--bg);
-      padding: 48px 32px;
+      padding: clamp(24px, 4vw, 48px) clamp(20px, 4vw, 48px);
       min-height: 100vh;
     }
 
     .auth-form-inner {
       width: 100%;
       max-width: 420px;
-
-      h2 { margin-bottom: 8px; }
     }
 
-    .auth-sub {
-      margin-bottom: 32px;
-      font-size: 0.95rem;
+    .mobile-brand {
+      display: none;
+      margin-bottom: 24px;
+
+      @media (max-width: 860px) {
+        display: flex;
+      }
+
+      .mobile-logo .auth-logo-img {
+        height: 42px;
+        width: auto;
+        filter: var(--logo-filter, none);
+      }
+    }
+
+    .back-home-link {
+      display: inline-block;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      margin-bottom: 24px;
+      transition: color var(--transition-fast);
+
+      &:hover {
+        color: var(--primary);
+      }
+    }
+
+    .form-title-group {
+      margin-bottom: 28px;
+
+      h2 {
+        font-size: clamp(1.8rem, 3vw, 2.3rem);
+        margin: 6px 0 8px;
+        line-height: 1.2;
+      }
+
+      .auth-sub {
+        font-size: 0.92rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+        margin: 0;
+      }
+    }
+
+    .label-with-action {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+
+      .form-label {
+        margin-bottom: 0;
+      }
+    }
+
+    .forgot-link-inline {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 0.82rem;
+      cursor: pointer;
+      padding: 0;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
 
     .pass-wrap {
       position: relative;
-      .form-control { padding-right: 48px; width: 100%; }
+
+      .form-control {
+        padding-right: 48px;
+        width: 100%;
+      }
+
       .pass-toggle {
         position: absolute;
-        right: 12px; top: 50%;
+        right: 4px;
+        top: 50%;
         transform: translateY(-50%);
-        background: none; border: none;
-        font-size: 1rem; cursor: pointer;
-        opacity: 0.6;
-        &:hover { opacity: 1; }
-      }
-    }
+        background: none;
+        border: none;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        cursor: pointer;
+        opacity: 0.65;
+        border-radius: var(--radius-sm);
+        transition: opacity var(--transition-fast);
 
-    .forgot-link {
-      background: none; border: none;
-      color: var(--primary); font-size: 0.85rem;
-      cursor: pointer; padding: 0;
-      margin-bottom: 20px; display: block;
-      text-align: right; width: 100%;
-      &:hover { text-decoration: underline; }
+        &:hover {
+          opacity: 1;
+        }
+      }
     }
 
     .auth-error {
       background: var(--error-bg);
       color: var(--error-text);
-      border-radius: 4px;
+      border-radius: var(--radius-sm);
       padding: 10px 14px;
       font-size: 0.88rem;
       margin-bottom: 16px;
+      border: 1px solid rgba(138, 47, 47, 0.2);
     }
 
     .auth-switch {
       text-align: center;
       font-size: 0.9rem;
       color: var(--text-secondary);
-      margin-top: 20px;
+      margin-top: 24px;
 
       button {
-        background: none; border: none;
-        color: var(--primary); font-weight: 600;
-        cursor: pointer; font-size: inherit;
-        &:hover { text-decoration: underline; }
+        background: none;
+        border: none;
+        color: var(--primary);
+        font-weight: 600;
+        cursor: pointer;
+        font-size: inherit;
+
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
 
-    /* OTP */
+    .btn-text-link {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: block;
+      margin: 16px auto 0;
+      text-align: center;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
     .otp-inputs {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       justify-content: center;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
     .otp-box {
-      width: 48px; height: 56px;
+      width: clamp(40px, 12vw, 48px);
+      height: 56px;
       text-align: center;
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       font-weight: 600;
-      background: var(--input-bg);
+      background: var(--surface);
       border: 1.5px solid var(--border);
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       color: var(--text-primary);
       outline: none;
-      transition: border-color 0.2s;
+      transition: all var(--transition-fast);
 
-      &:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(74,92,47,0.12); }
+      &:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(74, 92, 47, 0.15);
+      }
     }
   `]
 })
@@ -397,35 +649,45 @@ export class AuthComponent implements OnInit {
 
   async login() {
     this.error.set('');
-    if (!this.email || !this.password) { this.error.set('Please fill in all fields'); return; }
+    if (!this.email || !this.password) {
+      this.error.set('Please fill in both email and password');
+      return;
+    }
     this.loading.set(true);
     try {
       if (this.email.trim().toLowerCase() === 'admin@crochus.com') {
         await this.adminService.login(this.password);
         this.loading.set(false);
-        this.toast.success('Welcome admin!');
+        this.toast.success('Welcome back, Admin!');
         this.router.navigate(['/admin/dashboard']);
         return;
       }
 
       await this.authService.login({ email: this.email, password: this.password });
       this.loading.set(false);
-      this.toast.success('Welcome back!');
+      this.toast.success('Welcome back to Crochus!');
       this.router.navigate([this.authService.redirectUrl || '/']);
       this.authService.redirectUrl = null;
     } catch (error) {
       this.loading.set(false);
-      this.error.set(error instanceof Error ? error.message : 'Login failed');
+      this.error.set(error instanceof Error ? error.message : 'Login failed. Please check credentials.');
     }
   }
 
   async register() {
     this.error.set('');
     if (!this.fullName || !this.email || !this.mobile || !this.password) {
-      this.error.set('Please fill in all fields'); return;
+      this.error.set('Please fill in all required fields');
+      return;
     }
-    if (this.password.length < 6) { this.error.set('Password must be at least 6 characters'); return; }
-    if (!/^\d{10}$/.test(this.mobile)) { this.error.set('Enter a valid 10-digit mobile number'); return; }
+    if (this.password.length < 6) {
+      this.error.set('Password must be at least 6 characters');
+      return;
+    }
+    if (!/^\d{10}$/.test(this.mobile)) {
+      this.error.set('Enter a valid 10-digit mobile number');
+      return;
+    }
     this.loading.set(true);
     try {
       await this.authService.register({
@@ -435,7 +697,7 @@ export class AuthComponent implements OnInit {
         password: this.password
       });
       this.loading.set(false);
-      this.toast.success('Account created! Welcome to Crochus');
+      this.toast.success('Account created! Welcome to Crochus 🌿');
       this.router.navigate(['/']);
     } catch (error) {
       this.loading.set(false);
@@ -446,48 +708,60 @@ export class AuthComponent implements OnInit {
   async verifyOtp() {
     this.error.set('');
     const otp = this.otpDigits.join('');
-    if (otp.length < 6) { this.error.set('Enter the 6-digit OTP'); return; }
+    if (otp.length < 6) {
+      this.error.set('Please enter the full 6-digit verification code');
+      return;
+    }
     this.loading.set(true);
     try {
       await this.authService.verifyOtp(this.email, otp);
       this.loading.set(false);
-      this.toast.success('Account created! Welcome to Crochus 🌿');
+      this.toast.success('Email verified! Welcome to Crochus 🌿');
       this.router.navigate(['/']);
     } catch (error) {
       this.loading.set(false);
-      this.error.set(error instanceof Error ? error.message : 'Invalid OTP. Please try again.');
+      this.error.set(error instanceof Error ? error.message : 'Invalid verification code. Please try again.');
     }
   }
 
   async sendForgotOtp() {
     this.error.set('');
-    if (!this.email) { this.error.set('Enter your email'); return; }
+    if (!this.email) {
+      this.error.set('Please enter your account email');
+      return;
+    }
     this.loading.set(true);
     try {
       const response = await this.authService.sendForgotPasswordOtp(this.email);
       this.loading.set(false);
-      this.toast.info(response.dev_otp ? `Dev OTP: ${response.dev_otp}` : 'OTP sent to your email');
+      this.toast.info(response.dev_otp ? `Dev OTP: ${response.dev_otp}` : 'Reset code sent to your email');
       this.mode.set('reset');
     } catch (error) {
       this.loading.set(false);
-      this.error.set(error instanceof Error ? error.message : 'Could not send OTP');
+      this.error.set(error instanceof Error ? error.message : 'Could not send reset code');
     }
   }
 
   async resetPassword() {
     this.error.set('');
     const otp = this.otpDigits.join('');
-    if (otp.length < 6) { this.error.set('Enter the 6-digit OTP'); return; }
-    if (this.password.length < 6) { this.error.set('Password must be at least 6 characters'); return; }
+    if (otp.length < 6) {
+      this.error.set('Please enter the 6-digit code');
+      return;
+    }
+    if (this.password.length < 6) {
+      this.error.set('Password must be at least 6 characters');
+      return;
+    }
     this.loading.set(true);
     try {
       await this.authService.resetPassword(this.email, otp, this.password);
       this.loading.set(false);
-      this.toast.success('Password updated!');
+      this.toast.success('Password updated successfully!');
       this.mode.set('login');
     } catch (error) {
       this.loading.set(false);
-      this.error.set(error instanceof Error ? error.message : 'Invalid OTP. Please try again.');
+      this.error.set(error instanceof Error ? error.message : 'Invalid code or expired session.');
     }
   }
 
