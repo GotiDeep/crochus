@@ -89,11 +89,10 @@ type MediaItem = { type: 'image'; url: string } | { type: 'video'; url: string }
     .main-display {
       position: relative;
       aspect-ratio: 1;
-      border-radius: var(--radius-md);
+      border-radius: 8px;
       overflow: hidden;
-      background: var(--bg-warm);
+      background: var(--bg);
       border: 1px solid var(--border);
-      box-shadow: var(--shadow-card);
     }
 
     .main-image {
@@ -118,28 +117,21 @@ type MediaItem = { type: 'image'; url: string } | { type: 'video'; url: string }
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      width: 44px; height: 44px;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(4px);
+      width: 40px; height: 40px;
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 50%;
       font-size: 1.4rem;
       color: var(--text-primary);
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 4px 14px rgba(36, 30, 28, 0.12);
+      transition: all 0.2s;
+      box-shadow: var(--shadow);
       padding: 0;
-      z-index: 5;
 
-      &:hover {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary);
-        transform: translateY(-50%) scale(1.08);
-      }
-      &.left { left: 14px; }
-      &.right { right: 14px; }
+      &:hover { background: var(--primary); color: white; border-color: var(--primary); }
+      &.left { left: 12px; }
+      &.right { right: 12px; }
     }
 
     /* ── Video badge ── */

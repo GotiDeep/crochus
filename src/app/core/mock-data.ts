@@ -1,12 +1,12 @@
 import { Category, Product, Order } from './models';
 
 export const MOCK_CATEGORIES: Category[] = [
-  { id: 1, name: 'Jewellery', slug: 'jewellery', product_count: 12, image_url: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&auto=format&fit=crop&q=80' },
-  { id: 2, name: 'Home Décor', slug: 'home-decor', product_count: 8, image_url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&auto=format&fit=crop&q=80' },
-  { id: 3, name: 'Bags & Totes', slug: 'bags-totes', product_count: 6, image_url: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&auto=format&fit=crop&q=80' },
-  { id: 4, name: 'Scarves & Wraps', slug: 'scarves-wraps', product_count: 9, image_url: 'https://images.unsplash.com/photo-1601925228606-e4a8e10d8af5?w=600&auto=format&fit=crop&q=80' },
-  { id: 5, name: 'Pottery', slug: 'pottery', product_count: 5, image_url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&auto=format&fit=crop&q=80' },
-  { id: 6, name: 'Candles', slug: 'candles', product_count: 7, image_url: 'https://images.unsplash.com/photo-1602028915047-37269d1a73f7?w=600&auto=format&fit=crop&q=80' },
+  { id: 1, name: 'Jewellery', slug: 'jewellery', product_count: 12 },
+  { id: 2, name: 'Home Décor', slug: 'home-decor', product_count: 8 },
+  { id: 3, name: 'Bags & Totes', slug: 'bags-totes', product_count: 6 },
+  { id: 4, name: 'Scarves & Wraps', slug: 'scarves-wraps', product_count: 9 },
+  { id: 5, name: 'Pottery', slug: 'pottery', product_count: 5 },
+  { id: 6, name: 'Candles', slug: 'candles', product_count: 7 },
 ];
 
 export const MOCK_PRODUCTS: Product[] = [

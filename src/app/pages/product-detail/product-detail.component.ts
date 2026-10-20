@@ -13,7 +13,6 @@ import { AuthService } from '../../core/services/auth.service';
 import { OrderService } from '../../core/services/order.service';
 import { Product } from '../../core/models';
 import { Router } from '@angular/router';
-import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -27,32 +26,31 @@ import { ToastService } from '../../core/services/toast.service';
 
       <main class="main-content">
         @if (loading()) {
-          <div class="container product-loading-state">
-            <div class="loading-spinner">🧵</div>
-            <p>Gathering handmade details…</p>
+          <div class="container" style="padding:80px 0; text-align:center; color: var(--text-secondary)">
+            <div style="font-size:2rem; margin-bottom:16px">🌿</div>
+            Loading product…
           </div>
         } @else if (!product()) {
-          <div class="container empty-state card">
+          <div class="container empty-state">
             <span class="empty-icon">🔍</span>
-            <h3>Piece Not Found</h3>
-            <p>The handcrafted treasure you are searching for might have found a new home or is currently unlisted.</p>
-            <a routerLink="/shop" class="btn btn-primary" style="margin-top:16px">Browse Full Collection</a>
+            <h3>Product not found</h3>
+            <a routerLink="/shop" class="btn btn-primary">Back to Shop</a>
           </div>
         } @else {
           <div class="container">
-            <!-- Breadcrumbs -->
-            <nav class="breadcrumb" aria-label="Breadcrumbs">
+            <!-- Breadcrumb -->
+            <nav class="breadcrumb">
               <a routerLink="/">Home</a>
-              <span class="sep">/</span>
-              <a routerLink="/shop">Collection</a>
-              <span class="sep">/</span>
-              <span class="current">{{ product()!.name }}</span>
+              <span>›</span>
+              <a routerLink="/shop">Shop</a>
+              <span>›</span>
+              <span>{{ product()!.name }}</span>
             </nav>
 
-            <!-- Main Product Details -->
+            <!-- Main Product -->
             <div class="product-layout">
               <!-- Left: Gallery -->
-              <div class="product-gallery-col">
+              <div class="product-gallery">
                 <app-product-gallery
                   [images]="product()!.photos"
                   [videoUrl]="product()!.video_url"
@@ -60,9 +58,9 @@ import { ToastService } from '../../core/services/toast.service';
               </div>
 
               <!-- Right: Info -->
-              <div class="product-info-col">
+              <div class="product-info">
                 <div class="product-meta">
-                  <span class="category-pill">{{ product()!.category_name || 'Handcrafted' }}</span>
+                  <span class="category-label">{{ product()!.category_name }}</span>
                   @if (product()!.badge) {
                     <app-badge [type]="product()!.badge ?? null" />
                   }
@@ -72,110 +70,61 @@ import { ToastService } from '../../core/services/toast.service';
                 <div class="product-price">₹{{ product()!.price | number:'1.0-0':'en-IN' }}</div>
 
                 <!-- Stock Status -->
-                <div class="stock-status-row">
-                  @if (product()!.in_stock) {
-                    <span class="stock-badge in-stock">
-                      <span class="dot"></span> In Stock · Ready to Dispatch
-                    </span>
-                  } @else {
-                    <span class="stock-badge out-of-stock">
-                      <span class="dot"></span> Made to Order (7-10 Days)
-                    </span>
-                  }
-                </div>
+                @if (product()!.in_stock) {
+                  <span class="stock-badge in-stock">✓ In Stock</span>
+                } @else {
+                  <span class="stock-badge out-of-stock">✕ Out of Stock</span>
+                }
+
+                <div class="divider"></div>
 
                 <p class="product-desc">{{ product()!.description }}</p>
 
                 @if (product()!.materials) {
-                  <div class="materials-box card">
-                    <span class="mat-label">Craft & Materials:</span>
+                  <div class="materials">
+                    <span class="mat-label">Materials:</span>
                     <span class="mat-value">{{ product()!.materials }}</span>
                   </div>
                 }
 
-                <!-- Actions: Qty + Add to Cart -->
+                <div class="divider"></div>
+
+                <!-- Quantity + Add to Cart -->
                 <div class="actions">
-                  <div class="qty-selector" aria-label="Quantity selector">
-                    <button (click)="qty.set(Math.max(1, qty() - 1))" aria-label="Decrease quantity">−</button>
+                  <div class="qty-selector">
+                    <button (click)="qty.set(Math.max(1, qty() - 1))">−</button>
                     <span>{{ qty() }}</span>
-                    <button type="button" (click)="increaseQty()" aria-label="Increase quantity">+</button>
+                    <button type="button" (click)="increaseQty()">+</button>
                   </div>
 
                   <button
-                    class="btn btn-primary btn-lg add-to-cart-btn"
+                    class="btn btn-primary btn-lg"
+                    style="flex:1"
                     [disabled]="!product()!.in_stock"
                     (click)="addToCart()"
                   >
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                      <line x1="3" y1="6" x2="21" y2="6"></line>
-                      <path d="M16 10a4 4 0 0 1-8 0"></path>
-                    </svg>
-                    <span>{{ product()!.in_stock ? 'Add to Shopping Cart' : 'Made to Order Only' }}</span>
+                    {{ product()!.in_stock ? 'Add to Cart' : 'Out of Stock' }}
                   </button>
                 </div>
 
-                <!-- Direct WhatsApp Order / Enquiry -->
-                <button class="whatsapp-order-btn" (click)="shareOnWhatsApp()">
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-                  </svg>
-                  <span>Order or Enquire via WhatsApp</span>
+                <!-- WhatsApp Share -->
+                <button class="share-btn" (click)="shareOnWhatsApp()">
+                  💬 Share on WhatsApp
                 </button>
 
-                <!-- Trust Guarantees Grid -->
-                <div class="trust-grid">
-                  <div class="trust-pill">
-                    <span class="tp-icon">🌿</span>
-                    <div>
-                      <strong>100% Handmade</strong>
-                      <p>Crafted slowly with natural fibers</p>
-                    </div>
-                  </div>
-                  <div class="trust-pill">
-                    <span class="tp-icon">🎁</span>
-                    <div>
-                      <strong>Gift-Ready Packing</strong>
-                      <p>Plastic-free artisanal wrap</p>
-                    </div>
-                  </div>
-                  <div class="trust-pill">
-                    <span class="tp-icon">🚚</span>
-                    <div>
-                      <strong>Fast Dispatch</strong>
-                      <p>Ships safely across India</p>
-                    </div>
-                  </div>
-                  <div class="trust-pill">
-                    <span class="tp-icon">✨</span>
-                    <div>
-                      <strong>Customizable</strong>
-                      <p>Custom colors on request</p>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Care Note -->
+                <!-- Handmade Note -->
                 <div class="handmade-note">
-                  <span class="note-icon">🧶</span>
-                  <div>
-                    <strong>Artisan Care Note:</strong>
-                    <p>Each piece is individually handcrafted — gentle hand washing in cool water and flat air drying will preserve its beauty for years.</p>
-                  </div>
+                  <span>🌿</span>
+                  <p>This is a handmade item — slight variations in colour, texture, or size make it uniquely yours.</p>
                 </div>
               </div>
             </div>
 
             <!-- Similar Products -->
             @if (similar().length > 0) {
-              <section class="similar-section">
-                <div class="section-header-row">
-                  <div>
-                    <span class="section-label">You might also like</span>
-                    <h2 class="section-title">Similar Handcrafted Pieces</h2>
-                  </div>
-                  <a routerLink="/shop" class="btn btn-ghost hide-mobile">Explore All →</a>
-                </div>
+              <section style="padding: 64px 0">
+                <span class="section-label">You might also like</span>
+                <h2 class="section-title" style="margin: 8px 0 32px">Similar Pieces</h2>
                 <div class="product-grid">
                   @for (p of similar(); track p.id) {
                     <app-product-card [product]="p" />
@@ -191,69 +140,43 @@ import { ToastService } from '../../core/services/toast.service';
     </div>
   `,
   styles: [`
-    .product-loading-state {
-      padding: 100px 0;
-      text-align: center;
-      color: var(--text-secondary);
-
-      .loading-spinner {
-        font-size: 2.5rem;
-        margin-bottom: 16px;
-        animation: spinThread 2s infinite ease-in-out;
-      }
-    }
-
-    @keyframes spinThread {
-      0% { transform: rotate(0deg); }
-      50% { transform: rotate(180deg) scale(1.1); }
-      100% { transform: rotate(360deg); }
-    }
-
     .breadcrumb {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 24px 0 16px;
-      font-size: 0.85rem;
+      gap: 8px;
+      padding: 24px 0 0;
+      font-size: 0.82rem;
       color: var(--text-secondary);
-      flex-wrap: wrap;
 
-      a {
-        color: var(--text-secondary);
-        transition: color 0.2s;
-        &:hover { color: var(--primary); }
-      }
-      .sep { color: var(--border); }
-      .current {
-        color: var(--text-primary);
-        font-weight: 600;
-      }
+      a { transition: color 0.2s; &:hover { color: var(--primary); } }
+      span { opacity: 0.5; }
     }
 
     .product-layout {
       display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 56px;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
       align-items: start;
-      padding-top: 12px;
-      padding-bottom: 60px;
+      padding: 32px 0 0;
 
       @media (max-width: 900px) {
         grid-template-columns: 1fr;
-        gap: 36px;
+        gap: 40px;
       }
     }
 
-    .product-gallery-col {
+    .product-gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
       position: sticky;
       top: 96px;
 
       @media (max-width: 900px) { position: static; }
     }
 
-    .product-info-col {
-      display: flex;
-      flex-direction: column;
+    .product-info {
+      padding-bottom: 48px;
     }
 
     .product-meta {
@@ -263,194 +186,103 @@ import { ToastService } from '../../core/services/toast.service';
       margin-bottom: 12px;
     }
 
-    .category-pill {
-      font-size: 0.74rem;
-      letter-spacing: 0.12em;
+    .category-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--accent);
-      font-weight: 700;
+      font-weight: 500;
     }
 
     .product-name {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(2rem, 3.5vw, 2.7rem);
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
       line-height: 1.2;
-      color: var(--text-primary);
-      margin-bottom: 12px;
-    }
-
-    .product-price {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.1rem;
-      font-weight: 700;
-      color: var(--primary);
       margin-bottom: 16px;
     }
 
-    .stock-status-row {
-      margin-bottom: 20px;
+    .product-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 12px;
     }
 
     .stock-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      border-radius: var(--radius-pill);
-      font-size: 0.8rem;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.78rem;
       font-weight: 600;
+      letter-spacing: 0.06em;
 
-      .dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-      }
-
-      &.in-stock {
-        background: var(--success-bg);
-        color: var(--success-text);
-        .dot { background: var(--success-text); }
-      }
-      &.out-of-stock {
-        background: #FDF4E6;
-        color: #A36916;
-        .dot { background: #A36916; }
-      }
+      &.in-stock { background: var(--success-bg); color: var(--success-text); }
+      &.out-of-stock { background: var(--error-bg); color: var(--error-text); }
     }
 
     .product-desc {
-      font-size: 1.02rem;
+      font-size: 0.97rem;
       line-height: 1.8;
       color: var(--text-secondary);
-      margin-bottom: 20px;
     }
 
-    .materials-box {
-      padding: 14px 18px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      margin-bottom: 28px;
+    .materials {
+      margin-top: 12px;
+      font-size: 0.88rem;
       display: flex;
       gap: 8px;
-      font-size: 0.9rem;
 
       .mat-label {
-        font-weight: 700;
+        font-weight: 600;
         color: var(--text-primary);
         flex-shrink: 0;
       }
-      .mat-value {
-        color: var(--text-secondary);
-      }
+
+      .mat-value { color: var(--text-secondary); }
     }
 
     .actions {
       display: flex;
       align-items: center;
       gap: 16px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
 
       @media (max-width: 560px) {
         flex-direction: column;
         align-items: stretch;
+        gap: 10px;
       }
     }
 
-    .add-to-cart-btn {
-      flex: 1;
-      gap: 10px;
-    }
-
-    .whatsapp-order-btn {
+    .share-btn {
       width: 100%;
-      min-height: 48px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
+      padding: 12px;
       background: #25D366;
-      color: #FFFFFF;
+      color: white;
       border: none;
-      border-radius: var(--radius-sm);
-      font-size: 0.95rem;
-      font-weight: 600;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      margin-bottom: 32px;
+      transition: filter 0.2s;
+      margin-bottom: 20px;
+      letter-spacing: 0.04em;
 
-      &:hover {
-        background: #1EBE5D;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 18px rgba(37, 211, 102, 0.3);
-      }
-    }
-
-    .trust-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 28px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-
-      @media (max-width: 500px) {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .trust-pill {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      background: var(--surface);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-sm);
-      padding: 12px 14px;
-
-      .tp-icon { font-size: 1.2rem; }
-
-      strong {
-        display: block;
-        font-size: 0.84rem;
-        color: var(--text-primary);
-      }
-      p {
-        font-size: 0.76rem;
-        color: var(--text-muted);
-        margin: 0;
-        line-height: 1.4;
-      }
+      &:hover { filter: brightness(1.1); }
     }
 
     .handmade-note {
       display: flex;
       gap: 12px;
-      padding: 16px 18px;
-      background: var(--bg-warm);
-      border-radius: var(--radius-sm);
-      border: 1px dashed var(--border);
-      font-size: 0.88rem;
+      padding: 16px;
+      background: var(--bg);
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
 
-      .note-icon { font-size: 1.3rem; }
-
-      strong {
-        display: block;
-        color: var(--text-primary);
-        margin-bottom: 2px;
-      }
-
-      p {
-        margin: 0;
-        color: var(--text-secondary);
-        line-height: 1.6;
-        font-size: 0.84rem;
-      }
-    }
-
-    .similar-section {
-      padding: 40px 0 80px;
-      border-top: 1px solid var(--border);
+      p { margin: 0; line-height: 1.6; font-size: 0.85rem; }
     }
   `]
 })
@@ -461,7 +293,6 @@ export class ProductDetailComponent implements OnInit {
   private auth = inject(AuthService);
   private orderService = inject(OrderService);
   private router = inject(Router);
-  private toast = inject(ToastService);
 
   menuOpen = signal(false);
   loading = signal(true);
@@ -491,6 +322,11 @@ export class ProductDetailComponent implements OnInit {
   addToCart() {
     const p = this.product();
     if (!p) return;
+    if (!this.auth.isLoggedIn()) {
+      this.auth.redirectUrl = `/product/${p.slug}`;
+      this.router.navigate(['/login']);
+      return;
+    }
     this.cartService.addItem(p, this.qty());
   }
 

@@ -26,9 +26,6 @@ import { Component, Input } from '@angular/core';
       display: flex;
       flex-direction: column;
       height: 100%;
-      border-radius: var(--radius-md);
-      background: var(--surface);
-      border: 1px solid var(--border);
     }
 
     .img-skel {
@@ -38,33 +35,32 @@ import { Component, Input } from '@angular/core';
     }
 
     .body {
-      padding: 16px 18px 18px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       flex: 1;
-      gap: 12px;
+      gap: 10px;
     }
 
     .line {
       height: 12px;
       border-radius: 6px;
-      &.short { width: 35%; height: 10px; }
-      &.medium { width: 80%; height: 18px; }
-      &.price { width: 45%; height: 22px; }
+      &.short { width: 40%; }
+      &.medium { width: 75%; height: 16px; }
+      &.price { width: 30%; height: 20px; }
     }
 
     .footer-skel {
       display: flex;
-      gap: 8px;
+      justify-content: space-between;
       align-items: center;
-      margin-top: auto;
-      padding-top: 8px;
+      margin-top: 4px;
     }
 
     .btn-skel {
-      flex: 1;
-      height: 42px;
-      border-radius: var(--radius-sm);
+      width: 90px;
+      height: 32px;
+      border-radius: 4px;
     }
   `]
 })

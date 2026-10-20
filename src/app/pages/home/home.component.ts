@@ -38,55 +38,29 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
         <!-- Top Marquee Ribbon -->
         <app-marquee-ribbon />
 
-        <!-- Editorial Boutique Hero -->
+        <!-- Hero -->
         <section class="hero">
           <div class="hero-content container">
             <div class="hero-text fade-in">
-              <span class="section-label">Handcrafted with Intention & Love</span>
-              <h1>Art That Speaks,<br><em>Crafted to Last.</em></h1>
-              <p>Discover one-of-a-kind handmade crochet creations, artisanal accessories, and mindful home décor made slowly and sustainably by human hands.</p>
-              
+              <span class="section-label">✦ Handcrafted with Love</span>
+              <h1>Art that Speaks,<br><em>Crafted to Last</em></h1>
+              <p>Discover one-of-a-kind handmade pieces that carry the warmth of the artisan's hands. Each item is crafted with intention, never mass-produced.</p>
               <div class="hero-actions">
-                <a routerLink="/shop" class="btn btn-primary btn-lg">Explore Collection →</a>
+                <a routerLink="/shop" class="btn btn-primary btn-lg">Shop Now</a>
                 <a routerLink="/about" class="btn btn-outline btn-lg">Our Story</a>
               </div>
-
-              <!-- Trust Points -->
-              <div class="hero-trust-row">
-                <div class="trust-item">
-                  <span class="trust-icon">🌿</span>
-                  <span>100% Handmade</span>
-                </div>
-                <div class="trust-item">
-                  <span class="trust-icon">🧵</span>
-                  <span>Small Batch Quality</span>
-                </div>
-                <div class="trust-item">
-                  <span class="trust-icon">💬</span>
-                  <span>WhatsApp Custom Orders</span>
-                </div>
-              </div>
             </div>
-
-            <!-- Hero Visual Collage -->
             <div class="hero-visual fade-in">
               <div class="hero-img-grid">
                 @for (product of heroProducts(); track product.id; let index = $index) {
                   <a [routerLink]="['/product', product.slug]" class="img-block" [class.main]="index === 0" [class.secondary]="index === 1" [class.tertiary]="index === 2">
-                    <img
-                      [src]="product.photos[0]"
-                      [alt]="product.name"
-                      [attr.fetchpriority]="index === 0 ? 'high' : 'auto'"
-                      [attr.loading]="index === 0 ? 'eager' : 'lazy'"
-                      width="500"
-                      height="600"
-                    />
+                    <img [src]="product.photos[0]" [alt]="product.name" />
                   </a>
                 }
               </div>
               <div class="hero-badge">
                 <span class="badge-num">200+</span>
-                <span class="badge-text">Handcrafted<br>Treasures</span>
+                <span class="badge-text">Handmade<br>Pieces</span>
               </div>
             </div>
           </div>
@@ -95,32 +69,27 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
         <!-- Browse Categories -->
         <section class="section categories-section">
           <div class="container">
-            <div class="section-header-row">
-              <div>
-                <span class="section-label">Curated by Craft</span>
-                <h2 class="section-title">Browse by Category</h2>
-              </div>
-              <a routerLink="/shop" class="btn btn-ghost hide-mobile">All Categories →</a>
+            <div class="section-header">
+              <span class="section-label">What we make</span>
+              <h2 class="section-title">Browse by Category</h2>
             </div>
-
             <div class="cat-slider-wrapper">
               <div
                 class="cat-slider"
                 [style.transform]="'translateX(-' + (sliderOffset() * (100 / visibleCount)) + '%)'"
-                [style.transition]="noTransition() ? 'none' : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'"
+                [style.transition]="noTransition() ? 'none' : 'transform 0.5s ease'"
               >
                 @for (cat of sliderItems(); track $index) {
                   <a routerLink="/shop" [queryParams]="{category: cat.id}" class="cat-card-img" appTilt>
                     <div class="cat-img-wrap">
                       @if (cat.image_url) {
-                        <img [src]="cat.image_url" [alt]="cat.name" loading="lazy" width="240" height="240" />
+                        <img [src]="cat.image_url" [alt]="cat.name" loading="lazy" />
                       } @else {
                         <span class="cat-placeholder-icon">🧵</span>
                       }
-                      <div class="cat-img-overlay"></div>
                     </div>
                     <span class="cat-label">{{ cat.name }}</span>
-                    <span class="cat-count">{{ cat.product_count || 'View' }} pieces</span>
+                    <span class="cat-count">{{ cat.product_count }}</span>
                   </a>
                 }
               </div>
@@ -131,16 +100,7 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
         <!-- Bouquet Bloom Animation Section -->
         <section class="section bouquet-section">
           <div class="container">
-            <div class="bouquet-card card">
-              <div class="bouquet-text">
-                <span class="section-label">Artisan Technique</span>
-                <h3>Woven from Pure Imagination</h3>
-                <p>From the first loop of thread to the final knot, each flower and charm blossoms through patient artisanal dedication.</p>
-              </div>
-              <div class="bouquet-visual">
-                <app-bouquet-bloom />
-              </div>
-            </div>
+            <app-bouquet-bloom />
           </div>
         </section>
 
@@ -152,12 +112,12 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
                 <span class="section-label">Handpicked for you</span>
                 <h2 class="section-title">Featured Pieces</h2>
               </div>
-              <a routerLink="/shop" class="btn btn-outline">View All Pieces →</a>
+              <a routerLink="/shop" class="btn btn-outline">View All →</a>
             </div>
 
             @if (loading()) {
               <div class="product-grid">
-                <app-product-card-skeleton [count]="8" />
+                <app-product-card-skeleton [count]="10" />
               </div>
             } @else {
               <div class="product-grid">
@@ -174,20 +134,10 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
           <div class="container">
             <div class="about-inner">
               <div class="about-text">
-                <span class="section-label">Our Philosophy</span>
+                <span class="section-label">Our Story</span>
                 <h2>Where Every Stitch<br><em>Holds a Memory</em></h2>
-                <p>Crochus was born from a belief that handmade objects carry something mass-produced items never can — the energy, intention, and time of a human being. We craft pieces that invite comfort and bring organic beauty into your everyday life.</p>
-                <div class="about-stats-row">
-                  <div class="stat-item">
-                    <strong>100%</strong>
-                    <span>Plastic-free packing</span>
-                  </div>
-                  <div class="stat-item">
-                    <strong>Custom</strong>
-                    <span>Made-to-order available</span>
-                  </div>
-                </div>
-                <a routerLink="/about" class="btn btn-primary" style="margin-top:20px">Read Our Story →</a>
+                <p>Crochus was born from a belief that handmade objects carry something mass-produced items never can — the energy, intention, and time of a human being. We work with artisans who have honed their craft over years, ensuring every piece you receive is truly one of a kind.</p>
+                <a routerLink="/about" class="btn btn-primary" style="margin-top:16px">Read Our Story</a>
               </div>
               <div class="about-img">
                 <app-teddy-build />
@@ -201,18 +151,15 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
         <section class="section insta-section">
           <div class="container">
             <div class="section-header" style="text-align:center">
-              <span class="section-label">Community & Craft</span>
+              <span class="section-label">Made for you</span>
               <h2 class="section-title">More Handmade Favourites</h2>
-              <p style="margin-bottom:32px; max-width: 500px; margin-left: auto; margin-right: auto;">Follow along on Instagram &#64;crochus to see works in progress and newly completed drops.</p>
+              <p style="margin-bottom:32px">Discover more pieces selected by Crochus</p>
             </div>
             <div class="insta-grid">
               @for (product of lastSectionProducts(); track product.id) {
-                <a [routerLink]="['/product', product.slug]" class="insta-cell" [attr.aria-label]="product.name">
-                  <img [src]="product.photos[0]" [alt]="product.name" loading="lazy" width="300" height="300" />
-                  <div class="insta-overlay">
-                    <span class="insta-name">{{ product.name }}</span>
-                    <span class="insta-price">₹{{ product.price | number:'1.0-0':'en-IN' }}</span>
-                  </div>
+                <a [routerLink]="['/product', product.slug]" class="insta-cell">
+                  <img [src]="product.photos[0]" [alt]="product.name" loading="lazy" />
+                  <div class="insta-overlay">{{ product.name }}</div>
                 </a>
               }
             </div>
@@ -238,52 +185,57 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
       justify-content: center;
       position: relative;
       overflow: hidden;
-      background: linear-gradient(180deg, var(--bg) 0%, var(--bg-warm) 100%);
-      padding: 40px 0 60px;
+      background: var(--bg);
 
       &::before {
         content: '';
         position: absolute;
-        top: -160px; right: -160px;
-        width: 560px; height: 560px;
-        background: radial-gradient(circle, rgba(217, 136, 128, 0.12) 0%, transparent 70%);
+        top: -200px; right: -200px;
+        width: 600px; height: 600px;
+        background: radial-gradient(circle, rgba(212,201,138,0.12) 0%, transparent 70%);
         pointer-events: none;
       }
     }
 
     .hero-content {
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 60px;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
       align-items: center;
+      padding-top: 24px;
+      padding-bottom: 40px;
 
-      @media (max-width: 960px) {
+      @media (max-width: 900px) {
         grid-template-columns: 1fr;
-        gap: 36px;
+        gap: 24px;
+        padding-top: 24px;
+        padding-bottom: 24px;
         text-align: center;
       }
     }
 
     .hero-text {
       h1 {
-        margin: 14px 0 20px;
-        font-size: clamp(2.3rem, 5.2vw, 3.8rem);
-        line-height: 1.18;
+        margin: 12px 0 20px;
         em { color: var(--primary); font-style: italic; }
       }
 
       p {
-        max-width: 500px;
-        font-size: 1.08rem;
-        line-height: 1.75;
+        max-width: 440px;
+        font-size: 1.05rem;
+        line-height: 1.8;
         margin-bottom: 32px;
-        color: var(--text-secondary);
       }
 
-      @media (max-width: 960px) {
+      @media (max-width: 900px) {
+        h1 {
+          font-size: 2.2rem;
+          margin: 8px 0 16px;
+        }
         p {
-          margin: 0 auto 28px;
-          font-size: 1rem;
+          margin: 0 auto 24px;
+          font-size: 0.95rem;
+          line-height: 1.6;
         }
       }
     }
@@ -292,35 +244,9 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
       display: flex;
       gap: 16px;
       flex-wrap: wrap;
-      margin-bottom: 32px;
 
-      @media (max-width: 960px) {
+      @media (max-width: 900px) {
         justify-content: center;
-      }
-    }
-
-    .hero-trust-row {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-
-      @media (max-width: 960px) {
-        justify-content: center;
-        gap: 16px;
-      }
-
-      .trust-item {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 0.82rem;
-        font-weight: 600;
-        color: var(--text-secondary);
-
-        .trust-icon { font-size: 0.95rem; }
       }
     }
 
@@ -415,40 +341,11 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
 
     /* ── Categories Slider ── */
     .categories-section { padding-top: 48px; padding-bottom: 24px; }
-    .bouquet-section { padding-top: 24px; padding-bottom: 40px; }
+    .bouquet-section { padding-top: 24px; padding-bottom: 24px; }
     .section-header { margin-bottom: 24px; }
-
-    .bouquet-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 44px 50px;
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      align-items: center;
-      gap: 40px;
-      box-shadow: var(--shadow);
-
-      @media (max-width: 900px) {
-        grid-template-columns: 1fr;
-        padding: 30px 20px;
-        text-align: center;
-      }
-    }
-
-    .bouquet-text {
-      h3 {
-        margin: 8px 0 16px;
-        font-size: clamp(1.6rem, 3vw, 2.2rem);
-      }
-      p {
-        line-height: 1.75;
-      }
-    }
 
     .cat-slider-wrapper {
       overflow: hidden;
-      padding: 8px 0;
     }
 
     .cat-slider {
@@ -468,21 +365,19 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
 
       @media (max-width: 900px) { flex: 0 0 calc(100% / 4 - 12px); }
       @media (max-width: 560px) { flex: 0 0 calc(100% / 3.2 - 10px); }
-      @media (max-width: 380px) { flex: 0 0 calc(100% / 2.3 - 8px); }
     }
 
     .cat-img-wrap {
       width: 100%;
       aspect-ratio: 1;
-      border-radius: var(--radius-md);
+      border-radius: 12px;
       overflow: hidden;
       background: var(--surface);
       border: 1.5px solid var(--border);
-      transition: box-shadow 0.25s, transform 0.25s;
+      transition: box-shadow 0.3s, transform 0.3s;
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
 
       img {
         width: 100%;
@@ -496,26 +391,30 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
       .cat-card-img:hover & {
         box-shadow: var(--shadow-hover);
         transform: translateY(-4px);
-        border-color: var(--primary);
-        img { transform: scale(1.08); }
+        img { transform: scale(1.06); }
       }
     }
 
+    .all-items-card {
+      background: var(--primary);
+      border-color: var(--primary);
+      .all-items-icon { font-size: 2.5rem; }
+    }
+
     .cat-label {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
       color: var(--text-primary);
       text-align: center;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.04em;
     }
 
     .cat-count {
       font-size: 0.72rem;
-      font-weight: 600;
       color: var(--text-secondary);
-      background: var(--bg-warm);
-      padding: 2px 10px;
-      border-radius: var(--radius-pill);
+      background: var(--bg);
+      padding: 2px 8px;
+      border-radius: 12px;
     }
 
     /* ── About Banner ── */
@@ -547,33 +446,6 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
       p { line-height: 1.8; }
     }
 
-    .about-stats-row {
-      display: flex;
-      gap: 32px;
-      margin: 24px 0 8px;
-
-      @media (max-width: 900px) {
-        justify-content: center;
-      }
-
-      .stat-item {
-        strong {
-          display: block;
-          font-family: 'Playfair Display', serif;
-          font-size: 1.8rem;
-          color: var(--primary);
-          line-height: 1.1;
-        }
-        span {
-          font-size: 0.78rem;
-          font-weight: 600;
-          color: var(--text-secondary);
-          text-transform: uppercase;
-          letter-spacing: 0.06em;
-        }
-      }
-    }
-
     .about-img {
       position: relative;
 
@@ -586,7 +458,7 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
         width: 100%;
         aspect-ratio: 4/5;
         object-fit: cover;
-        border-radius: var(--radius-md);
+        border-radius: 8px;
       }
 
       .about-accent {
@@ -594,10 +466,9 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
         bottom: -16px;
         right: -16px;
         width: 120px; height: 120px;
-        background: var(--primary-subtle);
-        border: 2px dashed var(--primary);
-        opacity: 0.5;
-        border-radius: var(--radius-md);
+        background: var(--accent);
+        opacity: 0.2;
+        border-radius: 8px;
         z-index: -1;
       }
     }
@@ -606,26 +477,25 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
     .insta-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
+      gap: 12px;
 
       @media (max-width: 768px) {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
       }
       @media (max-width: 440px) {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
       }
     }
 
     .insta-cell {
       position: relative;
       aspect-ratio: 1;
-      border-radius: var(--radius-md);
+      border-radius: 8px;
       overflow: hidden;
       display: block;
       background: var(--bg);
-      border: 1px solid var(--border);
 
       img {
         width: 100%; height: 100%;
@@ -636,30 +506,13 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
       .insta-overlay {
         position: absolute;
         inset: 0;
-        background: rgba(36, 30, 28, 0.75);
-        backdrop-filter: blur(2px);
+        background: rgba(0,0,0,0.4);
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 12px;
-        text-align: center;
+        font-size: 1.5rem;
         opacity: 0;
-        transition: opacity 0.25s ease;
-
-        .insta-name {
-          color: #FFFFFF;
-          font-family: 'Playfair Display', serif;
-          font-size: 0.95rem;
-          font-weight: 600;
-          margin-bottom: 4px;
-        }
-
-        .insta-price {
-          color: var(--accent-rose);
-          font-weight: 700;
-          font-size: 0.88rem;
-        }
+        transition: opacity 0.3s;
       }
 
       &:hover {

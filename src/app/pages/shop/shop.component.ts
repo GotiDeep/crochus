@@ -26,64 +26,62 @@ import { Product, Category, ProductFilter } from '../../core/models';
           <!-- Page Header -->
           <div class="shop-header">
             <div>
-              <span class="section-label">Curated Handcrafted Catalogue</span>
-              <h1>Artisan Collection</h1>
-              <p>{{ total() }} unique pieces, individually made by hand with natural fibers & mindful care.</p>
+              <span class="section-label">Explore</span>
+              <h1 style="font-size: 2.5rem; margin:8px 0">Our Collection</h1>
+              <p>{{ total() }} handmade pieces, curated with care</p>
             </div>
           </div>
 
           <!-- Search Bar -->
           <div class="search-bar">
-            <span class="search-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-            </span>
+            <span class="search-icon">🔍</span>
             <input
               type="text"
               class="search-input"
-              placeholder="Search handcrafted bags, jewellery, décor, scarves…"
+              placeholder="Search products…"
               [(ngModel)]="searchInput"
               (ngModelChange)="onSearchChange($event)"
-              aria-label="Search handcrafted collection"
             />
             @if (searchInput) {
-              <button class="clear-btn" (click)="clearSearch()" aria-label="Clear search">✕</button>
+              <button class="clear-btn" (click)="clearSearch()">✕</button>
             }
           </div>
 
-          <!-- Filters & Sort Row -->
+          <!-- Filters Row -->
           <div class="filters-row">
-            <!-- Category Chips: Always accessible, horizontal scrolling on mobile -->
-            <div class="chips-scroll category-chips" role="tablist" aria-label="Filter by category">
+            <!-- Category Chips (Desktop) -->
+            <div class="chips-scroll category-chips">
               <button
                 class="chip"
                 [class.active]="!activeCategory()"
                 (click)="setCategory(null)"
-                role="tab"
-                [attr.aria-selected]="!activeCategory()"
-              >All Pieces</button>
+              >All</button>
               @for (cat of categories(); track cat.id) {
                 <button
                   class="chip"
                   [class.active]="activeCategory() === cat.id"
                   (click)="setCategory(cat.id)"
-                  role="tab"
-                  [attr.aria-selected]="activeCategory() === cat.id"
-                >
-                  {{ cat.name }}
-                  @if (cat.product_count) {
-                    <span class="chip-count">({{ cat.product_count }})</span>
-                  }
-                </button>
+                >{{ cat.name }}</button>
               }
             </div>
 
-            <!-- Sort Select Dropdown -->
-            <div class="sort-wrapper">
-              <label class="sort-label hide-mobile" for="sort-dropdown">Sort:</label>
-              <select id="sort-dropdown" class="form-control sort-select" [(ngModel)]="sortBy" (ngModelChange)="onSortChange()" aria-label="Sort products">
+            <!-- Desktop Sort -->
+            <select class="form-control sort-select hide-mobile" [(ngModel)]="sortBy" (ngModelChange)="onSortChange()">
+              <option value="newest">Newest First</option>
+              <option value="price_asc">Price: Low → High</option>
+              <option value="price_desc">Price: High → Low</option>
+              <option value="popular">Most Popular</option>
+            </select>
+
+            <!-- Mobile Filter & Sort Bar -->
+            <div class="mobile-filter-bar">
+              <button class="mobile-filter-btn" (click)="menuOpen.set(true)">
+                <span>🏷 Categories</span>
+                @if (activeCategoryName()) {
+                  <strong>({{ activeCategoryName() }})</strong>
+                }
+              </button>
+              <select class="form-control sort-select" [(ngModel)]="sortBy" (ngModelChange)="onSortChange()">
                 <option value="newest">Newest First</option>
                 <option value="price_asc">Price: Low → High</option>
                 <option value="price_desc">Price: High → Low</option>
@@ -92,28 +90,17 @@ import { Product, Category, ProductFilter } from '../../core/models';
             </div>
           </div>
 
-          <!-- Active Filter Pill Indicator -->
-          @if (activeCategoryName() || searchInput) {
-            <div class="active-filter-bar fade-in">
-              <span>Showing: <strong>{{ activeCategoryName() || 'All Pieces' }}</strong></span>
-              @if (searchInput) {
-                <span>matching "<em>{{ searchInput }}</em>"</span>
-              }
-              <button class="clear-pill-btn" (click)="clearAll()">✕ Clear Filters</button>
-            </div>
-          }
-
           <!-- Results -->
           @if (loading()) {
             <div class="product-grid fade-in">
-              <app-product-card-skeleton [count]="8" />
+              <app-product-card-skeleton [count]="10" />
             </div>
           } @else if (products().length === 0) {
-            <div class="empty-state card">
+            <div class="empty-state">
               <span class="empty-icon">🧵</span>
               <h3>No pieces found</h3>
-              <p>We couldn't find any handmade treasures matching your selection. Try clearing your search or exploring other categories.</p>
-              <button class="btn btn-primary" (click)="clearAll()">Browse All Pieces</button>
+              <p>Try adjusting your search or browse all categories.</p>
+              <button class="btn btn-primary" (click)="clearAll()">Clear Filters</button>
             </div>
           } @else {
             <div class="product-grid fade-in">
@@ -124,31 +111,13 @@ import { Product, Category, ProductFilter } from '../../core/models';
 
             <!-- Pagination -->
             @if (totalPages() > 1) {
-              <nav class="pagination" aria-label="Catalogue pagination">
-                <button
-                  class="page-btn prev-btn"
-                  [disabled]="currentPage() === 1"
-                  (click)="goToPage(currentPage() - 1)"
-                  aria-label="Previous page"
-                >‹ Prev</button>
-
+              <div class="pagination">
+                <button class="page-btn" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">‹</button>
                 @for (p of pageNumbers(); track p) {
-                  <button
-                    class="page-btn num-btn"
-                    [class.active]="p === currentPage()"
-                    (click)="goToPage(p)"
-                    [attr.aria-label]="'Go to page ' + p"
-                    [attr.aria-current]="p === currentPage() ? 'page' : null"
-                  >{{ p }}</button>
+                  <button class="page-btn" [class.active]="p === currentPage()" (click)="goToPage(p)">{{ p }}</button>
                 }
-
-                <button
-                  class="page-btn next-btn"
-                  [disabled]="currentPage() === totalPages()"
-                  (click)="goToPage(currentPage() + 1)"
-                  aria-label="Next page"
-                >Next ›</button>
-              </nav>
+                <button class="page-btn" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">›</button>
+              </div>
             }
           }
         </div>
@@ -159,51 +128,39 @@ import { Product, Category, ProductFilter } from '../../core/models';
   `,
   styles: [`
     .shop-header {
-      padding: 40px 0 24px;
-      h1 {
-        margin: 8px 0 10px;
-        font-size: clamp(2.2rem, 4vw, 3.2rem);
-      }
-      p {
-        max-width: 540px;
-        font-size: 1.05rem;
-      }
+      padding: 48px 0 24px;
     }
 
     .search-bar {
       position: relative;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
 
       .search-icon {
         position: absolute;
-        left: 18px;
+        left: 16px;
         top: 50%;
         transform: translateY(-50%);
-        color: var(--text-muted);
+        font-size: 1rem;
         pointer-events: none;
-        display: flex;
-        align-items: center;
       }
 
       .search-input {
         width: 100%;
-        min-height: 52px;
-        padding: 14px 48px 14px 50px;
+        padding: 14px 48px;
         background: var(--surface);
         border: 1.5px solid var(--border);
-        border-radius: var(--radius-md);
+        border-radius: 8px;
         font-size: 1rem;
         color: var(--text-primary);
         outline: none;
-        transition: all 0.2s ease;
-        box-shadow: var(--shadow-sm);
+        transition: border-color 0.2s;
 
         &:focus {
           border-color: var(--primary);
-          box-shadow: 0 0 0 4px rgba(74, 92, 47, 0.12);
+          box-shadow: 0 0 0 3px rgba(74,92,47,0.1);
         }
 
-        &::placeholder { color: var(--text-muted); }
+        &::placeholder { color: var(--text-secondary); opacity: 0.7; }
       }
 
       .clear-btn {
@@ -211,24 +168,13 @@ import { Product, Category, ProductFilter } from '../../core/models';
         right: 16px;
         top: 50%;
         transform: translateY(-50%);
-        background: var(--bg-warm);
-        border: 1px solid var(--border);
-        border-radius: 50%;
-        width: 28px;
-        height: 28px;
-        font-size: 0.8rem;
+        background: none;
+        border: none;
+        font-size: 0.85rem;
         color: var(--text-secondary);
         cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.15s ease;
-
-        &:hover {
-          background: var(--primary);
-          color: #FFFFFF;
-          border-color: var(--primary);
-        }
+        padding: 4px;
+        &:hover { color: var(--text-primary); }
       }
     }
 
@@ -237,92 +183,61 @@ import { Product, Category, ProductFilter } from '../../core/models';
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      margin-bottom: 24px;
+      margin-bottom: 32px;
       flex-wrap: wrap;
 
-      @media (max-width: 768px) {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
+      @media (max-width: 600px) {
+        margin-bottom: 20px;
       }
     }
 
     .category-chips {
       flex: 1;
       min-width: 0;
-      padding-bottom: 4px;
-    }
 
-    .chip-count {
-      font-size: 0.72rem;
-      opacity: 0.85;
-      margin-left: 4px;
-    }
-
-    .sort-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-
-      .sort-label {
-        font-size: 0.84rem;
-        font-weight: 600;
-        color: var(--text-secondary);
+      @media (max-width: 768px) {
+        display: none; /* Hidden on mobile/tablet because it is inside hamburger menu */
       }
+    }
+
+    .mobile-filter-bar {
+      display: none;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+
+      @media (max-width: 768px) {
+        display: flex;
+      }
+    }
+
+    .mobile-filter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--primary);
+      cursor: pointer;
+      flex: 1;
+      justify-content: center;
     }
 
     .sort-select {
+      flex-shrink: 0;
+      padding: 10px 16px;
+      font-size: 0.85rem;
       min-width: 180px;
-      min-height: 42px;
-      padding: 9px 14px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      background: var(--surface);
-      border-radius: var(--radius-sm);
 
       @media (max-width: 768px) {
-        width: 100%;
+        flex: 1;
+        min-width: 0;
       }
-    }
-
-    .active-filter-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 16px;
-      background: var(--bg-warm);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      margin-bottom: 24px;
-      font-size: 0.88rem;
-      color: var(--text-secondary);
-      flex-wrap: wrap;
-
-      strong { color: var(--primary); }
-
-      .clear-pill-btn {
-        margin-left: auto;
-        background: none;
-        border: none;
-        color: var(--primary);
-        font-weight: 600;
-        cursor: pointer;
-        padding: 4px 8px;
-        border-radius: 4px;
-        transition: background 0.15s;
-
-        &:hover {
-          background: rgba(74, 92, 47, 0.1);
-        }
-      }
-    }
-
-    .empty-state.card {
-      padding: 60px 24px;
-      max-width: 600px;
-      margin: 40px auto;
-      text-align: center;
     }
 
     .pagination {
@@ -332,41 +247,22 @@ import { Product, Category, ProductFilter } from '../../core/models';
       gap: 8px;
       margin-top: 48px;
       padding-bottom: 48px;
-      flex-wrap: wrap;
     }
 
     .page-btn {
-      min-height: 44px; /* Touch target */
-      padding: 8px 16px;
+      width: 40px; height: 40px;
       background: var(--surface);
       border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
+      border-radius: 6px;
       color: var(--text-primary);
       font-size: 0.9rem;
-      font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
 
-      &:hover:not(:disabled) {
-        border-color: var(--primary);
-        color: var(--primary);
-        transform: translateY(-1px);
-      }
-
-      &.active {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary);
-        box-shadow: 0 4px 12px rgba(74, 92, 47, 0.25);
-      }
-
-      &:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-      }
+      &:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+      &.active { background: var(--primary); color: white; border-color: var(--primary); }
+      &:disabled { opacity: 0.4; cursor: not-allowed; }
     }
   `]
 })

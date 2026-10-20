@@ -23,11 +23,11 @@ import { Category } from '../../../core/models';
 
         <ul class="menu-links">
           <li><a routerLink="/" (click)="close.emit()">Home</a></li>
-          <li><a routerLink="/shop" (click)="close.emit()">Collection</a></li>
+          <li><a routerLink="/shop" (click)="close.emit()">Shop All</a></li>
 
           <!-- Filters Collapsible Submenu -->
           <li class="filter-menu-item">
-            <button class="filter-toggle-btn" (click)="toggleFilters()" aria-label="Toggle Category Filter">
+            <button class="filter-toggle-btn" (click)="toggleFilters()">
               <span>🏷 Filter by Category</span>
               <span class="chevron" [class.open]="filtersOpen()">▾</span>
             </button>
@@ -35,7 +35,7 @@ import { Category } from '../../../core/models';
               <ul class="filter-submenu">
                 <li>
                   <a (click)="selectCategory(null)" class="sub-link">
-                    ✨ All Pieces
+                    ✨ All Products
                   </a>
                 </li>
                 @for (cat of categories(); track cat.id) {
@@ -52,26 +52,18 @@ import { Category } from '../../../core/models';
             }
           </li>
 
-          <li><a routerLink="/wishlist" (click)="close.emit()">My Wishlist</a></li>
-          <li><a routerLink="/about" (click)="close.emit()">Our Story</a></li>
-          <li><a routerLink="/contact" (click)="close.emit()">Contact Us</a></li>
-          <li>
-            <a routerLink="/cart" (click)="close.emit()" class="cart-menu-link">
-              <span>Shopping Cart</span>
-              @if (cart.totalItems() > 0) {
-                <span class="menu-cart-badge">{{ cart.totalItems() }}</span>
-              }
-            </a>
-          </li>
+          <li><a routerLink="/about" (click)="close.emit()">About Us</a></li>
+          <li><a routerLink="/contact" (click)="close.emit()">Contact</a></li>
+          <li><a routerLink="/cart" (click)="close.emit()">Cart ({{ cart.totalItems() }})</a></li>
         </ul>
 
         <div class="menu-footer">
           @if (auth.isLoggedIn()) {
-            <a routerLink="/profile" class="btn btn-outline btn-full" (click)="close.emit()">My Profile & Orders</a>
-            <button class="btn btn-ghost btn-full" style="margin-top:10px" (click)="logout()">Sign Out</button>
+            <a routerLink="/profile" class="btn btn-outline btn-full" (click)="close.emit()">My Profile</a>
+            <button class="btn btn-ghost btn-full" style="margin-top:10px" (click)="logout()">Logout</button>
           } @else {
             <a routerLink="/login" class="btn btn-primary btn-full" (click)="close.emit()">Sign In</a>
-            <a routerLink="/register" class="btn btn-outline btn-full" style="margin-top:10px" (click)="close.emit()">Create Account</a>
+            <a routerLink="/register" class="btn btn-outline btn-full" style="margin-top:10px" (click)="close.emit()">Register</a>
           }
         </div>
       </nav>
@@ -82,25 +74,22 @@ import { Category } from '../../../core/models';
       position: fixed;
       inset: 0;
       background: var(--overlay);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
       z-index: 900;
-      animation: fadeOverlay 0.25s ease;
+      animation: fadeOverlay 0.3s ease;
     }
 
     .slide-menu {
       position: fixed;
       top: 0; right: 0;
-      width: min(340px, 86vw);
+      width: min(320px, 85vw);
       height: 100vh;
       background: var(--surface);
       z-index: 950;
       display: flex;
       flex-direction: column;
-      padding-top: env(safe-area-inset-top, 0px);
-      padding-bottom: env(safe-area-inset-bottom, 16px);
-      animation: slideRight 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: -8px 0 40px rgba(36, 30, 28, 0.16);
+      padding: 0;
+      animation: slideRight 0.3s ease;
+      box-shadow: -8px 0 40px rgba(0,0,0,0.2);
       overflow-y: auto;
     }
 
@@ -118,8 +107,8 @@ import { Category } from '../../../core/models';
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--border-light);
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
     }
 
     .mobile-logo-link {
@@ -130,6 +119,7 @@ import { Category } from '../../../core/models';
     }
 
     .menu-logo-img {
+      /* Change --logo-height-menu in styles.scss or change 38px here to resize */
       height: var(--logo-height-menu, 38px);
       width: auto;
       display: block;
@@ -141,12 +131,12 @@ import { Category } from '../../../core/models';
     }
 
     .close-btn {
-      width: 44px; height: 44px; /* Touch target */
+      width: 36px; height: 36px;
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 50%;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 0.85rem;
       color: var(--text-secondary);
       display: flex; align-items: center; justify-content: center;
       transition: all 0.2s;
@@ -155,24 +145,21 @@ import { Category } from '../../../core/models';
 
     .menu-links {
       list-style: none;
-      padding: 12px 0;
+      padding: 16px 0;
       flex: 1;
 
       li a {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        min-height: 48px;
-        padding: 12px 24px;
-        font-size: 0.96rem;
-        font-weight: 500;
+        display: block;
+        padding: 14px 24px;
+        font-size: 1rem;
+        font-weight: 400;
         color: var(--text-primary);
-        letter-spacing: 0.02em;
+        letter-spacing: 0.04em;
         border-left: 3px solid transparent;
-        transition: all 0.15s ease;
+        transition: all 0.2s;
         cursor: pointer;
 
-        &:hover, &:active {
+        &:hover {
           background: var(--bg);
           border-left-color: var(--primary);
           color: var(--primary);
@@ -180,36 +167,26 @@ import { Category } from '../../../core/models';
       }
     }
 
-    .menu-cart-badge {
-      background: var(--primary);
-      color: white;
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: var(--radius-pill);
-    }
-
     .filter-menu-item {
-      border-top: 1px solid var(--border-light);
-      border-bottom: 1px solid var(--border-light);
-      margin: 4px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin: 6px 0;
     }
 
     .filter-toggle-btn {
       width: 100%;
-      min-height: 48px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 24px;
+      padding: 14px 24px;
       background: none;
       border: none;
-      font-size: 0.95rem;
-      font-weight: 600;
+      font-size: 1rem;
+      font-weight: 500;
       color: var(--primary);
       cursor: pointer;
       text-align: left;
-      transition: background 0.15s;
+      transition: background 0.2s;
 
       &:hover { background: var(--bg); }
     }
@@ -224,17 +201,16 @@ import { Category } from '../../../core/models';
 
     .filter-submenu {
       list-style: none;
-      background: var(--bg-warm);
-      padding: 4px 0;
+      background: rgba(74, 92, 47, 0.04);
+      padding: 6px 0;
 
       li a.sub-link {
         padding: 10px 24px 10px 36px;
-        font-size: 0.88rem;
+        font-size: 0.9rem;
         color: var(--text-secondary);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        min-height: 40px;
 
         &:hover {
           color: var(--primary);
@@ -250,9 +226,8 @@ import { Category } from '../../../core/models';
     }
 
     .menu-footer {
-      padding: 20px 24px;
-      border-top: 1px solid var(--border-light);
-      background: var(--surface);
+      padding: 24px;
+      border-top: 1px solid var(--border);
     }
   `]
 })

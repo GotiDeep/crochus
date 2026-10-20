@@ -7,22 +7,19 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink],
   template: `
     <div class="nf-page">
-      <a routerLink="/" class="nf-logo-link" aria-label="Crochus Home">
+      <a routerLink="/" class="nf-logo-link">
         <img src="assets/logo.svg" alt="Crochus" class="nf-logo-img" />
       </a>
-
-      <div class="nf-content fade-in">
-        <div class="nf-number" aria-hidden="true">404</div>
-        <span class="section-label">Lost in the Studio</span>
-        <h1>Pattern Not Found</h1>
-        <p>The stitch or page you were looking for seems to have unraveled. Let's guide you back to our handmade collections.</p>
+      <div class="nf-content">
+        <div class="nf-number">404</div>
+        <h1>Lost in the Studio</h1>
+        <p>The page you're looking for seems to have wandered off. Let's get you back to the handmade goodness.</p>
         <div class="nf-actions">
-          <a routerLink="/" class="btn btn-primary btn-lg">Return to Home</a>
-          <a routerLink="/shop" class="btn btn-outline btn-lg">Browse Creations</a>
+          <a routerLink="/" class="btn btn-primary">Go Home</a>
+          <a routerLink="/shop" class="btn btn-outline">Browse Shop</a>
         </div>
       </div>
-
-      <div class="nf-decor" aria-hidden="true">✦</div>
+      <div class="nf-decor">✦</div>
     </div>
   `,
   styles: [`
@@ -33,7 +30,7 @@ import { RouterLink } from '@angular/router';
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: clamp(32px, 5vw, 64px) 24px;
+      padding: 40px 24px;
       position: relative;
       text-align: center;
     }
@@ -41,50 +38,49 @@ import { RouterLink } from '@angular/router';
     .nf-logo-link {
       display: inline-block;
       margin-bottom: 32px;
-
-      .nf-logo-img {
-        height: var(--logo-height-notfound, 46px);
-        width: auto;
-        display: block;
-        filter: var(--logo-filter, none);
-      }
-    }
-
-    .nf-content {
-      max-width: 540px;
-
-      .section-label {
-        margin-bottom: 6px;
-      }
-    }
-
-    .nf-number {
-      font-family: var(--font-heading);
-      font-size: clamp(7rem, 18vw, 12rem);
-      font-weight: 400;
-      color: rgba(74, 92, 47, 0.18);
-      line-height: 0.9;
-      margin-bottom: 4px;
       user-select: none;
     }
 
+    .nf-logo-img {
+      /* Change --logo-height-notfound in styles.scss or change 46px here to resize */
+      height: var(--logo-height-notfound, 46px);
+      width: auto;
+      display: block;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none;
+      filter: var(--logo-filter, none);
+    }
+
+    .nf-content {
+      max-width: 500px;
+    }
+
+    .nf-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(8rem, 20vw, 14rem);
+      font-weight: 300;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
     h1 {
-      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
-      margin: 8px 0 16px;
-      color: var(--text-primary);
+      font-size: 2rem;
+      margin-bottom: 16px;
     }
 
     p {
-      font-size: 1.05rem;
-      max-width: 440px;
+      font-size: 1rem;
+      max-width: 380px;
       margin: 0 auto 32px;
-      line-height: 1.65;
-      color: var(--text-secondary);
+      line-height: 1.7;
     }
 
     .nf-actions {
       display: flex;
-      gap: 14px;
+      gap: 16px;
       justify-content: center;
       flex-wrap: wrap;
     }
@@ -94,12 +90,8 @@ import { RouterLink } from '@angular/router';
       bottom: 40px;
       font-size: 1.5rem;
       color: var(--accent);
-      opacity: 0.5;
-      animation: spin 12s linear infinite;
-
-      @media (prefers-reduced-motion: reduce) {
-        animation: none;
-      }
+      opacity: 0.4;
+      animation: spin 8s linear infinite;
     }
 
     @keyframes spin {
