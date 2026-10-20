@@ -7,6 +7,7 @@ import { HamburgerMenuComponent } from '../../shared/components/hamburger-menu/h
 import { ProductGalleryComponent } from '../../shared/components/product-gallery/product-gallery.component';
 import { BadgeComponent } from '../../shared/components/badge/badge.component';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
+import { ScrollRevealDirective } from '../../shared/animations/scroll-reveal.directive';
 import { ProductService } from '../../core/services/product.service';
 import { CartService } from '../../core/services/cart.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -18,7 +19,7 @@ import { Router } from '@angular/router';
   selector: 'app-product-detail',
   standalone: true,
   imports: [RouterLink, CommonModule, NavbarComponent, FooterComponent,
-    HamburgerMenuComponent, ProductGalleryComponent, BadgeComponent, ProductCardComponent],
+    HamburgerMenuComponent, ProductGalleryComponent, BadgeComponent, ProductCardComponent, ScrollRevealDirective],
   template: `
     <div class="page-wrapper">
       <app-navbar (openMenu)="menuOpen.set(true)" />
@@ -126,12 +127,30 @@ import { Router } from '@angular/router';
                 <span class="section-label">You might also like</span>
                 <h2 class="section-title" style="margin: 8px 0 32px">Similar Pieces</h2>
                 <div class="product-grid">
-                  @for (p of similar(); track p.id) {
-                    <app-product-card [product]="p" />
+                  @for (p of similar(); track p.id; let i = $index) {
+                    <app-product-card [product]="p" appScrollReveal [revealDelay]="(i % 4) * 60" />
                   }
                 </div>
               </section>
             }
+
+            <!-- Sticky Mobile Order/Enquire Bar -->
+            <aside class="mobile-sticky-action-bar" aria-label="Quick Actions">
+              <div class="sticky-bar-content">
+                <div class="sticky-info">
+                  <span class="sticky-price">₹{{ product()!.price | number:'1.0-0':'en-IN' }}</span>
+                  <span class="sticky-name">{{ product()!.name }}</span>
+                </div>
+                <div class="sticky-buttons">
+                  <button class="btn btn-outline btn-sticky-action" (click)="shareOnWhatsApp()" title="Enquire on WhatsApp">
+                    💬 Enquire
+                  </button>
+                  <button class="btn btn-primary btn-sticky-action" [disabled]="!product()!.in_stock" (click)="addToCart()">
+                    {{ product()!.in_stock ? 'Add to Cart' : 'Out of Stock' }}
+                  </button>
+                </div>
+              </div>
+            </aside>
           </div>
         }
       </main>
@@ -286,6 +305,79 @@ import { Router } from '@angular/router';
       font-size: 0.85rem;
 
       p { margin: 0; line-height: 1.6; font-size: 0.85rem; }
+    }
+
+    /* ── Sticky Mobile Order/Enquire Bar ── */
+    .mobile-sticky-action-bar {
+      display: none;
+
+      @media (max-width: 768px) {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-top: 1px solid var(--border);
+        padding: 10px 16px;
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+        z-index: 100;
+      }
+    }
+
+    .sticky-bar-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .sticky-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .sticky-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+
+    .sticky-name {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 120px;
+    }
+
+    .sticky-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+
+      .btn-sticky-action {
+        min-height: 44px;
+        padding: 8px 14px;
+        font-size: 0.82rem;
+        border-radius: 6px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .product-info {
+        padding-bottom: 72px;
+      }
     }
   `]
 })

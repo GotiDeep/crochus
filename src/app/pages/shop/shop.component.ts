@@ -8,6 +8,7 @@ import { FooterComponent } from '../../shared/components/footer/footer.component
 import { HamburgerMenuComponent } from '../../shared/components/hamburger-menu/hamburger-menu.component';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
 import { ProductCardSkeletonComponent } from '../../shared/components/product-card-skeleton/product-card-skeleton.component';
+import { ScrollRevealDirective } from '../../shared/animations/scroll-reveal.directive';
 import { ProductService } from '../../core/services/product.service';
 import { Product, Category, ProductFilter } from '../../core/models';
 
@@ -15,7 +16,7 @@ import { Product, Category, ProductFilter } from '../../core/models';
   selector: 'app-shop',
   standalone: true,
   imports: [RouterLink, CommonModule, FormsModule, NavbarComponent, FooterComponent,
-    HamburgerMenuComponent, ProductCardComponent, ProductCardSkeletonComponent],
+    HamburgerMenuComponent, ProductCardComponent, ProductCardSkeletonComponent, ScrollRevealDirective],
   template: `
     <div class="page-wrapper">
       <app-navbar (openMenu)="menuOpen.set(true)" />
@@ -103,9 +104,9 @@ import { Product, Category, ProductFilter } from '../../core/models';
               <button class="btn btn-primary" (click)="clearAll()">Clear Filters</button>
             </div>
           } @else {
-            <div class="product-grid fade-in">
-              @for (product of products(); track product.id) {
-                <app-product-card [product]="product" />
+            <div class="product-grid">
+              @for (product of products(); track product.id; let i = $index) {
+                <app-product-card [product]="product" appScrollReveal [revealDelay]="(i % 6) * 50" />
               }
             </div>
 

@@ -11,12 +11,14 @@ import { RouterLink } from '@angular/router';
         <img src="assets/logo.svg" alt="Crochus" class="nf-logo-img" />
       </a>
       <div class="nf-content">
+        <div class="nf-badge">✦ Page Not Found</div>
         <div class="nf-number">404</div>
+        <div class="nf-yarn-motif" aria-hidden="true">🧶</div>
         <h1>Lost in the Studio</h1>
-        <p>The page you're looking for seems to have wandered off. Let's get you back to the handmade goodness.</p>
+        <p>The piece you're looking for seems to have unraveled or wandered off. Let's get you back to the handmade goodness.</p>
         <div class="nf-actions">
-          <a routerLink="/" class="btn btn-primary">Go Home</a>
-          <a routerLink="/shop" class="btn btn-outline">Browse Shop</a>
+          <a routerLink="/" class="btn btn-primary btn-lg">Go to Homepage</a>
+          <a routerLink="/shop" class="btn btn-outline btn-lg">Browse Collection</a>
         </div>
       </div>
       <div class="nf-decor">✦</div>
@@ -54,28 +56,64 @@ import { RouterLink } from '@angular/router';
     }
 
     .nf-content {
-      max-width: 500px;
+      max-width: 520px;
+      animation: nfEntrance 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    }
+
+    @keyframes nfEntrance {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .nf-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
     }
 
     .nf-number {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(8rem, 20vw, 14rem);
+      font-size: clamp(6.5rem, 18vw, 11rem);
       font-weight: 300;
-      color: var(--border);
-      line-height: 1;
+      color: color-mix(in srgb, var(--c-accent) 40%, var(--c-bg));
+      line-height: 0.9;
       margin-bottom: 8px;
+      user-select: none;
+    }
+
+    .nf-yarn-motif {
+      font-size: 2.8rem;
+      margin-bottom: 12px;
+      display: inline-block;
+      animation: floatYarn 4s ease-in-out infinite;
+    }
+
+    @keyframes floatYarn {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(6deg); }
     }
 
     h1 {
-      font-size: 2rem;
-      margin-bottom: 16px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      margin-bottom: 14px;
     }
 
     p {
-      font-size: 1rem;
-      max-width: 380px;
+      font-size: 1.02rem;
+      max-width: 420px;
       margin: 0 auto 32px;
       line-height: 1.7;
+      color: var(--text-secondary);
     }
 
     .nf-actions {
@@ -83,6 +121,14 @@ import { RouterLink } from '@angular/router';
       gap: 16px;
       justify-content: center;
       flex-wrap: wrap;
+
+      .btn {
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+      }
     }
 
     .nf-decor {
@@ -100,7 +146,7 @@ import { RouterLink } from '@angular/router';
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .nf-decor { animation: none; }
+      .nf-decor, .nf-yarn-motif, .nf-content { animation: none !important; }
     }
   `]
 })

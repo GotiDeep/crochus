@@ -41,16 +41,16 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
         <!-- Hero -->
         <section class="hero">
           <div class="hero-content container">
-            <div class="hero-text fade-in">
-              <span class="section-label">✦ Handcrafted with Love</span>
-              <h1>Art that Speaks,<br><em>Crafted to Last</em></h1>
-              <p>Discover one-of-a-kind handmade pieces that carry the warmth of the artisan's hands. Each item is crafted with intention, never mass-produced.</p>
-              <div class="hero-actions">
+            <div class="hero-text">
+              <span class="section-label hero-anim hero-delay-1">✦ Handcrafted with Love</span>
+              <h1 class="hero-anim hero-delay-2">Art that Speaks,<br><em>Crafted to Last</em></h1>
+              <p class="hero-anim hero-delay-3">Discover one-of-a-kind handmade pieces that carry the warmth of the artisan's hands. Each item is crafted with intention, never mass-produced.</p>
+              <div class="hero-actions hero-anim hero-delay-4">
                 <a routerLink="/shop" class="btn btn-primary btn-lg">Shop Now</a>
                 <a routerLink="/about" class="btn btn-outline btn-lg">Our Story</a>
               </div>
             </div>
-            <div class="hero-visual fade-in">
+            <div class="hero-visual">
               <div class="hero-img-grid">
                 @for (product of heroProducts(); track product.id; let index = $index) {
                   <a [routerLink]="['/product', product.slug]" class="img-block" [class.main]="index === 0" [class.secondary]="index === 1" [class.tertiary]="index === 2">
@@ -63,6 +63,14 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
                 <span class="badge-text">Handmade<br>Pieces</span>
               </div>
             </div>
+          </div>
+
+          <!-- Organic Yarn/Wave Divider in existing colors -->
+          <div class="hero-wave-divider" aria-hidden="true">
+            <svg viewBox="0 0 1440 68" fill="none" preserveAspectRatio="none">
+              <path d="M0,32 C240,64 480,8 720,38 C960,68 1200,12 1440,42 L1440,68 L0,68 Z" fill="var(--c-bg)"></path>
+              <path d="M0,32 C240,64 480,8 720,38 C960,68 1200,12 1440,42" stroke="color-mix(in srgb, var(--c-accent) 60%, transparent)" stroke-width="2.5" stroke-dasharray="8 6" fill="none"></path>
+            </svg>
           </div>
         </section>
 
@@ -240,10 +248,39 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
       }
     }
 
+    /* Staggered entrance */
+    .hero-anim {
+      opacity: 0;
+      transform: translateY(18px);
+      animation: heroEntrance 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .hero-delay-1 { animation-delay: 0.1s; }
+    .hero-delay-2 { animation-delay: 0.22s; }
+    .hero-delay-3 { animation-delay: 0.36s; }
+    .hero-delay-4 { animation-delay: 0.5s; }
+
+    @keyframes heroEntrance {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .hero-actions {
       display: flex;
       gap: 16px;
       flex-wrap: wrap;
+
+      .btn {
+        transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+        &:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
+        }
+        &:active {
+          transform: translateY(-1px);
+        }
+      }
 
       @media (max-width: 900px) {
         justify-content: center;
@@ -252,6 +289,18 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
 
     .hero-visual {
       position: relative;
+      animation: heroImgSettle 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s backwards;
+    }
+
+    @keyframes heroImgSettle {
+      from {
+        opacity: 0;
+        transform: scale(1.03) translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
     }
 
     .hero-img-grid {
@@ -341,7 +390,28 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
       50% { transform: translateY(-6px); }
     }
 
+    .hero-wave-divider {
+      position: relative;
+      width: 100%;
+      line-height: 0;
+      margin-top: auto;
+      pointer-events: none;
+      svg {
+        display: block;
+        width: 100%;
+        height: 38px;
+        @media (max-width: 768px) {
+          height: 24px;
+        }
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
+      .hero-anim, .hero-visual {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
       .hero-badge, .img-block.secondary, .img-block.tertiary { animation: none; }
     }
 

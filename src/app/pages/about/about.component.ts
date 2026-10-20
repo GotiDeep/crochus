@@ -3,11 +3,12 @@ import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 import { HamburgerMenuComponent } from '../../shared/components/hamburger-menu/hamburger-menu.component';
+import { ScrollRevealDirective } from '../../shared/animations/scroll-reveal.directive';
 
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [RouterLink, NavbarComponent, FooterComponent, HamburgerMenuComponent],
+  imports: [RouterLink, NavbarComponent, FooterComponent, HamburgerMenuComponent, ScrollRevealDirective],
   template: `
     <div class="page-wrapper">
       <app-navbar (openMenu)="menuOpen.set(true)" />
@@ -27,10 +28,10 @@ import { HamburgerMenuComponent } from '../../shared/components/hamburger-menu/h
           </div>
         </section>
 
-        <!-- Story -->
+        <!-- Alternating Section 1: How it began -->
         <section class="section">
           <div class="container">
-            <div class="story-grid">
+            <div class="story-grid story-row-1" appScrollReveal>
               <div class="story-text">
                 <span class="section-label">How it began</span>
                 <h2>A love for the handmade</h2>
@@ -38,13 +39,30 @@ import { HamburgerMenuComponent } from '../../shared/components/hamburger-menu/h
                 <p style="margin-top: 16px">Today we work with a small collective of artisans across India who share a philosophy: that objects made slowly, with care, have a different quality. They hold energy. They age beautifully. They mean something.</p>
               </div>
               <div class="story-img">
-                <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Macramé" />
+                <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Macramé craft" loading="lazy" />
               </div>
             </div>
           </div>
         </section>
 
-        <!-- Values -->
+        <!-- Alternating Section 2: The Craft & Process -->
+        <section class="section process-section">
+          <div class="container">
+            <div class="story-grid story-row-2 reverse" appScrollReveal [revealDelay]="100">
+              <div class="story-img">
+                <img src="https://images.unsplash.com/photo-1584992236310-6edddc08acff?w=600&q=80" alt="Handmade crochet stitches" loading="lazy" />
+              </div>
+              <div class="story-text">
+                <span class="section-label">The Process</span>
+                <h2>Crafted with Patience</h2>
+                <p>Every single stitch in our collection is woven with meticulous attention. We choose 100% organic cotton yarn and natural dyes, ensuring each creation is gentle on both your home and the Earth.</p>
+                <p style="margin-top: 16px">From the initial conceptual sketch to the final hand-tied tag, each product passes through dedicated artisan hands who take genuine pride in their craft.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Values: 3 Trust-Point Cards -->
         <section class="section values-section">
           <div class="container">
             <div style="text-align: center; margin-bottom: 56px">
@@ -52,8 +70,8 @@ import { HamburgerMenuComponent } from '../../shared/components/hamburger-menu/h
               <h2 class="section-title">Our Values</h2>
             </div>
             <div class="values-grid">
-              @for (val of values; track val.title) {
-                <div class="value-card card">
+              @for (val of values; track val.title; let i = $index) {
+                <div class="value-card card" appScrollReveal [revealDelay]="i * 120">
                   <span class="value-icon">{{ val.icon }}</span>
                   <h4>{{ val.title }}</h4>
                   <p>{{ val.desc }}</p>
@@ -108,7 +126,19 @@ import { HamburgerMenuComponent } from '../../shared/components/hamburger-menu/h
       gap: 80px;
       align-items: center;
 
-      @media (max-width: 900px) { grid-template-columns: 1fr; gap: 40px; }
+      @media (max-width: 900px) {
+        grid-template-columns: 1fr;
+        gap: 36px;
+
+        &.reverse {
+          .story-img { order: 2; }
+          .story-text { order: 1; }
+        }
+      }
+    }
+
+    .process-section {
+      background: color-mix(in srgb, var(--c-surface) 65%, var(--c-bg));
     }
 
     .story-text h2 { margin: 12px 0 20px; }
@@ -118,8 +148,12 @@ import { HamburgerMenuComponent } from '../../shared/components/hamburger-menu/h
         width: 100%;
         aspect-ratio: 4/5;
         object-fit: cover;
-        border-radius: 12px;
-        box-shadow: var(--shadow-card);
+        border-radius: 14px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: transform 0.4s ease;
+      }
+      &:hover img {
+        transform: scale(1.02);
       }
     }
 
@@ -134,9 +168,28 @@ import { HamburgerMenuComponent } from '../../shared/components/hamburger-menu/h
 
     .value-card {
       padding: 32px;
-      .value-icon { font-size: 2rem; display: block; margin-bottom: 16px; }
-      h4 { font-size: 1rem; font-weight: 600; margin-bottom: 10px; }
-      p { font-size: 0.9rem; line-height: 1.7; }
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+      }
+
+      .value-icon {
+        font-size: 2.2rem;
+        display: block;
+        margin-bottom: 16px;
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      &:hover .value-icon {
+        transform: scale(1.15) rotate(4deg);
+      }
+
+      h4 { font-size: 1.05rem; font-weight: 600; margin-bottom: 10px; color: var(--text-primary); }
+      p { font-size: 0.9rem; line-height: 1.7; color: var(--text-secondary); }
     }
   `]
 })

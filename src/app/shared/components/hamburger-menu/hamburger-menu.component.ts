@@ -85,13 +85,13 @@ import { Category } from '../../../core/models';
       top: 0; right: 0;
       width: min(320px, 85vw);
       height: 100vh;
-      background: var(--surface);
+      background: var(--c-surface);
       z-index: 950;
       display: flex;
       flex-direction: column;
       padding: 0;
       animation: slideRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: -8px 0 40px rgba(44, 58, 26, 0.2);
+      box-shadow: -8px 0 40px rgba(0, 0, 0, 0.22);
       overflow-y: auto;
     }
 
@@ -109,7 +109,7 @@ import { Category } from '../../../core/models';
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 24px;
+      padding: 20px 24px;
       border-bottom: 1px solid var(--border);
     }
 
@@ -133,16 +133,17 @@ import { Category } from '../../../core/models';
     }
 
     .close-btn {
-      width: 36px; height: 36px;
-      background: var(--bg);
+      width: 44px; height: 44px;
+      background: var(--c-bg);
       border: 1px solid var(--border);
       border-radius: 50%;
       cursor: pointer;
-      font-size: 0.85rem;
-      color: var(--text-secondary);
+      font-size: 0.95rem;
+      color: var(--c-muted);
       display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s;
-      &:hover { border-color: var(--primary); color: var(--primary); }
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      &:hover { border-color: var(--c-primary); color: var(--c-primary); transform: scale(1.05); }
+      &:active { transform: scale(0.95); }
     }
 
     .menu-links {
@@ -153,18 +154,22 @@ import { Category } from '../../../core/models';
       li a {
         display: block;
         padding: 14px 24px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
         font-size: 1rem;
-        font-weight: 400;
-        color: var(--text-primary);
+        font-weight: 500;
+        color: var(--c-text);
         letter-spacing: 0.04em;
         border-left: 3px solid transparent;
-        transition: all 0.2s;
+        transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
         cursor: pointer;
 
         &:hover {
-          background: var(--bg);
-          border-left-color: var(--primary);
-          color: var(--primary);
+          background: color-mix(in srgb, var(--c-primary) 8%, var(--c-surface));
+          border-left-color: var(--c-primary);
+          color: var(--c-primary);
+          transform: translateX(4px);
         }
       }
     }

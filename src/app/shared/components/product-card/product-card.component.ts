@@ -22,6 +22,10 @@ import { ToastService } from '../../../core/services/toast.service';
             <div class="badge-overlay">
               <app-badge [type]="product.badge" />
             </div>
+          } @else {
+            <div class="badge-overlay">
+              <span class="badge badge-handmade">Handmade</span>
+            </div>
           }
           @if (!product.in_stock) {
             <div class="oos-overlay">Out of Stock</div>
@@ -115,7 +119,7 @@ import { ToastService } from '../../../core/services/toast.service';
         will-change: transform;
       }
 
-      &:hover img { transform: scale(1.04); }
+      &:hover img { transform: scale(1.05); }
     }
 
     .badge-overlay {
@@ -244,8 +248,8 @@ import { ToastService } from '../../../core/services/toast.service';
       backdrop-filter: blur(4px);
       border: 1px solid var(--border);
       border-radius: 50%;
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -253,6 +257,13 @@ import { ToastService } from '../../../core/services/toast.service';
       box-shadow: var(--shadow-card);
       transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease, background-color 0.2s ease;
       z-index: 2;
+
+      /* 44px minimum tap target touch area */
+      &::before {
+        content: '';
+        position: absolute;
+        inset: -6px;
+      }
 
       &:hover {
         transform: scale(1.1);
@@ -267,14 +278,15 @@ import { ToastService } from '../../../core/services/toast.service';
       @media (max-width: 560px) {
         top: 8px;
         right: 8px;
-        width: 28px;
-        height: 28px;
-        svg { width: 16px; height: 16px; }
+        width: 32px;
+        height: 32px;
+        svg { width: 17px; height: 17px; }
       }
     }
 
     .card-action-btn {
       width: 100%;
+      min-height: 44px;
       height: 44px;
       border-radius: 8px;
       display: flex;
@@ -285,9 +297,10 @@ import { ToastService } from '../../../core/services/toast.service';
       padding: 0;
 
       @media (max-width: 560px) {
-        height: 38px;
+        min-height: 44px;
+        height: 44px;
         border-radius: 6px;
-        svg { width: 17px; height: 17px; }
+        svg { width: 18px; height: 18px; }
       }
     }
 

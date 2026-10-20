@@ -51,21 +51,21 @@ import { OrderForm } from '../../core/models';
                 <h3>Delivery Details</h3>
                 <div class="divider"></div>
 
-                <div class="form-group">
+                <div class="form-group floating-group">
                   <label class="form-label">Full Name *</label>
                   <input type="text" class="form-control" [(ngModel)]="form.full_name"
                     placeholder="Your full name" [class.error]="errors.full_name" />
                   @if (errors.full_name) { <span class="field-error">{{ errors.full_name }}</span> }
                 </div>
 
-                <div class="form-group">
+                <div class="form-group floating-group">
                   <label class="form-label">Phone Number *</label>
                   <input type="tel" class="form-control" [(ngModel)]="form.phone"
                     placeholder="10-digit mobile number" [class.error]="errors.phone" maxlength="10" />
                   @if (errors.phone) { <span class="field-error">{{ errors.phone }}</span> }
                 </div>
 
-                <div class="form-group">
+                <div class="form-group floating-group">
                   <label class="form-label">Delivery Address *</label>
                   <textarea class="form-control" [(ngModel)]="form.address"
                     placeholder="House no., Street, Area, City…" rows="3"
@@ -73,14 +73,14 @@ import { OrderForm } from '../../core/models';
                   @if (errors.address) { <span class="field-error">{{ errors.address }}</span> }
                 </div>
 
-                <div class="form-group">
+                <div class="form-group floating-group">
                   <label class="form-label">Pincode *</label>
                   <input type="text" class="form-control" [(ngModel)]="form.pincode"
                     placeholder="6-digit pincode" [class.error]="errors.pincode" maxlength="6" />
                   @if (errors.pincode) { <span class="field-error">{{ errors.pincode }}</span> }
                 </div>
 
-                <div class="form-group">
+                <div class="form-group floating-group">
                   <label class="form-label">Special Note (optional)</label>
                   <textarea class="form-control" [(ngModel)]="form.note"
                     placeholder="Gift wrap request, special instructions…" rows="2"></textarea>
@@ -119,15 +119,16 @@ import { OrderForm } from '../../core/models';
                   </div>
 
                   <button
-                    class="btn btn-primary btn-full btn-lg"
+                    class="btn btn-primary btn-full btn-lg submit-order-btn"
                     style="margin-top:20px"
                     [disabled]="submitting()"
                     (click)="submitOrder()"
                   >
                     @if (submitting()) {
-                      Sending…
+                      <span class="btn-spinner"></span>
+                      <span>Connecting to WhatsApp…</span>
                     } @else {
-                      💬 Send Order via WhatsApp
+                      <span>💬 Send Order via WhatsApp</span>
                     }
                   </button>
 
@@ -158,21 +159,66 @@ import { OrderForm } from '../../core/models';
     }
 
     .order-form-section {
-      h3 { font-size: 1.1rem; margin-bottom: 16px; }
+      h3 { font-size: 1.25rem; font-family: 'Cormorant Garamond', serif; margin-bottom: 16px; }
+    }
+
+    .floating-group {
+      margin-bottom: 22px;
+
+      .form-label {
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+        transition: color 0.2s ease;
+      }
+
+      &:focus-within .form-label {
+        color: var(--primary);
+      }
+    }
+
+    .field-error {
+      font-size: 0.75rem;
+      color: var(--error-text);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    .submit-order-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     .form-control.error {
       border-color: var(--error-text);
+      animation: errorShake 0.4s ease-in-out;
       &:focus { box-shadow: 0 0 0 3px rgba(138, 47, 47, 0.12); }
     }
 
     .summary-card {
       padding: 28px;
-      border-radius: 12px;
-      box-shadow: var(--shadow-card);
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
       position: sticky;
       top: 96px;
-      h3 { margin-bottom: 16px; }
+      h3 { margin-bottom: 16px; font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; }
     }
 
     .order-items {

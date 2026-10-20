@@ -101,9 +101,13 @@ type MediaItem = { type: 'image'; url: string } | { type: 'video'; url: string }
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: opacity 0.25s ease;
+      transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: scale(1);
 
-      &.fade { opacity: 0; }
+      &.fade {
+        opacity: 0;
+        transform: scale(0.97);
+      }
     }
 
     .main-video {
@@ -161,12 +165,19 @@ type MediaItem = { type: 'image'; url: string } | { type: 'video'; url: string }
     .thumbs-viewport {
       flex: 1;
       overflow: hidden;
+
+      @media (max-width: 600px) {
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        &::-webkit-scrollbar { display: none; }
+      }
     }
 
     .thumbs-track {
       display: flex;
       gap: 8px;
-      transition: transform 0.3s ease;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     /* ── Nav Arrows (thumbnail strip) ── */

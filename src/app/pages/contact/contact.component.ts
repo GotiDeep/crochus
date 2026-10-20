@@ -64,27 +64,32 @@ import { SettingsService } from '../../core/services/settings.service';
                 <h3>Send us a message</h3>
                 <div class="divider"></div>
 
-                <div class="form-group">
-                  <label class="form-label">Your Name</label>
-                  <input type="text" class="form-control" [(ngModel)]="form.name" placeholder="Full name" />
+                <div class="form-group floating-group">
+                  <label class="form-label">Your Name *</label>
+                  <input type="text" class="form-control" [class.error]="error() && !form.name" [(ngModel)]="form.name" placeholder="Full name" />
                 </div>
-                <div class="form-group">
-                  <label class="form-label">Email</label>
-                  <input type="email" class="form-control" [(ngModel)]="form.email" placeholder="you@example.com" />
+                <div class="form-group floating-group">
+                  <label class="form-label">Email *</label>
+                  <input type="email" class="form-control" [class.error]="error() && !form.email" [(ngModel)]="form.email" placeholder="you@example.com" />
                 </div>
-                <div class="form-group">
+                <div class="form-group floating-group">
                   <label class="form-label">Subject</label>
                   <input type="text" class="form-control" [(ngModel)]="form.subject" placeholder="What's it about?" />
                 </div>
-                <div class="form-group">
-                  <label class="form-label">Message</label>
-                  <textarea class="form-control" [(ngModel)]="form.message" rows="5" placeholder="Write your message here…"></textarea>
+                <div class="form-group floating-group">
+                  <label class="form-label">Message *</label>
+                  <textarea class="form-control" [class.error]="error() && !form.message" [(ngModel)]="form.message" rows="5" placeholder="Write your message here…"></textarea>
                 </div>
 
-                @if (error()) { <div class="auth-error">{{ error() }}</div> }
+                @if (error()) { <div class="auth-error error-shake">{{ error() }}</div> }
 
-                <button class="btn btn-primary btn-full" [disabled]="sending()" (click)="send()">
-                  {{ sending() ? 'Sending…' : 'Send Message' }}
+                <button class="btn btn-primary btn-full submit-btn" [disabled]="sending()" (click)="send()">
+                  @if (sending()) {
+                    <span class="btn-spinner"></span>
+                    <span>Sending message…</span>
+                  } @else {
+                    <span>Send Message</span>
+                  }
                 </button>
               } @else {
                 <div class="success-msg fade-in">
@@ -138,40 +143,111 @@ import { SettingsService } from '../../core/services/settings.service';
       .social-label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 12px; font-weight: 500; }
     }
 
-    .social-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .social-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+
+      @media (max-width: 600px) {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+
     .social-pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      min-height: 40px;
-      padding: 10px 20px;
+      gap: 8px;
+      min-height: 44px;
+      padding: 10px 22px;
       background: var(--surface);
       border: 1.5px solid var(--border);
       border-radius: 24px;
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       font-weight: 500;
       color: var(--text-primary);
       box-shadow: var(--shadow-card);
       transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 
-      &:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); box-shadow: var(--shadow-hover); }
+      &:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
       &.wa:hover { border-color: #25D366; color: #25D366; }
       &.fb:hover { border-color: #1877F2; color: #1877F2; }
+
+      @media (max-width: 600px) {
+        width: 100%;
+        justify-content: center;
+        min-height: 48px;
+        font-size: 0.95rem;
+        font-weight: 600;
+
+        &.wa {
+          background: #25D366;
+          color: #ffffff;
+          border-color: #25D366;
+          box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+        }
+      }
     }
 
     .contact-form {
       padding: 32px;
-      border-radius: 12px;
-      h3 { margin-bottom: 16px; }
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      h3 { margin-bottom: 16px; font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; }
+    }
+
+    .floating-group {
+      position: relative;
+      margin-bottom: 22px;
+
+      .form-label {
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+        transition: color 0.2s ease;
+      }
+
+      &:focus-within .form-label {
+        color: var(--primary);
+      }
     }
 
     .auth-error {
       background: var(--error-bg);
       color: var(--error-text);
-      border-radius: 4px;
+      border-radius: 6px;
       padding: 10px 14px;
       font-size: 0.88rem;
       margin-bottom: 16px;
+      border: 1px solid color-mix(in srgb, var(--error-text) 20%, transparent);
+
+      &.error-shake {
+        animation: errorShake 0.4s ease-in-out;
+      }
+    }
+
+    .submit-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      font-size: 0.95rem;
+    }
+
+    .btn-spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     .success-msg {
