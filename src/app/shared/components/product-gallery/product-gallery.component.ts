@@ -89,10 +89,11 @@ type MediaItem = { type: 'image'; url: string } | { type: 'video'; url: string }
     .main-display {
       position: relative;
       aspect-ratio: 1;
-      border-radius: 8px;
+      border-radius: 12px;
       overflow: hidden;
       background: var(--bg);
       border: 1px solid var(--border);
+      box-shadow: var(--shadow-card);
     }
 
     .main-image {
@@ -118,18 +119,20 @@ type MediaItem = { type: 'image'; url: string } | { type: 'video'; url: string }
       top: 50%;
       transform: translateY(-50%);
       width: 40px; height: 40px;
-      background: var(--surface);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
       border: 1px solid var(--border);
       border-radius: 50%;
       font-size: 1.4rem;
       color: var(--text-primary);
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
       box-shadow: var(--shadow);
       padding: 0;
 
-      &:hover { background: var(--primary); color: white; border-color: var(--primary); }
+      &:hover { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-50%) scale(1.06); }
       &.left { left: 12px; }
       &.right { right: 12px; }
     }
@@ -193,22 +196,23 @@ type MediaItem = { type: 'image'; url: string } | { type: 'video'; url: string }
     .thumb {
       flex-shrink: 0;
       width: 72px; height: 72px;
-      border-radius: 6px;
+      border-radius: 8px;
       overflow: hidden;
       border: 2px solid var(--border);
       cursor: pointer;
       padding: 0;
       background: none;
-      transition: border-color 0.2s, transform 0.2s;
+      transition: border-color 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 
       img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
       &.active {
         border-color: var(--primary);
         transform: scale(1.04);
+        box-shadow: 0 2px 8px rgba(74, 92, 47, 0.2);
       }
 
-      &:hover:not(.active) { border-color: var(--accent); }
+      &:hover:not(.active) { border-color: var(--primary); }
     }
 
     /* ── Video Thumbnail Placeholder ── */

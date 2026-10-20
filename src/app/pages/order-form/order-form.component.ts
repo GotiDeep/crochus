@@ -168,6 +168,8 @@ import { OrderForm } from '../../core/models';
 
     .summary-card {
       padding: 28px;
+      border-radius: 12px;
+      box-shadow: var(--shadow-card);
       position: sticky;
       top: 96px;
       h3 { margin-bottom: 16px; }
@@ -187,7 +189,7 @@ import { OrderForm } from '../../core/models';
 
       img {
         width: 52px; height: 52px;
-        border-radius: 6px;
+        border-radius: 8px;
         object-fit: cover;
         border: 1px solid var(--border);
         flex-shrink: 0;
@@ -224,9 +226,9 @@ import { OrderForm } from '../../core/models';
     .wa-info {
       display: flex;
       gap: 10px;
-      background: var(--bg);
+      background: rgba(74, 92, 47, 0.05);
       padding: 14px;
-      border-radius: 6px;
+      border-radius: 8px;
       border: 1px solid var(--border);
       margin-top: 16px;
       font-size: 0.82rem;

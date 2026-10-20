@@ -141,7 +141,8 @@ import { CartService } from '../../core/services/cart.service';
     .item-img {
       display: block;
       width: 100px; height: 100px;
-      border-radius: 6px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
       overflow: hidden;
       flex-shrink: 0;
       background: var(--bg);
@@ -192,12 +193,14 @@ import { CartService } from '../../core/services/cart.service';
     .remove-btn {
       background: none;
       border: none;
-      font-size: 1rem;
+      font-size: 1.05rem;
       cursor: pointer;
-      opacity: 0.5;
-      transition: opacity 0.2s;
-      padding: 4px;
-      &:hover { opacity: 1; }
+      opacity: 0.6;
+      transition: opacity 0.2s, transform 0.15s, color 0.2s;
+      padding: 6px;
+      border-radius: 4px;
+      &:hover { opacity: 1; transform: scale(1.1); color: var(--error-text); }
+      &:active { transform: scale(0.95); }
     }
 
     .cart-actions-bar {

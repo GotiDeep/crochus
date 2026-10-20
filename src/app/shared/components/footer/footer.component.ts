@@ -175,9 +175,9 @@ import { Category } from '../../../core/models';
       font-weight: 500;
       color: var(--text-primary);
       text-decoration: none;
-      transition: all 0.2s;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 
-      &:hover { border-color: var(--primary); color: var(--primary); }
+      &:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); box-shadow: var(--shadow-card); }
       &.fb:hover { border-color: #1877F2; color: #1877F2; }
       &.wa:hover { border-color: #25D366; color: #25D366; }
     }
@@ -206,10 +206,10 @@ import { Category } from '../../../core/models';
           font-size: 0.88rem;
           color: var(--text-secondary);
           text-decoration: none;
-          transition: color 0.2s;
+          transition: color 0.2s ease, transform 0.2s ease;
           display: inline-block;
 
-          &:hover { color: var(--primary); }
+          &:hover { color: var(--primary); transform: translateX(2px); }
         }
       }
     }

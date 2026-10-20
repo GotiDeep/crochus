@@ -22,7 +22,7 @@ import { HamburgerMenuComponent } from '../../shared/components/hamburger-menu/h
             <p>Crochus began as a small passion project — a belief that beautiful, useful things don't need factories to exist.</p>
           </div>
           <div class="hero-img">
-            <img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=1400&q=80" alt="Artisan at work" />
+            <img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=1400&q=80" alt="Artisan at work" loading="eager" fetchpriority="high" />
             <div class="hero-img-overlay"></div>
           </div>
         </section>
@@ -118,7 +118,8 @@ import { HamburgerMenuComponent } from '../../shared/components/hamburger-menu/h
         width: 100%;
         aspect-ratio: 4/5;
         object-fit: cover;
-        border-radius: 8px;
+        border-radius: 12px;
+        box-shadow: var(--shadow-card);
       }
     }
 

@@ -268,8 +268,10 @@ import { Order, User } from '../../core/models';
 
     .order-card {
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 10px;
       overflow: hidden;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+      &:hover { border-color: var(--primary); box-shadow: var(--shadow-card); }
     }
 
     .order-head {

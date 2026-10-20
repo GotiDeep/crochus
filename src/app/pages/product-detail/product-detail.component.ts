@@ -212,14 +212,14 @@ import { Router } from '@angular/router';
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 12px;
+      padding: 5px 14px;
       border-radius: 20px;
       font-size: 0.78rem;
       font-weight: 600;
       letter-spacing: 0.06em;
 
-      &.in-stock { background: var(--success-bg); color: var(--success-text); }
-      &.out-of-stock { background: var(--error-bg); color: var(--error-text); }
+      &.in-stock { background: var(--success-bg); color: var(--success-text); border: 1px solid rgba(74, 92, 47, 0.2); }
+      &.out-of-stock { background: var(--error-bg); color: var(--error-text); border: 1px solid rgba(138, 47, 47, 0.2); }
     }
 
     .product-desc {
@@ -258,27 +258,30 @@ import { Router } from '@angular/router';
 
     .share-btn {
       width: 100%;
+      min-height: 44px;
       padding: 12px;
       background: #25D366;
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 0.875rem;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
-      transition: filter 0.2s;
+      transition: filter 0.2s ease, transform 0.15s ease;
       margin-bottom: 20px;
       letter-spacing: 0.04em;
+      box-shadow: 0 2px 8px rgba(37, 211, 102, 0.25);
 
-      &:hover { filter: brightness(1.1); }
+      &:hover { filter: brightness(1.06); transform: translateY(-1px); }
+      &:active { transform: translateY(0); }
     }
 
     .handmade-note {
       display: flex;
       gap: 12px;
       padding: 16px;
-      background: var(--bg);
-      border-radius: 6px;
+      background: rgba(74, 92, 47, 0.04);
+      border-radius: 8px;
       border: 1px solid var(--border);
       font-size: 0.85rem;
 

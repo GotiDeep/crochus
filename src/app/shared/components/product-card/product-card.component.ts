@@ -111,10 +111,11 @@ import { ToastService } from '../../../core/services/toast.service';
         height: 100%;
         object-fit: cover;
         display: block;
-        transition: transform 0.5s ease;
+        transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+        will-change: transform;
       }
 
-      &:hover img { transform: scale(1.06); }
+      &:hover img { transform: scale(1.04); }
     }
 
     .badge-overlay {
@@ -239,31 +240,37 @@ import { ToastService } from '../../../core/services/toast.service';
       position: absolute;
       top: 10px;
       right: 10px;
-      background: white;
-      border: none;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(4px);
+      border: 1px solid var(--border);
       border-radius: 50%;
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       box-shadow: var(--shadow-card);
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease, background-color 0.2s ease;
       z-index: 2;
+
+      &:hover {
+        transform: scale(1.1);
+        background: #ffffff;
+        box-shadow: var(--shadow-hover);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
 
       @media (max-width: 560px) {
         top: 8px;
         right: 8px;
-        width: 26px;
-        height: 26px;
+        width: 28px;
+        height: 28px;
         svg { width: 16px; height: 16px; }
       }
-    }
-
-    .wishlist-btn:hover {
-      transform: scale(1.1);
-      box-shadow: var(--shadow-hover);
     }
 
     .card-action-btn {
@@ -274,7 +281,7 @@ import { ToastService } from '../../../core/services/toast.service';
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
       padding: 0;
 
       @media (max-width: 560px) {
@@ -285,25 +292,29 @@ import { ToastService } from '../../../core/services/toast.service';
     }
 
     .cart-btn {
-      background: #FAF7F2;
-      border: 1.5px solid #435427;
-      color: #435427;
+      background: var(--input-bg);
+      border: 1.5px solid var(--primary);
+      color: var(--primary);
 
       &:hover:not(:disabled) {
-        background: #435427;
+        background: var(--primary);
         color: #FFFFFF;
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(67, 84, 39, 0.2);
+        box-shadow: 0 4px 12px rgba(74, 92, 47, 0.2);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
       }
 
       &.in-cart {
-        background: #435427;
+        background: var(--primary);
         color: #FFFFFF;
       }
 
       &:disabled {
         border-color: var(--border);
-        color: var(--text-muted, #888);
+        color: var(--text-secondary);
         background: var(--bg);
         cursor: not-allowed;
       }

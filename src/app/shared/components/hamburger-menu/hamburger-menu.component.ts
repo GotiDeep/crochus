@@ -74,8 +74,10 @@ import { Category } from '../../../core/models';
       position: fixed;
       inset: 0;
       background: var(--overlay);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
       z-index: 900;
-      animation: fadeOverlay 0.3s ease;
+      animation: fadeOverlay 0.25s ease;
     }
 
     .slide-menu {
@@ -88,8 +90,8 @@ import { Category } from '../../../core/models';
       display: flex;
       flex-direction: column;
       padding: 0;
-      animation: slideRight 0.3s ease;
-      box-shadow: -8px 0 40px rgba(0,0,0,0.2);
+      animation: slideRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: -8px 0 40px rgba(44, 58, 26, 0.2);
       overflow-y: auto;
     }
 

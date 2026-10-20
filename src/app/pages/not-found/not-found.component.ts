@@ -98,6 +98,10 @@ import { RouterLink } from '@angular/router';
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nf-decor { animation: none; }
+    }
   `]
 })
 export class NotFoundComponent {}

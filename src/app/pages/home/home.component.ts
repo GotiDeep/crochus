@@ -54,7 +54,7 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
               <div class="hero-img-grid">
                 @for (product of heroProducts(); track product.id; let index = $index) {
                   <a [routerLink]="['/product', product.slug]" class="img-block" [class.main]="index === 0" [class.secondary]="index === 1" [class.tertiary]="index === 2">
-                    <img [src]="product.photos[0]" [alt]="product.name" />
+                    <img [src]="product.photos[0]" [alt]="product.name" [attr.loading]="index === 0 ? 'eager' : 'lazy'" [attr.fetchpriority]="index === 0 ? 'high' : null" />
                   </a>
                 }
               </div>
@@ -274,17 +274,23 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
     }
 
     .img-block {
-      border-radius: 8px;
+      border-radius: 12px;
       overflow: hidden;
-      img { width: 100%; height: 100%; object-fit: cover; }
+      box-shadow: var(--shadow-card);
+      transition: box-shadow 0.3s ease;
+      img {
+        width: 100%; height: 100%; object-fit: cover;
+        transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      &:hover img { transform: scale(1.04); }
 
       &.main { grid-row: 1 / 3; }
       &.secondary {
-        border-radius: 8px 8px 0 0;
+        border-radius: 12px 12px 0 0;
         animation: floatImg 6s ease-in-out infinite;
       }
       &.tertiary {
-        border-radius: 0 0 8px 8px;
+        border-radius: 0 0 12px 12px;
         animation: floatImg 7s ease-in-out -2s infinite;
       }
     }
@@ -300,9 +306,9 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
       background: var(--primary);
       color: white;
       padding: 16px 20px;
-      border-radius: 8px;
+      border-radius: 12px;
       text-align: center;
-      box-shadow: var(--shadow-hover);
+      box-shadow: 0 8px 24px rgba(74, 92, 47, 0.22);
       animation: floatBadge 5s ease-in-out -1s infinite;
 
       .badge-num {
@@ -370,11 +376,12 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
     .cat-img-wrap {
       width: 100%;
       aspect-ratio: 1;
-      border-radius: 12px;
+      border-radius: 14px;
       overflow: hidden;
       background: var(--surface);
       border: 1.5px solid var(--border);
-      transition: box-shadow 0.3s, transform 0.3s;
+      box-shadow: var(--shadow-card);
+      transition: box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -383,7 +390,7 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.4s ease;
+        transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
       }
 
       .cat-placeholder-icon { font-size: 2.5rem; }
@@ -391,7 +398,7 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
       .cat-card-img:hover & {
         box-shadow: var(--shadow-hover);
         transform: translateY(-4px);
-        img { transform: scale(1.06); }
+        img { transform: scale(1.04); }
       }
     }
 
@@ -492,31 +499,40 @@ import { TiltDirective } from '../../shared/animations/tilt.directive';
     .insta-cell {
       position: relative;
       aspect-ratio: 1;
-      border-radius: 8px;
+      border-radius: 12px;
       overflow: hidden;
       display: block;
       background: var(--bg);
+      box-shadow: var(--shadow-card);
+      transition: box-shadow 0.25s ease;
 
       img {
         width: 100%; height: 100%;
         object-fit: cover;
-        transition: transform 0.4s ease;
+        transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
       }
 
       .insta-overlay {
         position: absolute;
         inset: 0;
-        background: rgba(0,0,0,0.4);
+        background: rgba(44, 58, 26, 0.55);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.5rem;
+        text-align: center;
+        padding: 8px;
+        color: #ffffff;
+        font-size: 0.82rem;
+        font-weight: 500;
         opacity: 0;
-        transition: opacity 0.3s;
+        transition: opacity 0.25s ease;
       }
 
       &:hover {
-        img { transform: scale(1.08); }
+        box-shadow: var(--shadow-hover);
+        img { transform: scale(1.04); }
         .insta-overlay { opacity: 1; }
       }
     }

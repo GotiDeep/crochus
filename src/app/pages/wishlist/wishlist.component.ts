@@ -1,5 +1,6 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
 import { ProductCardSkeletonComponent } from '../../shared/components/product-card-skeleton/product-card-skeleton.component';
 import { ProductService } from '../../core/services/product.service';
@@ -10,7 +11,7 @@ import { FooterComponent } from '../../shared/components/footer/footer.component
 @Component({
   selector: 'app-wishlist',
   standalone: true,
-  imports: [CommonModule, ProductCardComponent, ProductCardSkeletonComponent, NavbarComponent, FooterComponent],
+  imports: [CommonModule, RouterLink, ProductCardComponent, ProductCardSkeletonComponent, NavbarComponent, FooterComponent],
   template: `
     <div class="page-wrapper">
       <app-navbar />
@@ -33,7 +34,7 @@ import { FooterComponent } from '../../shared/components/footer/footer.component
               <span class="empty-icon">♡</span>
               <h3>Your wishlist is empty</h3>
               <p>Explore our shop and tap the heart icon to save your favorite items here.</p>
-              <a href="/shop" class="btn btn-primary" style="margin-top: 16px;">Browse Shop</a>
+              <a routerLink="/shop" class="btn btn-primary" style="margin-top: 16px;">Browse Shop</a>
             </div>
           } @else {
             <div class="product-grid fade-in">

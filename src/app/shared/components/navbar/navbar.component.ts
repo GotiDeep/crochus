@@ -74,11 +74,14 @@ import { AuthService } from '../../../core/services/auth.service';
       background: var(--navbar-bg);
       border-bottom: 1px solid transparent;
       z-index: 800;
-      transition: all 0.3s ease;
+      transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, backdrop-filter 0.25s ease;
 
       &.scrolled {
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
         border-bottom-color: var(--border);
-        box-shadow: var(--shadow);
+        box-shadow: 0 4px 20px rgba(74, 92, 47, 0.08);
       }
     }
 
@@ -122,16 +125,16 @@ import { AuthService } from '../../../core/services/auth.service';
         text-transform: uppercase;
         color: var(--text-secondary);
         position: relative;
-        transition: color 0.2s;
-        padding: 4px 0;
+        transition: color 0.2s ease;
+        padding: 6px 0;
 
         &::after {
           content: '';
           position: absolute;
-          bottom: -2px; left: 0;
+          bottom: -1px; left: 0;
           width: 0; height: 1.5px;
           background: var(--primary);
-          transition: width 0.3s ease;
+          transition: width 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         &:hover, &.active {
@@ -149,31 +152,33 @@ import { AuthService } from '../../../core/services/auth.service';
     }
 
     .icon-btn {
-      width: 40px; height: 40px;
+      width: 44px; height: 44px;
       display: flex; align-items: center; justify-content: center;
       background: transparent;
       border: none;
       border-radius: 50%;
       font-size: 1.1rem;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: background 0.2s ease, transform 0.15s ease;
       position: relative;
       color: var(--text-primary);
       text-decoration: none;
 
-      &:hover { background: var(--bg); }
+      &:hover { background: rgba(74, 92, 47, 0.07); }
+      &:active { transform: scale(0.94); }
     }
 
     .cart-badge {
       position: absolute;
-      top: 4px; right: 4px;
-      width: 16px; height: 16px;
+      top: 5px; right: 5px;
+      width: 17px; height: 17px;
       background: var(--primary);
       color: white;
       border-radius: 50%;
       font-size: 0.65rem;
       font-weight: 700;
       display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 4px rgba(74, 92, 47, 0.3);
     }
 
     .user-menu { position: relative; }

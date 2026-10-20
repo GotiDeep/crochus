@@ -353,9 +353,9 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
       border-radius: 8px;
       color: var(--text-primary);
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
 
-      &:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(74,92,47,0.12); }
+      &:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(74,92,47,0.16); transform: translateY(-1px); }
     }
   `]
 })

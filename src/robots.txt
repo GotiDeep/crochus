@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /profile
+Disallow: /cart
+Disallow: /order
+
+Sitemap: https://crochus.netlify.app/sitemap.xml

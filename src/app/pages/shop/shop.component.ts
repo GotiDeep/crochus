@@ -146,18 +146,20 @@ import { Product, Category, ProductFilter } from '../../core/models';
 
       .search-input {
         width: 100%;
+        min-height: 48px;
         padding: 14px 48px;
         background: var(--surface);
         border: 1.5px solid var(--border);
-        border-radius: 8px;
-        font-size: 1rem;
+        border-radius: 10px;
+        font-size: 0.95rem;
         color: var(--text-primary);
         outline: none;
-        transition: border-color 0.2s;
+        box-shadow: var(--shadow-card);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
         &:focus {
           border-color: var(--primary);
-          box-shadow: 0 0 0 3px rgba(74,92,47,0.1);
+          box-shadow: 0 0 0 3px rgba(74, 92, 47, 0.14), var(--shadow-card);
         }
 
         &::placeholder { color: var(--text-secondary); opacity: 0.7; }
@@ -216,6 +218,7 @@ import { Product, Category, ProductFilter } from '../../core/models';
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      min-height: 44px;
       padding: 10px 16px;
       background: var(--surface);
       border: 1.5px solid var(--border);
@@ -226,13 +229,21 @@ import { Product, Category, ProductFilter } from '../../core/models';
       cursor: pointer;
       flex: 1;
       justify-content: center;
+      box-shadow: var(--shadow-card);
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+      &:hover { border-color: var(--primary); background: rgba(74, 92, 47, 0.04); }
+      &:active { transform: scale(0.98); }
     }
 
     .sort-select {
       flex-shrink: 0;
+      min-height: 44px;
       padding: 10px 16px;
       font-size: 0.85rem;
       min-width: 180px;
+      border-radius: 8px;
+      box-shadow: var(--shadow-card);
 
       @media (max-width: 768px) {
         flex: 1;

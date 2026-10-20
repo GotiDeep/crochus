@@ -88,7 +88,7 @@ import { SettingsService } from '../../core/services/settings.service';
                 </button>
               } @else {
                 <div class="success-msg fade-in">
-                  <span style="font-size:3rem">ðŸ’Œ</span>
+                  <span style="font-size:3rem">💌</span>
                   <h3>Message sent!</h3>
                   <p>Thank you for reaching out. We'll get back to you within 24 hours.</p>
                   <button class="btn btn-outline" (click)="sent.set(false)">Send another</button>
@@ -138,11 +138,12 @@ import { SettingsService } from '../../core/services/settings.service';
       .social-label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 12px; font-weight: 500; }
     }
 
-    .social-row { display: flex; gap: 10px; }
+    .social-row { display: flex; gap: 10px; flex-wrap: wrap; }
     .social-pill {
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      min-height: 40px;
       padding: 10px 20px;
       background: var(--surface);
       border: 1.5px solid var(--border);
@@ -150,14 +151,17 @@ import { SettingsService } from '../../core/services/settings.service';
       font-size: 0.85rem;
       font-weight: 500;
       color: var(--text-primary);
-      transition: all 0.2s;
+      box-shadow: var(--shadow-card);
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 
-      &:hover { border-color: var(--primary); color: var(--primary); }
+      &:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); box-shadow: var(--shadow-hover); }
       &.wa:hover { border-color: #25D366; color: #25D366; }
+      &.fb:hover { border-color: #1877F2; color: #1877F2; }
     }
 
     .contact-form {
       padding: 32px;
+      border-radius: 12px;
       h3 { margin-bottom: 16px; }
     }
 
