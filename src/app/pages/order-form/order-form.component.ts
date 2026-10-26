@@ -23,81 +23,90 @@ import { OrderForm } from '../../core/models';
       <main class="main-content">
         <div class="container">
           <div class="page-header">
-            <span class="section-label">Almost there</span>
-            <h1>Place Your Order</h1>
+            <span class="section-label">Easy Ordering</span>
+            <h1>Delivery Details</h1>
+            <p class="header-subtitle">Provide your delivery address to send your order inquiry to our team on WhatsApp</p>
           </div>
 
           @if (cart.items().length === 0) {
             <div class="empty-state">
-              <span class="empty-icon">🛍</span>
-              <h3>Your cart is empty</h3>
-              <a routerLink="/shop" class="btn btn-primary">Shop Now</a>
+              <div class="empty-gem">✦</div>
+              <h3>No Items in Shopping Bag</h3>
+              <p>Please select items from our catalogue before checking out.</p>
+              <a routerLink="/shop" class="btn btn-primary btn-lg" style="margin-top:14px;">Browse All Products</a>
             </div>
           } @else if (submitted()) {
             <!-- Success State -->
             <div class="success-state fade-in">
-              <div class="success-icon">✅</div>
+              <div class="success-gem">✦</div>
               <h2>Order Sent to WhatsApp!</h2>
-              <p>Your order has been shared on WhatsApp. Our team will confirm it shortly and get back to you.</p>
+              <p>Your order details have been shared with our team on WhatsApp. We will confirm your items, custom details, and delivery with you shortly.</p>
               <div class="success-actions">
-                <a routerLink="/shop" class="btn btn-primary">Continue Shopping</a>
-                <a routerLink="/profile" class="btn btn-outline">My Orders</a>
+                <a routerLink="/shop" class="btn btn-primary btn-lg">Browse More Products</a>
+                <a routerLink="/profile" class="btn btn-outline btn-lg">View My Orders</a>
               </div>
             </div>
           } @else {
             <div class="order-layout">
               <!-- Form -->
-              <div class="order-form-section">
-                <h3>Delivery Details</h3>
-                <div class="divider"></div>
+              <div class="order-form-section card">
+                <div class="form-header">
+                  <span class="fh-eyebrow">Shipping Information</span>
+                  <h3>Delivery Address</h3>
+                </div>
+                <div class="gold-hairline"></div>
 
                 <div class="form-group floating-group">
                   <label class="form-label">Full Name *</label>
                   <input type="text" class="form-control" [(ngModel)]="form.full_name"
-                    placeholder="Your full name" [class.error]="errors.full_name" />
+                    placeholder="E.g. Priya Sharma" [class.error]="errors.full_name" />
                   @if (errors.full_name) { <span class="field-error">{{ errors.full_name }}</span> }
                 </div>
 
                 <div class="form-group floating-group">
-                  <label class="form-label">Phone Number *</label>
+                  <label class="form-label">WhatsApp Mobile Number *</label>
                   <input type="tel" class="form-control" [(ngModel)]="form.phone"
-                    placeholder="10-digit mobile number" [class.error]="errors.phone" maxlength="10" />
+                    placeholder="10-digit mobile number for order confirmation" [class.error]="errors.phone" maxlength="10" />
                   @if (errors.phone) { <span class="field-error">{{ errors.phone }}</span> }
                 </div>
 
                 <div class="form-group floating-group">
-                  <label class="form-label">Delivery Address *</label>
+                  <label class="form-label">Complete Delivery Address *</label>
                   <textarea class="form-control" [(ngModel)]="form.address"
-                    placeholder="House no., Street, Area, City…" rows="3"
+                    placeholder="House/Flat no., Building, Street, City, State…" rows="3"
                     [class.error]="errors.address"></textarea>
                   @if (errors.address) { <span class="field-error">{{ errors.address }}</span> }
                 </div>
 
                 <div class="form-group floating-group">
-                  <label class="form-label">Pincode *</label>
+                  <label class="form-label">Postal Pincode *</label>
                   <input type="text" class="form-control" [(ngModel)]="form.pincode"
                     placeholder="6-digit pincode" [class.error]="errors.pincode" maxlength="6" />
                   @if (errors.pincode) { <span class="field-error">{{ errors.pincode }}</span> }
                 </div>
 
                 <div class="form-group floating-group">
-                  <label class="form-label">Special Note (optional)</label>
+                  <label class="form-label">Notes or Custom Requests (Optional)</label>
                   <textarea class="form-control" [(ngModel)]="form.note"
-                    placeholder="Gift wrap request, special instructions…" rows="2"></textarea>
+                    placeholder="Color preference, custom request, gift note, or delivery instructions…" rows="3"></textarea>
                 </div>
               </div>
 
               <!-- Summary -->
               <div class="order-summary-section">
                 <div class="summary-card card">
-                  <h3>Order Summary</h3>
-                  <div class="divider"></div>
+                  <div class="summary-header">
+                    <span class="summary-eyebrow">Order Summary</span>
+                    <h3>Selected Items</h3>
+                  </div>
+                  <div class="gold-hairline"></div>
 
                   <div class="order-items">
                     @for (item of cart.items(); track item.product.id) {
                       <div class="order-item">
                         <img [src]="item.product.photos[0]" [alt]="item.product.name" />
                         <div class="oi-info">
+                          <span class="oi-sku">Design #{{ item.product.id }}</span>
                           <p class="oi-name">{{ item.product.name }}</p>
                           <p class="oi-qty">Qty: {{ item.quantity }}</p>
                         </div>
@@ -106,16 +115,19 @@ import { OrderForm } from '../../core/models';
                     }
                   </div>
 
-                  <div class="divider"></div>
+                  <div class="gold-hairline"></div>
 
                   <div class="total-row">
-                    <span>Total</span>
+                    <div class="tr-label">
+                      <span>Total Price</span>
+                      <small>All Taxes Included</small>
+                    </div>
                     <span class="total-amt">₹{{ cart.totalPrice() | number:'1.0-0':'en-IN' }}</span>
                   </div>
 
                   <div class="wa-info">
-                    <span>💬</span>
-                    <p>This order will be sent via WhatsApp. Payment & shipping will be coordinated by our team.</p>
+                    <span class="wa-icon">💬</span>
+                    <p>Your order details will open directly in WhatsApp so our team can confirm availability, ring size, and payment with you.</p>
                   </div>
 
                   <button
@@ -128,12 +140,12 @@ import { OrderForm } from '../../core/models';
                       <span class="btn-spinner"></span>
                       <span>Connecting to WhatsApp…</span>
                     } @else {
-                      <span>💬 Send Order via WhatsApp</span>
+                      <span>Send Order via WhatsApp →</span>
                     }
                   </button>
 
-                  <a routerLink="/cart" class="btn btn-ghost btn-full" style="margin-top:10px">
-                    ← Back to Cart
+                  <a routerLink="/cart" class="btn btn-ghost btn-full" style="margin-top:12px; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase;">
+                    ← Return to Shopping Bag
                   </a>
                 </div>
               </div>
@@ -146,44 +158,129 @@ import { OrderForm } from '../../core/models';
     </div>
   `,
   styles: [`
-    .page-header { padding: 48px 0 32px; h1 { margin-top: 8px; } }
+    .page-header {
+      padding: 48px 0 28px;
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto;
+
+      h1 {
+        margin-top: 8px;
+        font-size: clamp(2rem, 3.5vw, 2.8rem);
+      }
+
+      .header-subtitle {
+        color: var(--c-muted);
+        font-size: 0.95rem;
+        margin-top: 6px;
+        line-height: 1.5;
+      }
+    }
+
+    .empty-state {
+      padding: 80px 24px;
+      text-align: center;
+      max-width: 500px;
+      margin: 0 auto 60px;
+      border: 1px dashed var(--c-accent);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.4);
+
+      .empty-gem {
+        font-size: 2rem;
+        color: var(--c-accent);
+        margin-bottom: 16px;
+      }
+
+      h3 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.8rem;
+        color: var(--c-text);
+        margin-bottom: 8px;
+      }
+
+      p {
+        color: var(--c-muted);
+        font-size: 0.92rem;
+        line-height: 1.6;
+      }
+    }
 
     .order-layout {
       display: grid;
-      grid-template-columns: 1fr 400px;
-      gap: 40px;
+      grid-template-columns: 1fr 420px;
+      gap: 36px;
       align-items: start;
       padding-bottom: 80px;
 
-      @media (max-width: 900px) { grid-template-columns: 1fr; }
+      @media (max-width: 960px) {
+        grid-template-columns: 1fr;
+      }
     }
 
     .order-form-section {
-      h3 { font-size: 1.25rem; font-family: 'Cormorant Garamond', serif; margin-bottom: 16px; }
+      padding: 36px 32px;
+      border-color: rgba(200, 196, 154, 0.4);
+
+      @media (max-width: 600px) {
+        padding: 20px 14px;
+      }
+
+      .form-header {
+        .fh-eyebrow {
+          font-size: 0.68rem;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: var(--c-muted);
+          display: block;
+        }
+
+        h3 {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 1.6rem;
+          margin-top: 2px;
+          color: var(--c-text);
+        }
+      }
+    }
+
+    .gold-hairline {
+      height: 1px;
+      background: linear-gradient(90deg, var(--c-accent), rgba(200, 196, 154, 0.2));
+      margin: 18px 0 24px;
     }
 
     .floating-group {
       margin-bottom: 22px;
 
       .form-label {
-        font-size: 0.78rem;
+        display: block;
+        font-size: 0.72rem;
         font-weight: 600;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.1em;
         text-transform: uppercase;
-        color: var(--text-secondary);
-        transition: color 0.2s ease;
+        color: var(--c-muted);
+        margin-bottom: 6px;
       }
 
-      &:focus-within .form-label {
-        color: var(--primary);
+      .form-control {
+        border-color: rgba(200, 196, 154, 0.5);
+        font-family: 'Jost', sans-serif;
+        font-size: 0.95rem;
+
+        &:focus {
+          border-color: var(--c-primary);
+          box-shadow: 0 0 0 3px rgba(74, 92, 47, 0.1);
+        }
       }
     }
 
     .field-error {
       font-size: 0.75rem;
-      color: var(--error-text);
+      color: #B23B3B;
       margin-top: 4px;
       font-weight: 500;
+      display: block;
     }
 
     .submit-order-btn {
@@ -191,6 +288,7 @@ import { OrderForm } from '../../core/models';
       align-items: center;
       justify-content: center;
       gap: 10px;
+      letter-spacing: 0.08em;
     }
 
     .btn-spinner {
@@ -207,88 +305,190 @@ import { OrderForm } from '../../core/models';
     }
 
     .form-control.error {
-      border-color: var(--error-text);
-      animation: errorShake 0.4s ease-in-out;
-      &:focus { box-shadow: 0 0 0 3px rgba(138, 47, 47, 0.12); }
+      border-color: #B23B3B;
+      &:focus { box-shadow: 0 0 0 3px rgba(178, 59, 59, 0.12); }
     }
 
     .summary-card {
-      padding: 28px;
-      border-radius: 14px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      padding: 32px 28px;
       position: sticky;
-      top: 96px;
-      h3 { margin-bottom: 16px; font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; }
+      top: 100px;
+      border-color: rgba(200, 196, 154, 0.5);
+      background: var(--c-surface);
+
+      @media (max-width: 600px) {
+        padding: 20px 14px;
+      }
+
+      .summary-header {
+        .summary-eyebrow {
+          font-size: 0.68rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--c-muted);
+          display: block;
+        }
+
+        h3 {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 1.5rem;
+          color: var(--c-text);
+          margin-top: 2px;
+        }
+      }
     }
 
     .order-items {
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      margin-bottom: 16px;
+      gap: 16px;
+      margin-bottom: 20px;
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 4px;
     }
 
     .order-item {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
 
       img {
-        width: 52px; height: 52px;
-        border-radius: 8px;
+        width: 58px;
+        height: 64px;
+        border-radius: 3px;
         object-fit: cover;
-        border: 1px solid var(--border);
+        border: 1px solid rgba(200, 196, 154, 0.4);
         flex-shrink: 0;
       }
 
-      .oi-info { flex: 1; min-width: 0; }
-      .oi-name {
-        font-size: 0.88rem;
-        color: var(--text-primary);
-        font-weight: 500;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        margin: 0;
+      .oi-info {
+        flex: 1;
+        min-width: 0;
+
+        .oi-sku {
+          display: block;
+          font-size: 0.65rem;
+          letter-spacing: 0.1em;
+          color: var(--c-primary);
+          font-weight: 600;
+          text-transform: uppercase;
+        }
+
+        .oi-name {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 1.05rem;
+          color: var(--c-text);
+          font-weight: 600;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          margin: 1px 0 2px;
+        }
+
+        .oi-qty {
+          font-size: 0.75rem;
+          color: var(--c-muted);
+          margin: 0;
+        }
       }
-      .oi-qty { font-size: 0.78rem; color: var(--text-secondary); margin: 2px 0 0; }
-      .oi-price { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); flex-shrink: 0; }
+
+      .oi-price {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: var(--c-primary);
+        flex-shrink: 0;
+      }
     }
 
     .total-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-      padding: 4px 0;
+      align-items: baseline;
+      padding: 6px 0;
+
+      .tr-label {
+        span {
+          display: block;
+          font-size: 0.88rem;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          font-weight: 600;
+          color: var(--c-text);
+        }
+
+        small {
+          display: block;
+          font-size: 0.7rem;
+          color: var(--c-muted);
+        }
+      }
 
       .total-amt {
         font-family: 'Cormorant Garamond', serif;
-        font-size: 1.5rem;
-        color: var(--accent);
+        font-size: 1.85rem;
+        font-weight: 700;
+        color: var(--c-primary);
       }
     }
 
     .wa-info {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       background: rgba(74, 92, 47, 0.05);
       padding: 14px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      margin-top: 16px;
-      font-size: 0.82rem;
+      border-radius: 4px;
+      border: 1px solid rgba(200, 196, 154, 0.4);
+      margin-top: 18px;
 
-      p { margin: 0; color: var(--text-secondary); font-size: 0.82rem; line-height: 1.5; }
+      .wa-icon {
+        color: var(--c-accent);
+        font-size: 0.85rem;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      p {
+        margin: 0;
+        color: var(--c-muted);
+        font-size: 0.78rem;
+        line-height: 1.5;
+      }
     }
 
     .success-state {
       text-align: center;
       padding: 80px 24px;
+      max-width: 600px;
+      margin: 0 auto;
 
-      .success-icon { font-size: 4rem; margin-bottom: 24px; display: block; }
-      h2 { margin-bottom: 16px; }
-      p { max-width: 460px; margin: 0 auto 32px; }
+      .success-gem {
+        font-size: 2.8rem;
+        color: var(--c-accent);
+        margin-bottom: 20px;
+        display: block;
+        animation: pulseGem 2s ease-in-out infinite;
+      }
+
+      @keyframes pulseGem {
+        0%, 100% { transform: scale(1); opacity: 0.8; }
+        50% { transform: scale(1.15); opacity: 1; }
+      }
+
+      h2 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 2.4rem;
+        margin-bottom: 16px;
+        color: var(--c-text);
+      }
+
+      p {
+        color: var(--c-muted);
+        font-size: 1rem;
+        line-height: 1.7;
+        margin-bottom: 36px;
+      }
 
       .success-actions {
         display: flex;

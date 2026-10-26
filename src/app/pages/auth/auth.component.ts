@@ -21,9 +21,10 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
             <img src="assets/logo.svg" alt="Crochus" class="auth-logo-img" />
           </a>
           <div class="av-quote">
-            <blockquote>"Every handmade piece carries a piece of the maker's soul."</blockquote>
+            <blockquote>"Beautiful handcrafted creations made with love and care."</blockquote>
+            <span class="av-quote-author">✦ CROCHUS Handmade</span>
           </div>
-          <img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=800&q=80" alt="Artisan" class="av-img" />
+          <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&q=80" alt="Handmade Craft Workshop" class="av-img" />
         </div>
       </div>
 
@@ -36,8 +37,8 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
 
           <!-- LOGIN -->
           @if (mode() === 'login') {
-            <h2>Welcome back</h2>
-            <p class="auth-sub">Sign in to your account to continue shopping</p>
+            <h2>Welcome Back</h2>
+            <p class="auth-sub">Sign in to view your saved designs, orders, and account details</p>
 
             <div class="form-group">
               <label class="form-label">Email</label>
@@ -64,8 +65,8 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
 
           <!-- REGISTER -->
           @if (mode() === 'register') {
-            <h2>Create account</h2>
-            <p class="auth-sub">Join Crochus to start collecting handmade treasures</p>
+            <h2>Create Account</h2>
+            <p class="auth-sub">Create an account to save favorite designs and shop easily</p>
 
             <div class="form-group">
               <label class="form-label">Full Name</label>
@@ -230,9 +231,10 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
       user-select: none;
 
       .auth-logo-img {
-        /* Change --logo-height-navbar in styles.scss or change 42px here to resize */
-        height: var(--logo-height-navbar, 42px);
+        height: var(--logo-height-navbar, 36px);
         width: auto;
+        max-width: 160px;
+        object-fit: contain;
         user-select: none;
         -webkit-user-select: none;
         -webkit-user-drag: none;
@@ -275,6 +277,10 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
       background: var(--bg);
       padding: 48px 32px;
       min-height: 100vh;
+
+      @media (max-width: 480px) {
+        padding: 32px 16px;
+      }
     }
 
     .auth-form-inner {

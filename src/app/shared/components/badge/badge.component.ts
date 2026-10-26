@@ -16,16 +16,36 @@ import { CommonModule } from '@angular/common';
     .badge {
       display: inline-flex;
       align-items: center;
-      padding: 3px 10px;
+      gap: 5px;
+      padding: 4px 11px;
       border-radius: 20px;
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       font-weight: 600;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
-      &.badge-new { background: var(--badge-new-bg); color: var(--badge-new-text); }
-      &.badge-bestseller { background: var(--badge-bestseller-bg); color: var(--badge-bestseller-text); }
-      &.badge-featured { background: var(--badge-featured-bg); color: var(--badge-featured-text); }
+      @media (max-width: 480px) {
+        padding: 2px 7px;
+        font-size: 0.58rem;
+        letter-spacing: 0.08em;
+      }
+
+      &.badge-new {
+        background: var(--c-primary);
+        color: #FFFFFF;
+        border: 1px solid color-mix(in srgb, var(--c-accent) 60%, transparent);
+      }
+      &.badge-bestseller {
+        background: var(--c-accent);
+        color: var(--c-text);
+        border: 1px solid color-mix(in srgb, var(--c-primary) 30%, transparent);
+      }
+      &.badge-featured {
+        background: var(--c-text);
+        color: var(--c-bg);
+        border: 1px solid var(--c-accent);
+      }
     }
   `]
 })

@@ -8,33 +8,41 @@ import { Product } from '../../core/models';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 
+import { HamburgerMenuComponent } from '../../shared/components/hamburger-menu/hamburger-menu.component';
+
 @Component({
   selector: 'app-wishlist',
   standalone: true,
-  imports: [CommonModule, RouterLink, ProductCardComponent, ProductCardSkeletonComponent, NavbarComponent, FooterComponent],
+  imports: [CommonModule, RouterLink, ProductCardComponent, ProductCardSkeletonComponent, NavbarComponent, FooterComponent, HamburgerMenuComponent],
   template: `
     <div class="page-wrapper">
-      <app-navbar />
+      <app-navbar (openMenu)="menuOpen.set(true)" />
+      <app-hamburger-menu [isOpen]="menuOpen()" (close)="menuOpen.set(false)" />
+
       <main class="main-content">
         <div class="container">
           <div class="shop-header">
-            <div>
-              <span class="section-label">Your Favorites</span>
-              <h1 style="font-size: 2.5rem; margin:8px 0">My Wishlist</h1>
-              <p>{{ wishlistedProducts().length }} items saved</p>
-            </div>
+            <span class="section-label">Your Favorites</span>
+            <h1>Saved Handmade Items</h1>
+            <p class="vault-subtitle">
+              @if (wishlistedProducts().length > 0) {
+                {{ wishlistedProducts().length }} {{ wishlistedProducts().length === 1 ? 'item' : 'items' }} saved to your favorites
+              } @else {
+                Save your favorite handmade creations here to easily view them anytime
+              }
+            </p>
           </div>
 
           @if (loading()) {
             <div class="product-grid fade-in">
-              <app-product-card-skeleton [count]="10" />
+              <app-product-card-skeleton [count]="8" />
             </div>
           } @else if (wishlistedProducts().length === 0) {
             <div class="empty-state">
-              <span class="empty-icon">♡</span>
-              <h3>Your wishlist is empty</h3>
-              <p>Explore our shop and tap the heart icon to save your favorite items here.</p>
-              <a routerLink="/shop" class="btn btn-primary" style="margin-top: 16px;">Browse Shop</a>
+              <div class="empty-gem">✦</div>
+              <h3>Your Wishlist is Empty</h3>
+              <p>Click the heart icon on any bag, bouquet, keychain, or handmade creation to save it here for easy viewing later.</p>
+              <a routerLink="/shop" class="btn btn-primary btn-lg" style="margin-top: 14px;">Browse All Products</a>
             </div>
           } @else {
             <div class="product-grid fade-in">
@@ -61,16 +69,127 @@ import { FooterComponent } from '../../shared/components/footer/footer.component
   `,
   styles: [`
     .shop-header {
-      padding: 48px 0 24px;
+      padding: 48px 0 32px;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+
+      h1 {
+        margin-top: 8px;
+        font-size: clamp(2rem, 3.5vw, 2.8rem);
+      }
+
+      .vault-subtitle {
+        color: var(--c-muted);
+        font-size: 0.95rem;
+        margin-top: 6px;
+      }
     }
+
     .empty-state {
-      padding-bottom: 80px;
+      padding: 80px 24px;
+      text-align: center;
+      max-width: 500px;
+      margin: 0 auto 80px;
+      border: 1px dashed var(--c-accent);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.4);
+
+      .empty-gem {
+        font-size: 2rem;
+        color: var(--c-accent);
+        margin-bottom: 16px;
+      }
+
+      h3 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.8rem;
+        color: var(--c-text);
+        margin-bottom: 8px;
+      }
+
+      p {
+        color: var(--c-muted);
+        font-size: 0.92rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 28px;
+      margin-bottom: 60px;
+
+      @media (max-width: 1100px) {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+
+      @media (max-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+
+      @media (max-width: 480px) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      @media (max-width: 320px) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 70px;
+
+      .page-btn {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(200, 196, 154, 0.5);
+        background: var(--c-surface);
+        color: var(--c-text);
+        font-family: 'Jost', sans-serif;
+        font-size: 0.88rem;
+        font-weight: 500;
+        cursor: pointer;
+        border-radius: 2px;
+        transition: all 0.2s;
+
+        &:hover:not(:disabled) {
+          border-color: var(--c-primary);
+          color: var(--c-primary);
+        }
+
+        &.active {
+          background: var(--c-primary);
+          border-color: var(--c-primary);
+          color: var(--c-bg);
+          font-weight: 600;
+        }
+
+        &:disabled {
+          opacity: 0.35;
+          cursor: not-allowed;
+        }
+      }
     }
   `]
 })
 export class WishlistComponent implements OnInit {
   private productService = inject(ProductService);
   
+  menuOpen = signal(false);
   loading = signal(true);
   wishlistedProducts = signal<Product[]>([]);
   currentPage = signal(1);

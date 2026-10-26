@@ -19,11 +19,11 @@ import { ScrollRevealDirective } from '../../shared/animations/scroll-reveal.dir
         <section class="about-hero">
           <div class="container">
             <span class="section-label">Our Story</span>
-            <h1>Made by Hand,<br><em>Carried with Heart</em></h1>
-            <p>Crochus began as a small passion project — a belief that beautiful, useful things don't need factories to exist.</p>
+            <h1>Every Piece Has<br><em>a Little Story</em></h1>
+            <p>At CROCHUS, we love turning simple threads and creative ideas into something special to bring a little more joy to life's everyday moments.</p>
           </div>
           <div class="hero-img">
-            <img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=1400&q=80" alt="Artisan at work" loading="eager" fetchpriority="high" />
+            <img src="https://images.unsplash.com/photo-1584992236310-6edddc08acff?w=1400&q=80" alt="Handmade Craft Yarns and Tools" loading="eager" fetchpriority="high" />
             <div class="hero-img-overlay"></div>
           </div>
         </section>
@@ -33,13 +33,13 @@ import { ScrollRevealDirective } from '../../shared/animations/scroll-reveal.dir
           <div class="container">
             <div class="story-grid story-row-1" appScrollReveal>
               <div class="story-text">
-                <span class="section-label">How it began</span>
-                <h2>A love for the handmade</h2>
-                <p>Crochus was born in a small studio apartment, surrounded by yarn, clay, and the smell of soy wax. Our founder, a lifelong maker, started gifting handmade pieces to friends — and when those friends started asking "where can I buy more?", Crochus was born.</p>
-                <p style="margin-top: 16px">Today we work with a small collective of artisans across India who share a philosophy: that objects made slowly, with care, have a different quality. They hold energy. They age beautifully. They mean something.</p>
+                <span class="section-label">Our Passion</span>
+                <h2>Crafted with Patience & Care</h2>
+                <p>CROCHUS is all about the warmth of handmade creativity. From colorful crochet bags and cheerful flower bouquets to cute keychains, rakhis, and thoughtful gifts, we enjoy crafting items that put a smile on people's faces.</p>
+                <p style="margin-top: 16px">In a world full of mass-produced plastic products, handmade items bring character, softness, and personal meaning. Each loop and stitch is created with honest attention to detail.</p>
               </div>
               <div class="story-img">
-                <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Macramé craft" loading="lazy" />
+                <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=700&q=80" alt="Handmade Crochet and Crafts" loading="lazy" />
               </div>
             </div>
           </div>
@@ -50,13 +50,13 @@ import { ScrollRevealDirective } from '../../shared/animations/scroll-reveal.dir
           <div class="container">
             <div class="story-grid story-row-2 reverse" appScrollReveal [revealDelay]="100">
               <div class="story-img">
-                <img src="https://images.unsplash.com/photo-1584992236310-6edddc08acff?w=600&q=80" alt="Handmade crochet stitches" loading="lazy" />
+                <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=700&q=80" alt="Handmade Flower Bouquets and Gifts" loading="lazy" />
               </div>
               <div class="story-text">
-                <span class="section-label">The Process</span>
-                <h2>Crafted with Patience</h2>
-                <p>Every single stitch in our collection is woven with meticulous attention. We choose 100% organic cotton yarn and natural dyes, ensuring each creation is gentle on both your home and the Earth.</p>
-                <p style="margin-top: 16px">From the initial conceptual sketch to the final hand-tied tag, each product passes through dedicated artisan hands who take genuine pride in their craft.</p>
+                <span class="section-label">How We Make Our Products</span>
+                <h2>From a Simple Thread to Something Special</h2>
+                <p>Every bag, bouquet, keychain, and accessory starts with selected yarns, safe fabrics, and creative designs. We take our time shaping each product so it looks lovely and holds up well with use.</p>
+                <p style="margin-top: 16px">Whether you are shopping for your own collection or choosing a gift for a loved one, our pieces arrive carefully packed and ready to bring happiness.</p>
               </div>
             </div>
           </div>
@@ -66,8 +66,8 @@ import { ScrollRevealDirective } from '../../shared/animations/scroll-reveal.dir
         <section class="section values-section">
           <div class="container">
             <div style="text-align: center; margin-bottom: 56px">
-              <span class="section-label">What drives us</span>
-              <h2 class="section-title">Our Values</h2>
+              <span class="section-label">What We Stand For</span>
+              <h2 class="section-title">Why People Love CROCHUS</h2>
             </div>
             <div class="values-grid">
               @for (val of values; track val.title; let i = $index) {
@@ -197,8 +197,8 @@ export class AboutComponent {
   menuOpen = signal(false);
 
   values = [
-    { icon: '🤲', title: 'Handmade Always', desc: 'Nothing is mass-produced. Every piece is made by human hands, with human care, one at a time.' },
-    { icon: '🌿', title: 'Sustainably Made', desc: 'We use natural materials — cotton, jute, clay, beeswax — and avoid synthetic materials wherever possible.' },
-    { icon: '💚', title: 'Artisan Fair Pay', desc: 'We believe makers deserve fair compensation for their skill and time. We pay above-market wages, always.' },
+    { icon: '🧶', title: 'Made by Hand', desc: 'Each creation is made with care and attention to detail, using quality yarn and fabrics.' },
+    { icon: '✿', title: 'Made to Be Special', desc: 'Find something different from everyday, mass-produced items — unique pieces with character.' },
+    { icon: '✦', title: 'Made for Every Moment', desc: 'From birthdays and festivals to everyday surprises, find something worth gifting or keeping.' },
   ];
 }

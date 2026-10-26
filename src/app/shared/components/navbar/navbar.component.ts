@@ -9,79 +9,159 @@ import { AuthService } from '../../../core/services/auth.service';
   standalone: true,
   imports: [RouterLink, RouterLinkActive, CommonModule],
   template: `
-    <nav class="navbar" [class.scrolled]="scrolled()">
+    <!-- Top Announcement Ribbon -->
+    <aside class="luxury-announcement" aria-label="Announcement">
+      <div class="announcement-inner container">
+        <span class="announcement-text hide-mobile">
+          ✦ CROCHUS · HANDMADE & CROCHET CREATIONS · ALL-INDIA DELIVERY · WHATSAPP ORDERING ✦
+        </span>
+        <span class="announcement-text hide-desktop">
+          ✦ CROCHUS · HANDMADE WITH LOVE · ALL-INDIA DELIVERY ✦
+        </span>
+        <span class="announcement-concierge hide-mobile">
+          COMPLIMENTARY GIFT PACKAGING WITH EVERY ORDER
+        </span>
+      </div>
+    </aside>
+
+    <header class="navbar" [class.scrolled]="scrolled()">
       <div class="nav-inner container">
-        <!-- Logo -->
-        <a routerLink="/" class="logo">
+        <!-- Logo (Strictly original logo preserved) -->
+        <a routerLink="/" class="logo" title="Crochus Handmade Products">
           <img src="assets/logo.svg" alt="Crochus" class="logo-img" />
         </a>
 
-        <!-- Desktop Nav Links -->
-        <ul class="nav-links hide-mobile">
-          <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a></li>
-          <li><a routerLink="/shop" routerLinkActive="active">Shop</a></li>
-          <li><a routerLink="/about" routerLinkActive="active">About</a></li>
-          <li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
-        </ul>
+        <!-- Desktop Nav Links (Simple & Clean) -->
+        <nav class="nav-links hide-mobile" aria-label="Main Navigation">
+          <ul>
+            <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a></li>
+            <li><a routerLink="/shop" routerLinkActive="active">All Products</a></li>
+            <li><a routerLink="/about" routerLinkActive="active">About Us</a></li>
+            <li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
+          </ul>
+        </nav>
 
         <!-- Right Actions -->
         <div class="nav-actions">
-          <!-- Wishlist -->
-          <a routerLink="/wishlist" class="icon-btn wishlist-nav-btn" title="Wishlist">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <!-- Search Link -->
+          <a routerLink="/shop" class="icon-btn search-nav-btn" title="Search Products" aria-label="Search Products">
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="7.5"></circle>
+              <line x1="16.5" y1="16.5" x2="22" y2="22"></line>
+            </svg>
+          </a>
+
+          <!-- Wishlist / Saved Items -->
+          <a routerLink="/wishlist" class="icon-btn wishlist-nav-btn" title="Saved Items" aria-label="Saved Items">
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
           </a>
 
-          <!-- Cart -->
-          <a routerLink="/cart" class="icon-btn cart-btn" title="Cart">
-            <span>🛍</span>
+          <!-- Shopping Bag -->
+          <a routerLink="/cart" class="icon-btn cart-btn" title="Shopping Bag" aria-label="Shopping Bag">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
             @if (cart.totalItems() > 0) {
               <span class="cart-badge">{{ cart.totalItems() }}</span>
             }
           </a>
 
-          <!-- Auth -->
+          <!-- Auth & Profile -->
           @if (auth.isLoggedIn()) {
             <div class="user-menu">
-              <button class="user-btn" (click)="toggleUserMenu()">
-                <span class="user-avatar">{{ auth.currentUser()?.full_name?.charAt(0) }}</span>
+              <button class="user-btn" (click)="toggleUserMenu()" aria-label="Account Menu">
+                <span class="user-avatar">{{ auth.currentUser()?.full_name?.charAt(0) || '✦' }}</span>
               </button>
               @if (showUserMenu()) {
                 <div class="dropdown">
-                  <a routerLink="/profile" (click)="showUserMenu.set(false)">My Profile</a>
-                  <button (click)="logout()">Logout</button>
+                  <div class="dropdown-header">
+                    <span class="dropdown-welcome">Welcome</span>
+                    <strong class="dropdown-name">{{ auth.currentUser()?.full_name }}</strong>
+                  </div>
+                  <a routerLink="/profile" (click)="showUserMenu.set(false)">My Orders & Account</a>
+                  <button (click)="logout()">Sign Out</button>
                 </div>
               }
             </div>
           } @else {
-            <a routerLink="/login" class="btn btn-primary btn-sm hide-mobile">Sign In</a>
+            <a routerLink="/login" class="client-signin-btn hide-mobile">Sign In</a>
           }
 
-          <!-- Hamburger -->
-          <button class="hamburger hide-desktop" (click)="openMenu.emit()" aria-label="Menu">
-            <span></span><span></span><span></span>
+          <!-- Mobile Hamburger -->
+          <button class="hamburger hide-desktop" (click)="openMenu.emit()" aria-label="Open Navigation Menu">
+            <span class="bar bar-1"></span>
+            <span class="bar bar-2"></span>
           </button>
         </div>
       </div>
-    </nav>
+    </header>
   `,
   styles: [`
-    .navbar {
+    :host {
+      display: block;
       position: fixed;
       top: 0; left: 0; right: 0;
+      z-index: 850;
+    }
+
+    .luxury-announcement {
+      background: var(--c-text);
+      color: var(--c-bg);
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-weight: 500;
+      border-bottom: 1px solid color-mix(in srgb, var(--c-accent) 40%, transparent);
+      padding: 6px 0;
+      transition: all 0.3s ease;
+
+      @media (max-width: 768px) {
+        padding: 4px 0;
+        font-size: 0.62rem;
+        letter-spacing: 0.08em;
+      }
+
+      .announcement-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        @media (max-width: 768px) {
+          justify-content: center;
+          text-align: center;
+        }
+      }
+
+      .announcement-text {
+        color: var(--c-accent);
+      }
+
+      .announcement-concierge {
+        opacity: 0.8;
+        font-size: 0.65rem;
+      }
+    }
+
+    .navbar {
       height: 72px;
-      background: var(--c-surface);
-      border-bottom: 1px solid transparent;
-      z-index: 800;
-      transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, backdrop-filter 0.25s ease;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+      transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+
+      @media (max-width: 768px) {
+        height: 58px;
+      }
 
       &.scrolled {
-        background: color-mix(in srgb, var(--c-surface) 92%, transparent);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-bottom-color: color-mix(in srgb, var(--border) 60%, transparent);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        background: rgba(255, 255, 255, 0.98);
+        border-bottom-color: color-mix(in srgb, var(--c-accent) 70%, var(--border));
+        box-shadow: 0 4px 24px rgba(44, 58, 26, 0.06);
       }
     }
 
@@ -89,7 +169,12 @@ import { AuthService } from '../../../core/services/auth.service';
       height: 100%;
       display: flex;
       align-items: center;
-      gap: 32px;
+      justify-content: space-between;
+      gap: 28px;
+
+      @media (max-width: 768px) {
+        gap: 8px;
+      }
     }
 
     .logo {
@@ -98,53 +183,70 @@ import { AuthService } from '../../../core/services/auth.service';
       text-decoration: none;
       flex-shrink: 0;
       user-select: none;
+      min-width: 0;
 
       .logo-img {
-        /* Change --logo-height-navbar in styles.scss or change 42px here to resize */
         height: var(--logo-height-navbar, 42px);
         width: auto;
+        max-width: 140px;
+        object-fit: contain;
         display: block;
         user-select: none;
         -webkit-user-select: none;
         -webkit-user-drag: none;
         pointer-events: none;
         filter: var(--logo-filter, none);
+        transition: transform 0.3s ease;
+
+        @media (max-width: 360px) {
+          max-width: 110px;
+        }
+      }
+
+      &:hover .logo-img {
+        transform: scale(1.02);
       }
     }
 
     .nav-links {
       display: flex;
-      list-style: none;
-      gap: 32px;
       flex: 1;
+      justify-content: center;
+
+      ul {
+        display: flex;
+        list-style: none;
+        gap: 36px;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+      }
 
       a {
-        font-size: 0.85rem;
+        font-family: 'Jost', sans-serif;
+        font-size: 0.82rem;
         font-weight: 500;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.16em;
         text-transform: uppercase;
-        color: var(--c-muted);
+        color: var(--c-text);
         position: relative;
         transition: color 0.25s ease;
-        padding: 6px 0;
+        padding: 8px 0;
 
         &::after {
           content: '';
           position: absolute;
-          bottom: -1px; left: 0;
-          width: 100%; height: 2px;
-          background: var(--c-primary);
-          transform: scaleX(0);
-          transform-origin: right;
-          transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-          border-radius: 2px;
+          bottom: 0; left: 50%;
+          width: 0; height: 1.5px;
+          background: var(--c-accent);
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+          transform: translateX(-50%);
         }
 
         &:hover, &.active {
-          color: var(--c-text);
+          color: var(--c-primary);
           &::after {
-            transform: scaleX(1);
-            transform-origin: left;
+            width: 100%;
           }
         }
       }
@@ -153,91 +255,257 @@ import { AuthService } from '../../../core/services/auth.service';
     .nav-actions {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-left: auto;
+      gap: 12px;
+      flex-shrink: 0;
+
+      @media (max-width: 768px) {
+        gap: 6px;
+      }
+
+      @media (max-width: 360px) {
+        gap: 4px;
+      }
     }
 
     .icon-btn {
-      width: 44px; height: 44px;
-      display: flex; align-items: center; justify-content: center;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background: transparent;
-      border: none;
+      border: 1px solid transparent;
       border-radius: 50%;
-      font-size: 1.1rem;
       cursor: pointer;
-      transition: background 0.2s ease, transform 0.15s ease;
+      transition: all 0.22s ease;
       position: relative;
-      color: var(--text-primary);
+      color: var(--c-text);
       text-decoration: none;
+      flex-shrink: 0;
 
-      &:hover { background: rgba(74, 92, 47, 0.07); }
-      &:active { transform: scale(0.94); }
+      @media (max-width: 768px) {
+        width: 34px;
+        height: 34px;
+
+        svg {
+          width: 17px;
+          height: 17px;
+        }
+      }
+
+      @media (max-width: 360px) {
+        width: 30px;
+        height: 30px;
+
+        svg {
+          width: 16px;
+          height: 16px;
+        }
+      }
+
+      &:hover {
+        background: color-mix(in srgb, var(--c-accent) 20%, transparent);
+        border-color: color-mix(in srgb, var(--c-accent) 50%, transparent);
+        color: var(--c-primary);
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: scale(0.96);
+      }
     }
 
     .cart-badge {
       position: absolute;
-      top: 5px; right: 5px;
-      width: 17px; height: 17px;
-      background: var(--primary);
-      color: white;
-      border-radius: 50%;
+      top: 3px;
+      right: 3px;
+      min-width: 17px;
+      height: 17px;
+      padding: 0 4px;
+      background: var(--c-primary);
+      color: #FFFFFF;
+      border-radius: 10px;
       font-size: 0.65rem;
       font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 2px 4px rgba(74, 92, 47, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(74, 92, 47, 0.3);
+      border: 1px solid #FFFFFF;
+
+      @media (max-width: 768px) {
+        top: 0;
+        right: 0;
+        min-width: 15px;
+        height: 15px;
+        font-size: 0.58rem;
+        padding: 0 3px;
+      }
     }
 
-    .user-menu { position: relative; }
+    .client-signin-btn {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border: 1px solid var(--c-primary);
+      border-radius: 4px;
+      color: var(--c-primary);
+      background: transparent;
+      transition: all 0.25s ease;
+      text-decoration: none;
 
-    .user-btn { background: transparent; border: none; cursor: pointer; }
+      &:hover {
+        background: var(--c-primary);
+        color: #FFFFFF;
+        box-shadow: 0 4px 12px rgba(74, 92, 47, 0.2);
+        transform: translateY(-1px);
+      }
+    }
+
+    .user-menu {
+      position: relative;
+    }
+
+    .user-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
 
     .user-avatar {
-      width: 36px; height: 36px;
-      background: var(--primary);
-      color: white;
+      width: 36px;
+      height: 36px;
+      background: var(--c-primary);
+      color: #FFFFFF;
       border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.9rem; font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border: 1.5px solid var(--c-accent);
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: scale(1.05);
+      }
     }
 
     .dropdown {
       position: absolute;
-      top: calc(100% + 8px); right: 0;
-      background: var(--surface);
-      border: 1px solid var(--border);
+      top: calc(100% + 10px);
+      right: 0;
+      background: #FFFFFF;
+      border: 1px solid color-mix(in srgb, var(--c-accent) 60%, var(--border));
       border-radius: 8px;
-      box-shadow: var(--shadow-hover);
-      min-width: 160px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+      min-width: 210px;
       overflow: hidden;
-      animation: fadeIn 0.2s ease;
+      animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 10;
+
+      .dropdown-header {
+        padding: 14px 18px;
+        background: color-mix(in srgb, var(--c-bg) 65%, #FFFFFF);
+        border-bottom: 1px solid var(--border);
+
+        .dropdown-welcome {
+          display: block;
+          font-size: 0.68rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--c-muted);
+        }
+
+        .dropdown-name {
+          display: block;
+          font-size: 0.88rem;
+          color: var(--c-text);
+          font-weight: 600;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
 
       a, button {
-        display: block; width: 100%;
-        padding: 12px 16px;
+        display: block;
+        width: 100%;
+        padding: 12px 18px;
         text-align: left;
-        background: none; border: none;
-        font-size: 0.9rem;
-        color: var(--text-primary);
+        background: none;
+        border: none;
+        font-size: 0.85rem;
+        color: var(--c-text);
         cursor: pointer;
-        transition: background 0.2s;
-        &:hover { background: var(--bg); }
+        transition: background 0.2s ease, color 0.2s ease;
+
+        &:hover {
+          background: color-mix(in srgb, var(--c-bg) 70%, transparent);
+          color: var(--c-primary);
+        }
+      }
+
+      button {
+        border-top: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
+        color: #8A2F2F;
+        &:hover {
+          background: color-mix(in srgb, #8A2F2F 10%, #FFFFFF);
+        }
       }
     }
 
+    /* Minimalist 2-line Luxury Hamburger */
     .hamburger {
-      width: 40px; height: 40px;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 5px;
-      background: transparent; border: none;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 6px;
+      background: transparent;
+      border: none;
       cursor: pointer;
+      padding: 4px;
+      flex-shrink: 0;
 
-      span {
+      @media (max-width: 768px) {
+        width: 32px;
+        height: 32px;
+        padding: 2px;
+        gap: 5px;
+
+        .bar-1 { width: 20px; }
+        .bar-2 { width: 14px; }
+      }
+
+      @media (max-width: 360px) {
+        width: 28px;
+        height: 28px;
+        padding: 2px;
+
+        .bar-1 { width: 18px; }
+        .bar-2 { width: 12px; }
+      }
+
+      .bar {
         display: block;
-        width: 22px; height: 2px;
-        background: var(--text-primary);
-        border-radius: 2px;
-        transition: all 0.3s;
+        height: 1.5px;
+        background: var(--c-text);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border-radius: 1px;
+      }
+
+      .bar-1 { width: 24px; }
+      .bar-2 { width: 16px; }
+
+      &:hover {
+        .bar-2 { width: 24px; }
       }
     }
   `]
@@ -252,12 +520,16 @@ export class NavbarComponent {
   showUserMenu = signal(false);
 
   constructor() {
-    window.addEventListener('scroll', () => {
-      this.scrolled.set(window.scrollY > 20);
-    });
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', () => {
+        this.scrolled.set(window.scrollY > 20);
+      }, { passive: true });
+    }
   }
 
-  toggleUserMenu() { this.showUserMenu.update(v => !v); }
+  toggleUserMenu() {
+    this.showUserMenu.update(v => !v);
+  }
 
   logout() {
     this.auth.logout();

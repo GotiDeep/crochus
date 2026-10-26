@@ -22,6 +22,9 @@ import { Component, Input } from '@angular/core';
     :host { display: contents; }
 
     .skeleton-card {
+      background: var(--c-surface);
+      border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+      border-radius: 10px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -32,10 +35,18 @@ import { Component, Input } from '@angular/core';
       aspect-ratio: 3/4;
       width: 100%;
       border-radius: 0;
+      background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--c-bg) 90%, #000 4%) 25%,
+        var(--c-bg) 50%,
+        color-mix(in srgb, var(--c-bg) 90%, #000 4%) 75%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
     }
 
     .body {
-      padding: 16px;
+      padding: 16px 18px 18px;
       display: flex;
       flex-direction: column;
       flex: 1;
@@ -44,22 +55,24 @@ import { Component, Input } from '@angular/core';
 
     .line {
       height: 12px;
-      border-radius: 6px;
-      &.short { width: 40%; }
-      &.medium { width: 75%; height: 16px; }
-      &.price { width: 30%; height: 20px; }
+      border-radius: 4px;
+      &.short { width: 35%; height: 10px; }
+      &.medium { width: 80%; height: 16px; }
+      &.price { width: 30%; height: 22px; }
     }
 
     .footer-skel {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 4px;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
     }
 
     .btn-skel {
-      width: 90px;
-      height: 32px;
+      width: 76px;
+      height: 34px;
       border-radius: 4px;
     }
   `]

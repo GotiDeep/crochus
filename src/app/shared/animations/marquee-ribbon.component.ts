@@ -1,4 +1,4 @@
-﻿import { Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-marquee-ribbon', standalone: true,
@@ -7,7 +7,7 @@
       <div class="track">
         @for (g of [0,1,2,3]; track g) {
           <span class="grp">
-            @for (t of items; track $index) { <span>{{ t }}</span><i>✿</i> }
+            @for (t of items; track $index) { <span>{{ t }}</span><i>✦</i> }
           </span>
         }
       </div>
@@ -20,7 +20,7 @@
     .rev .track { animation-direction: reverse; }
     .ribbon:hover .track { animation-play-state: paused; }
     .grp { display: inline-flex; gap: 28px; padding-right: 28px; font: 500 .78rem 'Jost', sans-serif;
-           letter-spacing: .16em; text-transform: uppercase; white-space: nowrap; flex-shrink: 0; }
+           letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; flex-shrink: 0; }
     i { font-style: normal; color: var(--accent); }
     @keyframes m { to { transform: translateX(-50%); } }
     @media (max-width: 600px) {
@@ -32,5 +32,15 @@
 })
 export class MarqueeRibbonComponent {
   @Input() reverse = false;
-  @Input() items = ['Handmade with love', 'Crochet', 'One of a kind', 'Made to order', 'Crafted to last', 'Crochus'];
+  @Input() items = [
+    'Crochet Bags & Purses',
+    'Handmade Flower Bouquets',
+    'Cute Keychains & Charms',
+    'Children\'s Wear',
+    'Festive Rakhis & Gifts',
+    'Mobile Covers & Accessories',
+    'Handmade with Love & Care',
+    'Easy WhatsApp Ordering',
+    'Thoughtful Gift Packaging'
+  ];
 }

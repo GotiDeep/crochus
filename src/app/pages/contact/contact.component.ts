@@ -20,9 +20,9 @@ import { SettingsService } from '../../core/services/settings.service';
       <main class="main-content">
         <div class="container">
           <div class="page-header">
-            <span class="section-label">Say Hello</span>
-            <h1>Get in Touch</h1>
-            <p>We'd love to hear from you — whether it's a question, a custom order, or just to share your love for handmade things.</p>
+            <span class="section-label">Customer Support</span>
+            <h1>Get in Touch with Us</h1>
+            <p>Have questions about a handmade product, want to request a custom color or size, or need gift ideas? We are here to help!</p>
           </div>
 
           <div class="contact-layout">
@@ -38,8 +38,13 @@ import { SettingsService } from '../../core/services/settings.service';
               }
 
               <div class="social-block">
-                <p class="social-label">Follow us</p>
+                <p class="social-label">Follow & Chat with Us</p>
                 <div class="social-row">
+                  @if (whatsappUrl()) {
+                    <a [href]="whatsappUrl()" target="_blank" rel="noopener" class="social-pill wa">
+                      💬 Chat on WhatsApp
+                    </a>
+                  }
                   @if (instagramUrl()) {
                     <a [href]="instagramUrl()" target="_blank" rel="noopener" class="social-pill">
                       📸 Instagram
@@ -50,35 +55,30 @@ import { SettingsService } from '../../core/services/settings.service';
                       🌐 Facebook
                     </a>
                   }
-                  @if (whatsappUrl()) {
-                    <a [href]="whatsappUrl()" target="_blank" rel="noopener" class="social-pill wa">
-                      💬 WhatsApp
-                    </a>
-                  }
                 </div>
               </div>
             </div>
 
             <div class="contact-form card">
               @if (!sent()) {
-                <h3>Send us a message</h3>
+                <h3>Send Us a Message</h3>
                 <div class="divider"></div>
 
                 <div class="form-group floating-group">
-                  <label class="form-label">Your Name *</label>
-                  <input type="text" class="form-control" [class.error]="error() && !form.name" [(ngModel)]="form.name" placeholder="Full name" />
+                  <label class="form-label">Full Name *</label>
+                  <input type="text" class="form-control" [class.error]="error() && !form.name" [(ngModel)]="form.name" placeholder="Your full name" />
                 </div>
                 <div class="form-group floating-group">
-                  <label class="form-label">Email *</label>
+                  <label class="form-label">Email Address *</label>
                   <input type="email" class="form-control" [class.error]="error() && !form.email" [(ngModel)]="form.email" placeholder="you@example.com" />
                 </div>
                 <div class="form-group floating-group">
                   <label class="form-label">Subject</label>
-                  <input type="text" class="form-control" [(ngModel)]="form.subject" placeholder="What's it about?" />
+                  <input type="text" class="form-control" [(ngModel)]="form.subject" placeholder="Custom color, gift order, bouquet inquiry…" />
                 </div>
                 <div class="form-group floating-group">
-                  <label class="form-label">Message *</label>
-                  <textarea class="form-control" [class.error]="error() && !form.message" [(ngModel)]="form.message" rows="5" placeholder="Write your message here…"></textarea>
+                  <label class="form-label">Your Message *</label>
+                  <textarea class="form-control" [class.error]="error() && !form.message" [(ngModel)]="form.message" rows="5" placeholder="Tell us how we can help you…"></textarea>
                 </div>
 
                 @if (error()) { <div class="auth-error error-shake">{{ error() }}</div> }
@@ -86,17 +86,17 @@ import { SettingsService } from '../../core/services/settings.service';
                 <button class="btn btn-primary btn-full submit-btn" [disabled]="sending()" (click)="send()">
                   @if (sending()) {
                     <span class="btn-spinner"></span>
-                    <span>Sending message…</span>
+                    <span>Sending Message…</span>
                   } @else {
-                    <span>Send Message</span>
+                    <span>Send Message →</span>
                   }
                 </button>
               } @else {
                 <div class="success-msg fade-in">
-                  <span style="font-size:3rem">💌</span>
-                  <h3>Message sent!</h3>
-                  <p>Thank you for reaching out. We'll get back to you within 24 hours.</p>
-                  <button class="btn btn-outline" (click)="sent.set(false)">Send another</button>
+                  <span style="font-size:2.8rem; color: var(--c-accent)">✦</span>
+                  <h3>Message Sent!</h3>
+                  <p>Thank you for reaching out to CROCHUS. Our team will review your message and reply within 24 hours.</p>
+                  <button class="btn btn-outline" (click)="sent.set(false)">Send Another Message</button>
                 </div>
               }
             </div>
@@ -194,6 +194,10 @@ import { SettingsService } from '../../core/services/settings.service';
       border-radius: 14px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
       h3 { margin-bottom: 16px; font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; }
+
+      @media (max-width: 600px) {
+        padding: 20px 14px;
+      }
     }
 
     .floating-group {

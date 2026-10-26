@@ -23,7 +23,7 @@ import { Order, User } from '../../core/models';
         <div class="container">
           <div class="page-header">
             <span class="section-label">My Account</span>
-            <h1>Profile</h1>
+            <h1>Account & Orders</h1>
           </div>
 
           <div class="profile-layout">
@@ -38,12 +38,12 @@ import { Order, User } from '../../core/models';
               <div class="divider" style="margin: 16px 0"></div>
 
               <button class="nav-tab" [class.active]="activeTab() === 'profile'" (click)="activeTab.set('profile')">
-                👤 My Details
+                ✦ My Details
               </button>
               <button class="nav-tab" [class.active]="activeTab() === 'orders'" (click)="loadOrders()">
-                📦 Order History
+                ✦ Order History
               </button>
-              <button class="nav-tab logout" (click)="auth.logout()">🚪 Logout</button>
+              <button class="nav-tab logout" (click)="auth.logout()">Sign Out</button>
             </nav>
 
             <!-- Content -->
@@ -111,10 +111,10 @@ import { Order, User } from '../../core/models';
                     <div style="text-align:center; padding:40px; color:var(--text-secondary)">Loading orders…</div>
                   } @else if (orders().length === 0) {
                     <div class="empty-state" style="padding:40px">
-                      <span class="empty-icon">📦</span>
-                      <h3>No orders yet</h3>
-                      <p>Your order history will appear here.</p>
-                      <a routerLink="/shop" class="btn btn-primary">Start Shopping</a>
+                      <span class="empty-icon">✦</span>
+                      <h3>No Orders Yet</h3>
+                      <p>When you place an order, its details and status will show up here.</p>
+                      <a routerLink="/shop" class="btn btn-primary" style="margin-top: 12px;">Browse All Products</a>
                     </div>
                   } @else {
                     <div class="orders-list">

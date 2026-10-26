@@ -1,7 +1,7 @@
 import { Category, Product, Order } from './models';
 
 export const MOCK_CATEGORIES: Category[] = [
-  { id: 1, name: 'Jewellery', slug: 'jewellery', product_count: 12 },
+  { id: 1, name: 'Handmade Gifts', slug: 'handmade-gifts', product_count: 12 },
   { id: 2, name: 'Home Décor', slug: 'home-decor', product_count: 8 },
   { id: 3, name: 'Bags & Totes', slug: 'bags-totes', product_count: 6 },
   { id: 4, name: 'Scarves & Wraps', slug: 'scarves-wraps', product_count: 9 },

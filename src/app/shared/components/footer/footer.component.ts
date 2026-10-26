@@ -11,15 +11,57 @@ import { Category } from '../../../core/models';
   imports: [RouterLink, CommonModule],
   template: `
     <footer class="footer">
-      <div class="container">
+      <!-- Quality Hallmarks Bar -->
+      <div class="maison-hallmarks-bar">
+        <div class="container">
+          <div class="hallmarks-grid">
+            <div class="hallmark-col">
+              <span class="hm-icon">🧶</span>
+              <div class="hm-text">
+                <span class="hm-title">Handcrafted with Care</span>
+                <span class="hm-sub">Quality Yarns & Thoughtful Details</span>
+              </div>
+            </div>
+            <div class="hallmark-col">
+              <span class="hm-icon">✿</span>
+              <div class="hm-text">
+                <span class="hm-title">Thoughtful Gifting</span>
+                <span class="hm-sub">Perfect for Birthdays & Festivals</span>
+              </div>
+            </div>
+            <div class="hallmark-col">
+              <span class="hm-icon">✦</span>
+              <div class="hm-text">
+                <span class="hm-title">Gift Packaging</span>
+                <span class="hm-sub">Carefully Packed with Every Order</span>
+              </div>
+            </div>
+            <div class="hallmark-col">
+              <span class="hm-icon">💬</span>
+              <div class="hm-text">
+                <span class="hm-title">WhatsApp Support</span>
+                <span class="hm-sub">Custom Colors & Quick Help</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container footer-main-body">
         <div class="footer-grid">
           <!-- Brand Column -->
           <div class="footer-brand">
-            <a routerLink="/" class="logo">
+            <a routerLink="/" class="logo" title="Crochus Handmade Products">
               <img src="assets/logo.svg" alt="Crochus" class="footer-logo-img" />
             </a>
-            <p>Handmade with love and intention. Every piece tells a story — made by artisans, for those who value craft.</p>
+            <p>CROCHUS is a handmade brand creating colorful crochet bags, flower bouquets, keychains, kidswear, rakhis, and thoughtful gifts made with love.</p>
+            
             <div class="social-links">
+              @if (whatsappUrl()) {
+                <a [href]="whatsappUrl()" target="_blank" rel="noopener" class="social-btn wa">
+                  💬 WhatsApp Support
+                </a>
+              }
               @if (instagramUrl()) {
                 <a [href]="instagramUrl()" target="_blank" rel="noopener" class="social-btn ig">
                   📸 Instagram
@@ -30,33 +72,18 @@ import { Category } from '../../../core/models';
                   🌐 Facebook
                 </a>
               }
-              @if (whatsappUrl()) {
-                <a [href]="whatsappUrl()" target="_blank" rel="noopener" class="social-btn wa">
-                  💬 WhatsApp
-                </a>
-              }
             </div>
           </div>
 
-          <!-- Quick Links (Explore) -->
+          <!-- Quick Links (Catalogue) -->
           <div class="footer-col">
             <h5>Explore</h5>
             <ul>
               <li><a routerLink="/">Home</a></li>
-              <li><a routerLink="/shop">Shop All</a></li>
-              <li><a routerLink="/about">Our Story</a></li>
-              <li><a routerLink="/contact">Contact</a></li>
-            </ul>
-          </div>
-
-          <!-- Account Links -->
-          <div class="footer-col">
-            <h5>Account</h5>
-            <ul>
-              <li><a routerLink="/login">Sign In</a></li>
-              <li><a routerLink="/register">Register</a></li>
-              <li><a routerLink="/profile">My Orders</a></li>
-              <li><a routerLink="/cart">Cart</a></li>
+              <li><a routerLink="/shop">All Products</a></li>
+              <li><a routerLink="/shop" [queryParams]="{badge: 'new'}">New Arrivals</a></li>
+              <li><a routerLink="/shop" [queryParams]="{badge: 'bestseller'}">Popular Picks</a></li>
+              <li><a routerLink="/wishlist">Saved Items</a></li>
             </ul>
           </div>
 
@@ -65,20 +92,32 @@ import { Category } from '../../../core/models';
             <h5>Categories</h5>
             <ul>
               @if (categories().length > 0) {
-                @for (cat of categories().slice(0, 4); track cat.id) {
-                  <li><a routerLink="/shop" [queryParams]="{category: cat.id}">{{ cat.name }}</a></li>
+                @for (cat of categories().slice(0, 5); track cat.id) {
+                  <li><a routerLink="/shop" [queryParams]="{category: cat.id}">{{ formatCategoryName(cat.name) }}</a></li>
                 }
               } @else {
-                <li><a routerLink="/shop">All Collections</a></li>
+                <li><a routerLink="/shop">All Categories</a></li>
               }
+            </ul>
+          </div>
+
+          <!-- Account & Help -->
+          <div class="footer-col">
+            <h5>Help & Account</h5>
+            <ul>
+              <li><a routerLink="/cart">Shopping Bag</a></li>
+              <li><a routerLink="/login">Sign In</a></li>
+              <li><a routerLink="/register">Create Account</a></li>
+              <li><a routerLink="/profile">My Orders</a></li>
+              <li><a routerLink="/contact">Contact Us</a></li>
             </ul>
           </div>
         </div>
 
         <div class="footer-bottom">
-          <p>© {{ year }} Crochus. All rights reserved. Made with 🌿</p>
+          <p>© {{ year }} Crochus. Handcrafted with Love. All rights reserved.</p>
           <div class="footer-bottom-right">
-            <p class="tagline">Handcrafted · Sustainable · Artisanal</p>
+            <p class="tagline">✦ Handcrafted with Love · Quality Materials · Safe Delivery</p>
             <button class="footer-top-link" (click)="scrollToTop()">
               Back to top ↑
             </button>
@@ -103,16 +142,67 @@ import { Category } from '../../../core/models';
   `,
   styles: [`
     .footer {
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      padding: 56px 0 28px;
+      background: var(--c-surface);
+      border-top: 1px solid rgba(200, 196, 154, 0.5);
+      padding: 0 0 28px;
       margin-top: auto;
       width: 100%;
       box-sizing: border-box;
       position: relative;
+    }
 
-      @media (max-width: 600px) {
-        padding: 40px 0 24px;
+    .maison-hallmarks-bar {
+      border-bottom: 1px solid rgba(200, 196, 154, 0.35);
+      background: rgba(245, 240, 224, 0.5);
+      padding: 32px 0;
+      margin-bottom: 48px;
+
+      .hallmarks-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+
+        @media (max-width: 900px) {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 20px;
+        }
+
+        @media (max-width: 520px) {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+      }
+
+      .hallmark-col {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+
+        .hm-icon {
+          color: var(--c-accent);
+          font-size: 0.9rem;
+          margin-top: 2px;
+          flex-shrink: 0;
+        }
+
+        .hm-text {
+          .hm-title {
+            display: block;
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--c-text);
+            margin-bottom: 3px;
+          }
+
+          .hm-sub {
+            display: block;
+            font-size: 0.76rem;
+            color: var(--c-muted);
+            line-height: 1.4;
+          }
+        }
       }
     }
 
@@ -392,5 +482,15 @@ export class FooterComponent implements OnInit, OnDestroy {
 
   whatsappUrl() {
     return `https://wa.me/${this.settings.whatsappNumber()}`;
+  }
+
+  formatCategoryName(name: string): string {
+    if (!name) return 'Handmade';
+    const lower = name.toLowerCase().trim();
+    if (lower === 'handmade purse' || lower === 'bags & totes') return 'Handmade Bags';
+    if (lower === 'booquets') return 'Flower Bouquets';
+    if (lower === 'children wear') return 'Kidswear';
+    if (lower === 'key chains' || lower === 'key chain') return 'Keychains';
+    return name;
   }
 }
