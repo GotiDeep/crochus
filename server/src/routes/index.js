@@ -6,8 +6,9 @@ const cartController = require('../controllers/cartController');
 const orderController = require('../controllers/orderController');
 const contactController = require('../controllers/contactController');
 const adminController = require('../controllers/adminController');
+const bannerController = require('../controllers/bannerController');
 const { requireAdminAuth, requireCustomerAuth } = require('../middleware/auth');
-const { productUpload, categoryUpload } = require('../middleware/upload');
+const { productUpload, categoryUpload, bannerUpload } = require('../middleware/upload');
 
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.get('/products/:slug', publicController.getProductBySlug);
 router.get('/products', publicController.getProducts);
 router.get('/categories', publicController.getCategories);
 router.get('/settings/whatsapp', publicController.getPublicSettings);
+router.get('/banners', bannerController.getPublicBanners);
 
 router.post('/auth/register', authController.register);
 router.post('/auth/verify-otp', authController.verifyOtp);
@@ -59,5 +61,11 @@ router.put('/admin/settings/whatsapp', requireAdminAuth, adminController.updateW
 router.get('/admin/settings/smtp', requireAdminAuth, adminController.getSmtpSettings);
 router.put('/admin/settings/smtp', requireAdminAuth, adminController.updateSmtpSettings);
 router.post('/admin/settings/smtp/test', requireAdminAuth, adminController.testSmtpSettings);
+
+router.get('/admin/banners', requireAdminAuth, bannerController.getAdminBanners);
+router.post('/admin/banners', requireAdminAuth, bannerUpload, bannerController.createBanner);
+router.put('/admin/banners/:id', requireAdminAuth, bannerUpload, bannerController.updateBanner);
+router.delete('/admin/banners/:id', requireAdminAuth, bannerController.deleteBanner);
+router.patch('/admin/banners/:id/status', requireAdminAuth, bannerController.toggleBannerStatus);
 
 module.exports = router;

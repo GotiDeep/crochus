@@ -1,7 +1,9 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { AdminSidebarComponent } from '../dashboard/admin-sidebar.component';
+import { AdminBannersComponent } from './admin-banners.component';
 import { SettingsService } from '../../../core/services/settings.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { SiteSettings } from '../../../core/models';
@@ -20,7 +22,7 @@ interface SmtpSettings {
 @Component({
   selector: 'app-admin-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, AdminSidebarComponent, AdminBannersComponent],
   template: `
     <div class="admin-layout">
       <app-admin-sidebar />
@@ -30,6 +32,9 @@ interface SmtpSettings {
         </div>
 
         <div class="settings-tabs" role="tablist">
+          <button [class.active]="activeTab() === 'banners'" (click)="activeTab.set('banners')">
+            🖼️ Hero Banners
+          </button>
           <button [class.active]="activeTab() === 'general'" (click)="activeTab.set('general')">
             📱 Contact & Social Media
           </button>
@@ -38,7 +43,9 @@ interface SmtpSettings {
           </button>
         </div>
 
-        @if (activeTab() === 'general') {
+        @if (activeTab() === 'banners') {
+          <app-admin-banners />
+        } @else if (activeTab() === 'general') {
           <section class="settings-card card">
             <div class="section-head">
               <div>
@@ -240,8 +247,9 @@ interface SmtpSettings {
 export class AdminSettingsComponent implements OnInit {
   private settingsService = inject(SettingsService);
   private toast = inject(ToastService);
+  private route = inject(ActivatedRoute);
 
-  activeTab = signal<'general' | 'email'>('general');
+  activeTab = signal<'banners' | 'general' | 'email'>('banners');
   savingGeneral = signal(false);
   savingSmtp = signal(false);
   testingSmtp = signal(false);
@@ -267,6 +275,16 @@ export class AdminSettingsComponent implements OnInit {
   };
 
   ngOnInit() {
+    this.route.queryParams.subscribe((params) => {
+      if (params['tab'] === 'general') {
+        this.activeTab.set('general');
+      } else if (params['tab'] === 'email') {
+        this.activeTab.set('email');
+      } else if (params['tab'] === 'banners' || params['tab'] === 'banner') {
+        this.activeTab.set('banners');
+      }
+    });
+
     this.settingsService.getGeneralSettings().subscribe({
       next: (settings) => {
         this.generalSettings = { ...this.generalSettings, ...settings };

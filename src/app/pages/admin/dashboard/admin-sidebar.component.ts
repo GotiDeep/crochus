@@ -68,7 +68,11 @@ import { AdminService } from '../../../core/services/admin.service';
           <span class="nav-icon">📦</span>
           <span>Orders</span>
         </a>
-        <a routerLink="/admin/settings" routerLinkActive="active" class="nav-item" (click)="closeMobile()">
+        <a routerLink="/admin/settings" [queryParams]="{ tab: 'banners' }" routerLinkActive="active" class="nav-item" (click)="closeMobile()">
+          <span class="nav-icon">🖼️</span>
+          <span>Banners</span>
+        </a>
+        <a routerLink="/admin/settings" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-item" (click)="closeMobile()">
           <span class="nav-icon">⚙️</span>
           <span>Settings</span>
         </a>

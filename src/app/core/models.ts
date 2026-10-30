@@ -104,6 +104,22 @@ export interface DashboardOverview {
   recent_products: Product[];
 }
 
+// ============ BANNER ============
+export interface Banner {
+  id: number;
+  name: string;
+  title?: string;
+  subtitle?: string;
+  image_url: string;
+  link_url?: string;
+  button_text?: string;
+  display_on: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
 // ============ SETTINGS ============
 export interface SiteSettings {
   whatsapp_number: string;

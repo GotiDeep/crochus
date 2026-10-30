@@ -25,8 +25,10 @@ const productUpload = upload.fields([
 ]);
 
 const categoryUpload = upload.single('image');
+const bannerUpload = upload.single('image');
 
 module.exports = {
   productUpload,
   categoryUpload,
+  bannerUpload,
 };
