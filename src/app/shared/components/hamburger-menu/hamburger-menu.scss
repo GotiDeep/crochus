@@ -1,3 +1,19 @@
+:host {
+  @media (min-width: 901px) {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
+@media (min-width: 901px) {
+  :host, .overlay, .slide-menu {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
 .overlay {
       position: fixed;
       inset: 0;

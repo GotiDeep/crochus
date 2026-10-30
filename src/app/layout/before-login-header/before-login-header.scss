@@ -371,6 +371,12 @@
       padding: 4px;
       flex-shrink: 0;
 
+      @media (min-width: 901px) {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+
       @media (max-width: 768px) {
         width: 32px;
         height: 32px;

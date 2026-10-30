@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
 import { ProductCardSkeletonComponent } from '../../shared/components/product-card-skeleton/product-card-skeleton.component';
-import { HamburgerMenuComponent } from '../../shared/components/hamburger-menu/hamburger-menu.component';
 import { ScrollRevealDirective } from '../../shared/animations/scroll-reveal.directive';
 import { ProductService } from '../../core/services/product.service';
 import { Product, Category, ProductFilter } from '../../core/models';
@@ -13,7 +12,7 @@ import { Product, Category, ProductFilter } from '../../core/models';
 @Component({
   selector: 'app-shop',
   standalone: true,
-  imports: [RouterLink, CommonModule, FormsModule, ProductCardComponent, ProductCardSkeletonComponent, HamburgerMenuComponent, ScrollRevealDirective],
+  imports: [RouterLink, CommonModule, FormsModule, ProductCardComponent, ProductCardSkeletonComponent, ScrollRevealDirective],
   templateUrl: './shop.html',
   styleUrl: './shop.scss'
 })

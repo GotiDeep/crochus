@@ -1,5 +1,6 @@
 <section
       class="hero-banner-slider"
+      [class.is-dragging]="isDragging()"
       #sliderContainer
       (mouseenter)="pauseAutoSlide()"
       (mouseleave)="resumeAutoSlide()"
@@ -61,31 +62,6 @@
           </div>
         }
       </div>
-
-      <!-- Arrow Controls -->
-      @if (banners().length > 1) {
-        <button
-          class="nav-btn prev-btn"
-          (click)="prevSlide($event)"
-          aria-label="Previous slide"
-          title="Previous Banner"
-        >
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-        </button>
-
-        <button
-          class="nav-btn next-btn"
-          (click)="nextSlide($event)"
-          aria-label="Next slide"
-          title="Next Banner"
-        >
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-        </button>
-      }
 
       <!-- Pagination Indicators / Dots -->
       @if (banners().length > 1) {

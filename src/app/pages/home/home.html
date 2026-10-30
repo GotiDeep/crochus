@@ -15,17 +15,35 @@
               <a routerLink="/shop" class="btn btn-outline hide-mobile">See All Categories →</a>
             </div>
 
-            <div class="cat-slider-wrapper">
+            <div
+              class="cat-slider-wrapper"
+              #catSliderWrapper
+              [class.is-dragging]="isDraggingCat()"
+              (mouseenter)="pauseSlider()"
+              (mouseleave)="resumeSlider()"
+              (touchstart)="onCatTouchStart($event)"
+              (touchmove)="onCatTouchMove($event)"
+              (touchend)="onCatTouchEnd()"
+              (mousedown)="onCatMouseDown($event)"
+              (mousemove)="onCatMouseMove($event)"
+              (mouseup)="onCatMouseUp()"
+            >
               <div
                 class="cat-slider"
-                [style.transform]="'translateX(-' + (sliderOffset() * (100 / visibleCount)) + '%)'"
-                [style.transition]="noTransition() ? 'none' : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'"
+                [style.transform]="catTrackTransform()"
+                [style.transition]="isDraggingCat() || noTransition() ? 'none' : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'"
               >
                 @for (cat of sliderItems(); track $index) {
-                  <a routerLink="/shop" [queryParams]="{category: cat.id}" class="cat-card-lux" appTilt>
+                  <a
+                    routerLink="/shop"
+                    [queryParams]="{category: cat.id}"
+                    class="cat-card-lux"
+                    (click)="onCatClick($event)"
+                    draggable="false"
+                  >
                     <div class="cat-vignette">
                       @if (cat.image_url) {
-                        <img [src]="cat.image_url" [alt]="cat.name" loading="lazy" />
+                        <img [src]="cat.image_url" [alt]="cat.name" loading="lazy" draggable="false" />
                       } @else {
                         <div class="cat-gem-placeholder">
                           <span>🧶</span>

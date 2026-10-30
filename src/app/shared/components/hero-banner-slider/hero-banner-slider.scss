@@ -12,6 +12,15 @@
       touch-action: pan-y;
       margin: 0;
       padding: 0;
+      cursor: grab;
+
+      &.is-dragging {
+        cursor: grabbing;
+
+        .slide-img-wrap {
+          cursor: grabbing;
+        }
+      }
     }
 
     .slider-track {
@@ -216,53 +225,6 @@
       @media (max-width: 600px) {
         padding: 9px 18px;
         font-size: 0.84rem;
-      }
-    }
-
-    /* ── Arrow Navigation Buttons ── */
-    .nav-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 10;
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.85);
-      color: #2C3A1A;
-      border: 1px solid rgba(212, 201, 138, 0.6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
-      transition: all 0.25s ease;
-
-      &:hover {
-        background: #4A5C2F;
-        color: #FFFFFF;
-        border-color: #4A5C2F;
-        transform: translateY(-50%) scale(1.08);
-      }
-
-      &.prev-btn {
-        left: 20px;
-      }
-      &.next-btn {
-        right: 20px;
-      }
-
-      @media (max-width: 768px) {
-        width: 38px;
-        height: 38px;
-        &.prev-btn { left: 10px; }
-        &.next-btn { right: 10px; }
-      }
-      @media (max-width: 480px) {
-        width: 34px;
-        height: 34px;
-        background: rgba(255, 255, 255, 0.75);
       }
     }
 

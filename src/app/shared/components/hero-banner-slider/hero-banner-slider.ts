@@ -27,7 +27,7 @@ export class HeroBannerSliderComponent implements OnInit, OnDestroy {
 
   @ViewChild('sliderContainer', { static: true }) sliderContainer!: ElementRef<HTMLElement>;
 
-  banners = signal<Banner[]>(DEFAULT_BANNERS);
+  banners = signal<Banner[]>(this.bannerService.banners());
   currentSlide = signal(0);
   isDragging = signal(false);
 
