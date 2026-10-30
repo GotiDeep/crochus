@@ -1,0 +1,22 @@
+<div class="before-login-wrapper">
+  <app-before-login-header (openMenu)="menuOpen.set(true)"></app-before-login-header>
+  <app-hamburger-menu [isOpen]="menuOpen()" (close)="menuOpen.set(false)"></app-hamburger-menu>
+
+  <main class="before-login-main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <app-before-login-footer></app-before-login-footer>
+
+  <!-- Scroll To Top Button -->
+  @if (showScrollTop()) {
+    <button
+      type="button"
+      class="scroll-to-top-btn"
+      (click)="scrollToTop()"
+      aria-label="Scroll to Top"
+    >
+      <span class="arrow-up">↑</span>
+    </button>
+  }
+</div>

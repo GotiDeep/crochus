@@ -1,0 +1,84 @@
+// ============================================
+// CROCHUS — Design & Color Tokens
+// ============================================
+
+$primary: #4A5C2F;
+$primary-hover: #3b4a25;
+$accent: #D4C98A;
+$bg: #F5F0E0;
+$surface: #FFFFFF;
+$text: #2C3A1A;
+$muted: #6B7F4A;
+$border: #C8C49A;
+
+:root {
+  /* Core Color Palette */
+  --c-bg: #F5F0E0;
+  --c-surface: #FFFFFF;
+  --c-text: #2C3A1A;
+  --c-muted: #6B7F4A;
+  --c-primary: #4A5C2F;
+  --c-accent: #D4C98A;
+
+  /* Color-mix tints */
+  --c-primary-hover: color-mix(in srgb, var(--c-primary) 85%, #000000);
+  --c-primary-soft: color-mix(in srgb, var(--c-primary) 12%, transparent);
+  --c-accent-soft: color-mix(in srgb, var(--c-accent) 25%, transparent);
+  --c-bg-subtle: color-mix(in srgb, var(--c-bg) 75%, var(--c-surface));
+
+  /* Compatibility bindings for existing styles */
+  --bg: var(--c-bg);
+  --surface: var(--c-surface);
+  --navbar-bg: var(--c-surface);
+  --primary: var(--c-primary);
+  --primary-hover: var(--c-primary-hover);
+  --accent: var(--c-accent);
+  --text-primary: var(--c-text);
+  --text-secondary: var(--c-muted);
+  --border: #C8C49A;
+
+  /* Badges */
+  --badge-new-bg: var(--c-primary);
+  --badge-new-text: var(--c-surface);
+  --badge-bestseller-bg: var(--c-accent);
+  --badge-bestseller-text: var(--c-text);
+  --badge-featured-bg: var(--c-text);
+  --badge-featured-text: var(--c-bg);
+  --success-bg: color-mix(in srgb, var(--c-primary) 15%, var(--c-surface));
+  --success-text: var(--c-primary);
+  --error-bg: color-mix(in srgb, #8A2F2F 12%, var(--c-surface));
+  --error-text: #8A2F2F;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.04);
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+  --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.15);
+  --overlay: rgba(0, 0, 0, 0.5);
+
+  --skeleton-base: color-mix(in srgb, var(--c-bg) 85%, #000000 6%);
+  --skeleton-shine: var(--c-bg);
+  --input-bg: color-mix(in srgb, var(--c-bg) 40%, var(--c-surface));
+  --scrollbar-thumb: var(--border);
+  --logo-filter: none;
+
+  /* Header & Logo Sizing Controls */
+  --logo-height-navbar: 42px;
+  --logo-height-footer: 48px;
+  --logo-height-admin: 34px;
+  --logo-height-auth: 46px;
+  --header-total-height: 110px;
+
+  @media (max-width: 900px) {
+    --logo-height-navbar: 34px;
+    --logo-height-footer: 40px;
+    --logo-height-admin: 30px;
+    --logo-height-auth: 38px;
+    --header-total-height: 98px;
+  }
+  @media (max-width: 480px) {
+    --logo-height-navbar: 28px;
+    --header-total-height: 92px;
+  }
+}

@@ -1,0 +1,138 @@
+<div class="container">
+          <div class="page-header">
+            <span class="section-label">My Account</span>
+            <h1>Account & Orders</h1>
+          </div>
+
+          <div class="profile-layout">
+            <!-- Sidebar Tabs -->
+            <nav class="profile-nav card">
+              <div class="user-avatar-big">
+                {{ auth.currentUser()?.full_name?.charAt(0) }}
+              </div>
+              <p class="user-name-display">{{ auth.currentUser()?.full_name }}</p>
+              <p class="user-email-display">{{ auth.currentUser()?.email }}</p>
+
+              <div class="divider" style="margin: 16px 0"></div>
+
+              <button class="nav-tab" [class.active]="activeTab() === 'profile'" (click)="activeTab.set('profile')">
+                ✦ My Details
+              </button>
+              <button class="nav-tab" [class.active]="activeTab() === 'orders'" (click)="loadOrders()">
+                ✦ Order History
+              </button>
+              <button class="nav-tab logout" (click)="auth.logout()">Sign Out</button>
+            </nav>
+
+            <!-- Content -->
+            <div class="profile-content">
+              <!-- Details Tab -->
+              @if (activeTab() === 'profile') {
+                <div class="content-card card fade-in">
+                  <div class="card-head">
+                    <h3>Personal Details</h3>
+                    <button class="btn btn-ghost btn-sm" (click)="toggleEditMode()">
+                      {{ editMode() ? 'Cancel' : '✏️ Edit' }}
+                    </button>
+                  </div>
+                  <div class="divider"></div>
+
+                  @if (!editMode()) {
+                    <div class="info-grid">
+                      <div class="info-item">
+                        <span class="info-label">Full Name</span>
+                        <span class="info-value">{{ auth.currentUser()?.full_name }}</span>
+                      </div>
+                      <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">{{ auth.currentUser()?.email }}</span>
+                      </div>
+                      <div class="info-item">
+                        <span class="info-label">Mobile</span>
+                        <span class="info-value">{{ auth.currentUser()?.mobile || '—' }}</span>
+                      </div>
+                      <div class="info-item full">
+                        <span class="info-label">Address</span>
+                        <span class="info-value">{{ auth.currentUser()?.address || '—' }}</span>
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="edit-form">
+                      <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" [(ngModel)]="editData.full_name" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Mobile</label>
+                        <input type="tel" class="form-control" [(ngModel)]="editData.mobile" maxlength="10" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Delivery Address</label>
+                        <textarea class="form-control" [(ngModel)]="editData.address" rows="3"></textarea>
+                      </div>
+                      <div class="form-actions">
+                        <button class="btn btn-primary" [disabled]="saving()" (click)="saveProfile()">
+                          {{ saving() ? 'Saving…' : 'Save Changes' }}
+                        </button>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+
+              <!-- Orders Tab -->
+              @if (activeTab() === 'orders') {
+                <div class="content-card card fade-in">
+                  <h3 style="margin-bottom:20px">Order History</h3>
+
+                  @if (ordersLoading()) {
+                    <div style="text-align:center; padding:40px; color:var(--text-secondary)">Loading orders…</div>
+                  } @else if (orders().length === 0) {
+                    <div class="empty-state" style="padding:40px">
+                      <span class="empty-icon">✦</span>
+                      <h3>No Orders Yet</h3>
+                      <p>When you place an order, its details and status will show up here.</p>
+                      <a routerLink="/shop" class="btn btn-primary" style="margin-top: 12px;">Browse All Products</a>
+                    </div>
+                  } @else {
+                    <div class="orders-list">
+                      @for (order of paginatedOrders(); track order.id) {
+                        <div class="order-card">
+                          <div class="order-head">
+                            <div>
+                              <span class="order-id">#{{ order.id }}</span>
+                              <span class="order-date">{{ order.created_at | date:'mediumDate' }}</span>
+                            </div>
+                            <span class="status-badge" [class]="'status-' + order.status">{{ order.status }}</span>
+                          </div>
+                          <div class="order-items-mini">
+                            @for (item of order.items; track item.product.id) {
+                              <div class="oi-mini">
+                                <img [src]="item.product.photos[0]" [alt]="item.product.name" />
+                                <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                              </div>
+                            }
+                          </div>
+                          <div class="order-foot">
+                            <span class="order-total">Total: ₹{{ order.total | number:'1.0-0':'en-IN' }}</span>
+                          </div>
+                        </div>
+                      }
+                    </div>
+
+                    <!-- Pagination -->
+                    @if (totalPages() > 1) {
+                      <div class="pagination">
+                        <button class="page-btn" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">‹</button>
+                        @for (p of pageNumbers(); track p) {
+                          <button class="page-btn" [class.active]="p === currentPage()" (click)="goToPage(p)">{{ p }}</button>
+                        }
+                        <button class="page-btn" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">›</button>
+                      </div>
+                    }
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>

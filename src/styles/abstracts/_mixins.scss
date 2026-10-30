@@ -1,0 +1,27 @@
+// ============================================
+// CROCHUS — SCSS Mixins
+// ============================================
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin mobile {
+  @media (max-width: 600px) { @content; }
+}
+
+@mixin tablet {
+  @media (max-width: 900px) { @content; }
+}
+
+@mixin desktop {
+  @media (min-width: 1200px) { @content; }
+}

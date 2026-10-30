@@ -1,0 +1,76 @@
+<div class="admin-topbar">
+          <h2>Orders</h2>
+          <div class="filter-row">
+            <select class="form-control" [(ngModel)]="filterStatus" (ngModelChange)="applyFilter()">
+              <option value="">All Statuses</option>
+              <option value="new">New</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="delivered">Delivered</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-wrap card">
+          @if (loading()) {
+            <div style="padding:40px; text-align:center; color:var(--text-secondary)">Loading orders…</div>
+          } @else if (filtered().length === 0) {
+            <div class="empty-state" style="padding:60px">
+              <span class="empty-icon">📦</span>
+              <h3>No orders found</h3>
+            </div>
+          } @else {
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Customer</th>
+                  <th>Phone</th>
+                  <th>Items</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (order of paginatedOrders(); track order.id) {
+                  <tr class="clickable-row" (click)="openOrderModal(order)">
+                    <td><strong class="order-id-link">#{{ order.id }}</strong></td>
+                    <td>{{ order.customer_name }}</td>
+                    <td>{{ order.phone }}</td>
+                    <td>
+                      <div class="items-mini">
+                        @for (item of order.items; track item.product.id) {
+                          <span>{{ item.product.name }} ×{{ item.quantity }}</span>
+                        }
+                      </div>
+                    </td>
+                    <td><strong>₹{{ order.total | number:'1.0-0':'en-IN' }}</strong></td>
+                    <td (click)="$event.stopPropagation()">
+                      <select class="status-select" [class]="'status-' + order.status" [ngModel]="order.status" (ngModelChange)="updateStatus(order.id, $event)">
+                        <option value="new">New</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="delivered">Delivered</option>
+                      </select>
+                    </td>
+                    <td>{{ order.created_at | date:'mediumDate' }}</td>
+                    <td (click)="$event.stopPropagation()">
+                      <button class="btn btn-ghost btn-sm" (click)="openWhatsApp(order)">💬 Chat</button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+
+            <!-- Pagination -->
+            @if (totalPages() > 1) {
+              <div class="pagination">
+                <button class="page-btn" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">‹</button>
+                @for (p of pageNumbers(); track p) {
+                  <button class="page-btn" [class.active]="p === currentPage()" (click)="goToPage(p)">{{ p }}</button>
+                }
+                <button class="page-btn" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">›</button>
+              </div>
+            }
+          }
+        </div>

@@ -1,0 +1,110 @@
+.admin-top-header {
+  height: 60px;
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--border, #E5E7EB);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  @media (max-width: 900px) {
+    padding: 0 16px;
+  }
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.portal-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .portal-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--c-primary, #4A5C2F);
+  }
+
+  .portal-tag {
+    background: rgba(74, 92, 47, 0.12);
+    color: var(--c-primary, #4A5C2F);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+}
+
+.mobile-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  flex-direction: column;
+  gap: 4px;
+
+  span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: #374151;
+    border-radius: 2px;
+  }
+
+  @media (max-width: 900px) {
+    display: flex;
+  }
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid var(--border, #E5E7EB);
+  background: #FFFFFF;
+  color: #374151;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #F9FAFB;
+    border-color: #D1D5DB;
+  }
+
+  &.view-store:hover {
+    color: var(--c-primary, #4A5C2F);
+    border-color: var(--c-primary, #4A5C2F);
+  }
+
+  &.logout-btn:hover {
+    color: #DC2626;
+    border-color: #DC2626;
+  }
+
+  @media (max-width: 600px) {
+    .btn-label {
+      display: none;
+    }
+  }
+}

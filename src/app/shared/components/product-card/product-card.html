@@ -1,0 +1,116 @@
+<article class="product-card card">
+      <!-- Image Showcase with Secondary Crossfade & Wishlist -->
+      <div class="card-image-wrapper">
+        <a [routerLink]="['/product', product.slug]" class="card-image" [class.has-secondary]="product.photos.length > 1">
+          <!-- Primary Image -->
+          <img
+            [src]="product.photos[0]"
+            [alt]="product.name"
+            class="main-img"
+            loading="lazy"
+          />
+
+          <!-- Secondary Alternate Angle Image for Hover Preview -->
+          @if (product.photos.length > 1) {
+            <img
+              [src]="product.photos[1]"
+              [alt]="product.name + ' alternate view'"
+              class="hover-img"
+              loading="lazy"
+            />
+          }
+
+          <!-- Subtle Luxury Image Vignette/Glow -->
+          <div class="image-inner-border"></div>
+
+          <!-- Top Badge Overlay -->
+          @if (product.badge) {
+            <div class="badge-overlay">
+              <app-badge [type]="product.badge" />
+            </div>
+          } @else {
+            <div class="badge-overlay">
+              <span class="style-tag">{{ styleCode }}</span>
+            </div>
+          }
+
+          <!-- Out of Stock Overlay -->
+          @if (!product.in_stock) {
+            <div class="oos-overlay">
+              <span>Made to Order</span>
+            </div>
+          }
+        </a>
+
+        <!-- Floating Wishlist Button -->
+        <button
+          class="wishlist-btn"
+          (click)="toggleWishlist($event)"
+          [class.active]="inWishlist"
+          [title]="inWishlist ? 'Remove from Saved' : 'Save Item'"
+          aria-label="Save Item"
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" [attr.fill]="inWishlist ? 'var(--c-primary)' : 'none'" [attr.stroke]="inWishlist ? 'var(--c-primary)' : 'var(--c-text)'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Product Card Body -->
+      <div class="card-body">
+        <!-- Category & Item Code Header -->
+        <div class="card-meta">
+          <span class="card-category">{{ displayCategory }}</span>
+          <span class="card-sku">{{ styleCode }}</span>
+        </div>
+
+        <!-- Product Name -->
+        <h3 class="card-title-wrap">
+          <a [routerLink]="['/product', product.slug]" class="card-title" [title]="product.name">
+            {{ product.name }}
+          </a>
+        </h3>
+
+        <!-- Materials Hallmark Tag if provided -->
+        @if (product.materials) {
+          <p class="materials-hallmark" [title]="product.materials">
+            ✦ {{ product.materials }}
+          </p>
+        }
+
+        <!-- Price and Quick Action Row -->
+        <div class="card-footer-row">
+          <div class="price-container">
+            <span class="price-currency">₹</span>
+            <span class="price-val">{{ product.price | number:'1.0-0':'en-IN' }}</span>
+          </div>
+
+          <button
+            class="card-action-btn"
+            [class.in-cart]="inCart"
+            [disabled]="!product.in_stock"
+            (click)="toggleCart($event)"
+            [title]="!product.in_stock ? 'Made to Order' : (inCart ? 'In Shopping Bag (Click to Remove)' : 'Add to Bag')"
+            aria-label="Add to Bag"
+          >
+            @if (inCart) {
+              <span class="action-label in-cart-label">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                In Bag
+              </span>
+            } @else {
+              <span class="action-label">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+                Add to Bag
+              </span>
+            }
+          </button>
+        </div>
+      </div>
+    </article>

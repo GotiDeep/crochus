@@ -1,0 +1,43 @@
+<div class="container">
+          <div class="shop-header">
+            <span class="section-label">Your Favorites</span>
+            <h1>Saved Handmade Items</h1>
+            <p class="vault-subtitle">
+              @if (wishlistedProducts().length > 0) {
+                {{ wishlistedProducts().length }} {{ wishlistedProducts().length === 1 ? 'item' : 'items' }} saved to your favorites
+              } @else {
+                Save your favorite handmade creations here to easily view them anytime
+              }
+            </p>
+          </div>
+
+          @if (loading()) {
+            <div class="product-grid fade-in">
+              <app-product-card-skeleton [count]="8" />
+            </div>
+          } @else if (wishlistedProducts().length === 0) {
+            <div class="empty-state">
+              <div class="empty-gem">✦</div>
+              <h3>Your Wishlist is Empty</h3>
+              <p>Click the heart icon on any bag, bouquet, keychain, or handmade creation to save it here for easy viewing later.</p>
+              <a routerLink="/shop" class="btn btn-primary btn-lg" style="margin-top: 14px;">Browse All Products</a>
+            </div>
+          } @else {
+            <div class="product-grid fade-in">
+              @for (product of paginatedProducts(); track product.id) {
+                <app-product-card [product]="product" />
+              }
+            </div>
+
+            <!-- Pagination -->
+            @if (totalPages() > 1) {
+              <div class="pagination">
+                <button class="page-btn" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">‹</button>
+                @for (p of pageNumbers(); track p) {
+                  <button class="page-btn" [class.active]="p === currentPage()" (click)="goToPage(p)">{{ p }}</button>
+                }
+                <button class="page-btn" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">›</button>
+              </div>
+            }
+          }
+        </div>

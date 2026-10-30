@@ -1,0 +1,129 @@
+<section
+      class="hero-banner-slider"
+      #sliderContainer
+      (mouseenter)="pauseAutoSlide()"
+      (mouseleave)="resumeAutoSlide()"
+      (touchstart)="onTouchStart($event)"
+      (touchmove)="onTouchMove($event)"
+      (touchend)="onTouchEnd()"
+      (mousedown)="onMouseDown($event)"
+      (mousemove)="onMouseMove($event)"
+      (mouseup)="onMouseUp()"
+      aria-roledescription="carousel"
+      aria-label="Handmade Hero Banners"
+    >
+      <!-- Slides Wrapper -->
+      <div
+        class="slider-track"
+        [style.transform]="trackTransform()"
+        [style.transition]="isDragging() ? 'none' : 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'"
+      >
+        @for (banner of banners(); track banner.id; let idx = $index) {
+          <div
+            class="slider-slide"
+            [class.active]="currentSlide() === idx"
+            [attr.aria-hidden]="currentSlide() !== idx"
+          >
+            <!-- Banner Background Image -->
+            <div class="slide-img-wrap" (click)="onBannerClick(banner)">
+              <img
+                [src]="banner.image_url"
+                [alt]="banner.title || banner.name"
+                class="slide-img"
+                [attr.fetchpriority]="idx === 0 ? 'high' : 'auto'"
+                [attr.loading]="idx === 0 ? 'eager' : 'lazy'"
+                draggable="false"
+              />
+              <div class="slide-overlay"></div>
+            </div>
+
+            <!-- Slide Content / Text Overlay -->
+            <div class="slide-content-container container">
+              <div class="slide-content" (click)="$event.stopPropagation()">
+                <span class="slide-badge">🧶 Handmade with Love · CROCHUS</span>
+                @if (banner.title) {
+                  <h2 class="slide-title">{{ banner.title }}</h2>
+                }
+                @if (banner.subtitle) {
+                  <p class="slide-subtitle">{{ banner.subtitle }}</p>
+                }
+                <div class="slide-actions">
+                  <a
+                    [routerLink]="banner.link_url || '/shop'"
+                    class="btn btn-primary btn-slide"
+                  >
+                    {{ banner.button_text || 'Explore Collection' }}
+                    <span class="btn-arrow" aria-hidden="true">→</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Arrow Controls -->
+      @if (banners().length > 1) {
+        <button
+          class="nav-btn prev-btn"
+          (click)="prevSlide($event)"
+          aria-label="Previous slide"
+          title="Previous Banner"
+        >
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <button
+          class="nav-btn next-btn"
+          (click)="nextSlide($event)"
+          aria-label="Next slide"
+          title="Next Banner"
+        >
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      }
+
+      <!-- Pagination Indicators / Dots -->
+      @if (banners().length > 1) {
+        <div class="slider-dots" role="tablist">
+          @for (banner of banners(); track banner.id; let idx = $index) {
+            <button
+              class="dot-btn"
+              [class.active]="currentSlide() === idx"
+              (click)="goToSlide(idx, $event)"
+              [attr.aria-label]="'Go to slide ' + (idx + 1)"
+              role="tab"
+              [attr.aria-selected]="currentSlide() === idx"
+            >
+              <span class="dot-inner"></span>
+            </button>
+          }
+        </div>
+      }
+
+      <!-- Bottom Trust Ribbon -->
+      <div class="slider-bottom-strip">
+        <div class="container strip-content">
+          <div class="strip-item">
+            <span class="s-icon">🧶</span>
+            <span>100% Handcrafted</span>
+          </div>
+          <div class="strip-item">
+            <span class="s-icon">🌸</span>
+            <span>Everlasting Bouquets</span>
+          </div>
+          <div class="strip-item">
+            <span class="s-icon">✨</span>
+            <span>Custom Orders on WhatsApp</span>
+          </div>
+          <div class="strip-item">
+            <span class="s-icon">🚚</span>
+            <span>Pan-India Delivery</span>
+          </div>
+        </div>
+      </div>
+    </section>

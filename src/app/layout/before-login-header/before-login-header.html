@@ -1,0 +1,90 @@
+<!-- Top Announcement Ribbon -->
+    <aside class="luxury-announcement" aria-label="Announcement">
+      <div class="announcement-inner container">
+        <span class="announcement-text hide-mobile">
+          ✦ CROCHUS · HANDMADE & CROCHET CREATIONS · ALL-INDIA DELIVERY · WHATSAPP ORDERING ✦
+        </span>
+        <span class="announcement-text hide-desktop">
+          ✦ CROCHUS · HANDMADE WITH LOVE · ALL-INDIA DELIVERY ✦
+        </span>
+        <span class="announcement-concierge hide-mobile">
+          COMPLIMENTARY GIFT PACKAGING WITH EVERY ORDER
+        </span>
+      </div>
+    </aside>
+
+    <header class="navbar" [class.scrolled]="scrolled()">
+      <div class="nav-inner container">
+        <!-- Logo (Strictly original logo preserved) -->
+        <a routerLink="/" class="logo" title="Crochus Handmade Products">
+          <img src="assets/logo.svg" alt="Crochus" class="logo-img" />
+        </a>
+
+        <!-- Desktop Nav Links (Simple & Clean) -->
+        <nav class="nav-links hide-mobile" aria-label="Main Navigation">
+          <ul>
+            <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a></li>
+            <li><a routerLink="/shop" routerLinkActive="active">All Products</a></li>
+            <li><a routerLink="/about" routerLinkActive="active">About Us</a></li>
+            <li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
+          </ul>
+        </nav>
+
+        <!-- Right Actions -->
+        <div class="nav-actions">
+          <!-- Search Link -->
+          <a routerLink="/shop" class="icon-btn search-nav-btn" title="Search Products" aria-label="Search Products">
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="7.5"></circle>
+              <line x1="16.5" y1="16.5" x2="22" y2="22"></line>
+            </svg>
+          </a>
+
+          <!-- Wishlist / Saved Items -->
+          <a routerLink="/wishlist" class="icon-btn wishlist-nav-btn" title="Saved Items" aria-label="Saved Items">
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </a>
+
+          <!-- Shopping Bag -->
+          <a routerLink="/cart" class="icon-btn cart-btn" title="Shopping Bag" aria-label="Shopping Bag">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            @if (cart.totalItems() > 0) {
+              <span class="cart-badge">{{ cart.totalItems() }}</span>
+            }
+          </a>
+
+          <!-- Auth & Profile -->
+          @if (auth.isLoggedIn()) {
+            <div class="user-menu">
+              <button class="user-btn" (click)="toggleUserMenu()" aria-label="Account Menu">
+                <span class="user-avatar">{{ auth.currentUser()?.full_name?.charAt(0) || '✦' }}</span>
+              </button>
+              @if (showUserMenu()) {
+                <div class="dropdown">
+                  <div class="dropdown-header">
+                    <span class="dropdown-welcome">Welcome</span>
+                    <strong class="dropdown-name">{{ auth.currentUser()?.full_name }}</strong>
+                  </div>
+                  <a routerLink="/profile" (click)="showUserMenu.set(false)">My Orders & Account</a>
+                  <button (click)="logout()">Sign Out</button>
+                </div>
+              }
+            </div>
+          } @else {
+            <a routerLink="/login" class="client-signin-btn hide-mobile">Sign In</a>
+          }
+
+          <!-- Mobile Hamburger -->
+          <button class="hamburger hide-desktop" (click)="openMenu.emit()" aria-label="Open Navigation Menu">
+            <span class="bar bar-1"></span>
+            <span class="bar bar-2"></span>
+          </button>
+        </div>
+      </div>
+    </header>

@@ -1,0 +1,168 @@
+<div class="admin-topbar">
+          <h2>Website Settings</h2>
+        </div>
+
+        <div class="settings-tabs" role="tablist">
+          <button [class.active]="activeTab() === 'banners'" (click)="activeTab.set('banners')">
+            🖼️ Hero Banners
+          </button>
+          <button [class.active]="activeTab() === 'general'" (click)="activeTab.set('general')">
+            📱 Contact & Social Media
+          </button>
+          <button [class.active]="activeTab() === 'email'" (click)="activeTab.set('email')">
+            ✉️ Email / SMTP
+          </button>
+        </div>
+
+        @if (activeTab() === 'banners') {
+          <app-admin-banners />
+        } @else if (activeTab() === 'general') {
+          <section class="settings-card card">
+            <div class="section-head">
+              <div>
+                <h3>Contact & Social Media Info</h3>
+                <p>These details will dynamically update across your entire website (Header, Footer, Contact Page, Chat Buttons, and Studio Info).</p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">WhatsApp Number (with Country Code) *</label>
+                <input
+                  class="form-control"
+                  [(ngModel)]="generalSettings.whatsapp_number"
+                  placeholder="e.g. 918200502248"
+                  maxlength="15"
+                />
+                <span class="hint-text">Customer orders and WhatsApp chat buttons will direct to this number. Do not include '+'.</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Contact / Support Email *</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  [(ngModel)]="generalSettings.contact_email"
+                  placeholder="hello@crochus.com"
+                />
+                <span class="hint-text">Shown on Contact page and Footer for customer inquiries.</span>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Instagram Profile URL</label>
+                <input
+                  type="url"
+                  class="form-control"
+                  [(ngModel)]="generalSettings.instagram_url"
+                  placeholder="https://instagram.com/crochus"
+                />
+                <span class="hint-text">Instagram links on website will open this profile.</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Facebook Page URL</label>
+                <input
+                  type="url"
+                  class="form-control"
+                  [(ngModel)]="generalSettings.facebook_url"
+                  placeholder="https://facebook.com/crochus"
+                />
+                <span class="hint-text">Facebook links on website will open this page.</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Studio / Store Address</label>
+              <textarea
+                class="form-control"
+                rows="2"
+                [(ngModel)]="generalSettings.studio_address"
+                placeholder="Surat, Gujarat, India 395007"
+              ></textarea>
+              <span class="hint-text">Displayed in the Studio address card on Contact page.</span>
+            </div>
+
+            <div class="actions" style="margin-top: 24px;">
+              <button
+                class="btn btn-primary"
+                [disabled]="savingGeneral()"
+                (click)="saveGeneralSettings()"
+              >
+                {{ savingGeneral() ? 'Saving…' : 'Save Social & Contact Settings' }}
+              </button>
+            </div>
+          </section>
+        } @else {
+          <section class="settings-card card smtp-card">
+            <div class="section-head">
+              <div>
+                <h3>Email / SMTP Settings</h3>
+                <p>Credentials are encrypted before being saved. The saved password is never displayed.</p>
+              </div>
+              <span class="status" [class.ready]="smtp.password_configured">
+                {{ smtp.password_configured ? 'Password saved' : 'Not configured' }}
+              </span>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">SMTP Host</label>
+                <input class="form-control" [(ngModel)]="smtp.smtp_host" placeholder="smtp.gmail.com" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">SMTP Port</label>
+                <input type="number" class="form-control" [(ngModel)]="smtp.smtp_port" placeholder="587" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">SMTP Email / Username</label>
+                <input type="email" class="form-control" [(ngModel)]="smtp.smtp_user" placeholder="you@example.com" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">SMTP Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  [(ngModel)]="smtp.smtp_password"
+                  [placeholder]="smtp.password_configured ? 'Leave blank to keep saved password' : 'Enter SMTP password or app password'"
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">From Email</label>
+                <input type="email" class="form-control" [(ngModel)]="smtp.smtp_from" placeholder="Crochus <you@example.com>" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Contact Receiver Email</label>
+                <input type="email" class="form-control" [(ngModel)]="smtp.contact_receiver_email" placeholder="you@example.com" />
+              </div>
+            </div>
+
+            <label class="checkbox">
+              <input type="checkbox" [(ngModel)]="smtp.smtp_secure" /> Use SSL/TLS (normally port 465)
+            </label>
+
+            <div class="actions">
+              <button class="btn btn-primary" [disabled]="savingSmtp()" (click)="saveSmtp()">
+                {{ savingSmtp() ? 'Saving…' : 'Save Email Settings' }}
+              </button>
+            </div>
+
+            <div class="test-box">
+              <div>
+                <strong>Send a test email</strong>
+                <p>Save settings first, then send a test email to verify your connection.</p>
+              </div>
+              <input type="email" class="form-control" [(ngModel)]="testEmail" placeholder="test@example.com" />
+              <button class="btn btn-ghost" [disabled]="testingSmtp()" (click)="testSmtp()">
+                {{ testingSmtp() ? 'Sending…' : 'Send Test' }}
+              </button>
+            </div>
+          </section>
+        }

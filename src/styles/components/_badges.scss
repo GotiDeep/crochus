@@ -1,0 +1,39 @@
+// ============================================
+// CROCHUS — Badges
+// ============================================
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.badge-new {
+  background: var(--badge-new-bg);
+  color: var(--badge-new-text);
+}
+
+.badge-bestseller {
+  background: var(--badge-bestseller-bg);
+  color: var(--badge-bestseller-text);
+}
+
+.badge-featured {
+  background: var(--badge-featured-bg);
+  color: var(--badge-featured-text);
+}
+
+.badge-sale {
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.badge-pill {
+  border-radius: 12px;
+  padding: 4px 10px;
+}

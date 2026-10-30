@@ -1,0 +1,94 @@
+// ============================================
+// CROCHUS — Layout
+// ============================================
+
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding-top: var(--header-total-height, 110px);
+}
+
+.container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+
+  @media (max-width: 768px) {
+    padding: 0 16px;
+  }
+  @media (max-width: 480px) {
+    padding: 0 12px;
+  }
+}
+
+.section {
+  padding: 64px 0;
+
+  @media (max-width: 768px) {
+    padding: 40px 0;
+  }
+}
+
+.section-label {
+  display: inline-block;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-size: clamp(1.8rem, 3.4vw, 2.8rem);
+  line-height: 1.15;
+  color: var(--c-text);
+  margin-bottom: 12px;
+}
+
+/* Product Grid */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 360px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* Admin Global Shell */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #F8F9FA;
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+  }
+}
+
+.admin-main {
+  flex: 1;
+  padding: 32px 36px;
+  overflow-x: hidden;
+
+  @media (max-width: 900px) {
+    padding: 80px 16px 32px;
+  }
+}

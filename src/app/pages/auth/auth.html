@@ -1,0 +1,167 @@
+<div class="auth-page">
+      <!-- Left Panel -->
+      <div class="auth-visual">
+        <div class="av-inner">
+          <a routerLink="/" class="auth-logo">
+            <img src="assets/logo.svg" alt="Crochus" class="auth-logo-img" />
+          </a>
+          <div class="av-quote">
+            <blockquote>"Beautiful handcrafted creations made with love and care."</blockquote>
+            <span class="av-quote-author">✦ CROCHUS Handmade</span>
+          </div>
+          <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&q=80" alt="Handmade Craft Workshop" class="av-img" />
+        </div>
+      </div>
+
+      <!-- Right Panel -->
+      <div class="auth-form-panel">
+        <div class="auth-form-inner">
+          <a routerLink="/" class="auth-logo mobile-logo">
+            <img src="assets/logo.svg" alt="Crochus" class="auth-logo-img" />
+          </a>
+
+          <!-- LOGIN -->
+          @if (mode() === 'login') {
+            <h2>Welcome Back</h2>
+            <p class="auth-sub">Sign in to view your saved designs, orders, and account details</p>
+
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" [(ngModel)]="email" placeholder="you@example.com" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <div class="pass-wrap">
+                <input [type]="showPass() ? 'text' : 'password'" class="form-control" [(ngModel)]="password" placeholder="Your password" />
+                <button class="pass-toggle" type="button" (click)="togglePassword()">{{ showPass() ? '🙈' : '👁' }}</button>
+              </div>
+            </div>
+
+            <button class="forgot-link" (click)="mode.set('forgot')">Forgot password?</button>
+
+            @if (error()) { <div class="auth-error">{{ error() }}</div> }
+
+            <button class="btn btn-primary btn-full btn-lg" [disabled]="loading()" (click)="login()">
+              {{ loading() ? 'Signing in…' : 'Sign In' }}
+            </button>
+
+            <p class="auth-switch">Don't have an account? <button (click)="mode.set('register')">Register</button></p>
+          }
+
+          <!-- REGISTER -->
+          @if (mode() === 'register') {
+            <h2>Create Account</h2>
+            <p class="auth-sub">Create an account to save favorite designs and shop easily</p>
+
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-control" [(ngModel)]="fullName" placeholder="Your full name" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" [(ngModel)]="email" placeholder="you@example.com" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mobile</label>
+              <input type="tel" class="form-control" [(ngModel)]="mobile" placeholder="10-digit mobile number" maxlength="10" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <div class="pass-wrap">
+                <input [type]="showPass() ? 'text' : 'password'" class="form-control" [(ngModel)]="password" placeholder="Min. 6 characters" />
+                <button class="pass-toggle" type="button" (click)="togglePassword()">{{ showPass() ? '🙈' : '👁' }}</button>
+              </div>
+            </div>
+
+            @if (error()) { <div class="auth-error">{{ error() }}</div> }
+
+            <button class="btn btn-primary btn-full btn-lg" [disabled]="loading()" (click)="register()">
+              {{ loading() ? 'Creating account…' : 'Create Account' }}
+            </button>
+
+            <p class="auth-switch">Already have an account? <button (click)="mode.set('login')">Sign In</button></p>
+          }
+
+          <!-- OTP VERIFY -->
+          @if (mode() === 'verify') {
+            <h2>Verify your email</h2>
+            <p class="auth-sub">We sent a 6-digit OTP to <strong>{{ email }}</strong></p>
+
+            <div class="otp-inputs">
+              @for (i of [0,1,2,3,4,5]; track i) {
+                <input
+                  type="text"
+                  maxlength="1"
+                  class="otp-box"
+                  [(ngModel)]="otpDigits[i]"
+                  (input)="onOtpInput($event, i)"
+                  (keydown)="onOtpKeydown($event, i)"
+                  [id]="'otp-' + i"
+                />
+              }
+            </div>
+
+            @if (error()) { <div class="auth-error">{{ error() }}</div> }
+
+            <button class="btn btn-primary btn-full btn-lg" [disabled]="loading()" (click)="verifyOtp()">
+              {{ loading() ? 'Verifying…' : 'Verify OTP' }}
+            </button>
+
+            <button class="forgot-link" (click)="mode.set('login')" style="margin-top:12px; display:block; text-align:center">
+              ← Back to Login
+            </button>
+          }
+
+          <!-- FORGOT PASSWORD -->
+          @if (mode() === 'forgot') {
+            <h2>Reset password</h2>
+            <p class="auth-sub">Enter your email and we'll send an OTP to reset your password</p>
+
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" [(ngModel)]="email" placeholder="you@example.com" />
+            </div>
+
+            @if (error()) { <div class="auth-error">{{ error() }}</div> }
+
+            <button class="btn btn-primary btn-full btn-lg" [disabled]="loading()" (click)="sendForgotOtp()">
+              {{ loading() ? 'Sending OTP…' : 'Send OTP' }}
+            </button>
+
+            <button class="forgot-link" (click)="mode.set('login')" style="margin-top:12px; display:block; text-align:center">
+              ← Back to Login
+            </button>
+          }
+
+          <!-- RESET PASSWORD -->
+          @if (mode() === 'reset') {
+            <h2>Set new password</h2>
+            <p class="auth-sub">Enter the OTP sent to <strong>{{ email }}</strong> and your new password</p>
+
+            <div class="otp-inputs" style="margin-bottom:20px">
+              @for (i of [0,1,2,3,4,5]; track i) {
+                <input type="text" maxlength="1" class="otp-box"
+                  [(ngModel)]="otpDigits[i]"
+                  (input)="onOtpInput($event, i)"
+                  (keydown)="onOtpKeydown($event, i)"
+                  [id]="'otp-' + i" />
+              }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">New Password</label>
+              <div class="pass-wrap">
+                <input [type]="showPass() ? 'text' : 'password'" class="form-control" [(ngModel)]="password" placeholder="Min. 6 characters" />
+                <button class="pass-toggle" type="button" (click)="togglePassword()">{{ showPass() ? '🙈' : '👁' }}</button>
+              </div>
+            </div>
+
+            @if (error()) { <div class="auth-error">{{ error() }}</div> }
+
+            <button class="btn btn-primary btn-full btn-lg" [disabled]="loading()" (click)="resetPassword()">
+              {{ loading() ? 'Updating…' : 'Update Password' }}
+            </button>
+          }
+        </div>
+      </div>
+    </div>

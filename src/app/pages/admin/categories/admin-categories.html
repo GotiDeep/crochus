@@ -1,0 +1,73 @@
+<div class="admin-topbar">
+          <h2>Categories</h2>
+          <button class="btn btn-primary" (click)="showForm.set(true)">+ Add Category</button>
+        </div>
+
+        <!-- Add/Edit Form -->
+        @if (showForm()) {
+          <div class="add-form card fade-in">
+            <h4>{{ editingId() ? 'Edit Category' : 'New Category' }}</h4>
+            <div class="form-col">
+              <input type="text" class="form-control" [(ngModel)]="newName" placeholder="Category name" />
+
+              <!-- Image Upload -->
+              <div class="image-upload-area" (click)="fileInput.click()">
+                @if (imagePreview()) {
+                  <img [src]="imagePreview()!" class="preview-img" alt="Preview" />
+                  <span class="change-label">Click to change image</span>
+                } @else {
+                  <div class="upload-placeholder">
+                    <span class="upload-icon">🖼️</span>
+                    <span>Click to upload category image</span>
+                  </div>
+                }
+              </div>
+              <input #fileInput type="file" accept="image/*" class="hidden-input" (change)="onFileChange($event)" />
+
+              <div class="form-actions">
+                <button class="btn btn-primary" [disabled]="saving()" (click)="save()">
+                  {{ saving() ? 'Saving…' : 'Save' }}
+                </button>
+                <button class="btn btn-ghost" (click)="cancelEdit()">Cancel</button>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Categories List -->
+        <div class="cats-grid fade-in">
+          @if (loading()) {
+            @for (i of [1,2,3,4,5,6]; track i) {
+              <div class="skeleton cat-skel"></div>
+            }
+          } @else {
+            @for (cat of paginatedCategories(); track cat.id) {
+              <div class="cat-card card">
+                @if (cat.image_url) {
+                  <img [src]="cat.image_url" class="cat-img" [alt]="cat.name" />
+                } @else {
+                  <div class="cat-img-placeholder">🧶</div>
+                }
+                <div class="cat-info">
+                  <h4 class="cat-name">{{ cat.name }}</h4>
+                  <span class="cat-count">{{ cat.product_count }} products</span>
+                </div>
+                <div class="cat-actions">
+                  <button class="btn btn-ghost btn-sm" (click)="startEdit(cat)">Edit</button>
+                  <button class="delete-btn" (click)="deleteCategory(cat.id)">🗑</button>
+                </div>
+              </div>
+            }
+          }
+        </div>
+
+        <!-- Pagination -->
+        @if (totalPages() > 1) {
+          <div class="pagination">
+            <button class="page-btn" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">‹</button>
+            @for (p of pageNumbers(); track p) {
+              <button class="page-btn" [class.active]="p === currentPage()" (click)="goToPage(p)">{{ p }}</button>
+            }
+            <button class="page-btn" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">›</button>
+          </div>
+        }

@@ -1,0 +1,132 @@
+<div class="container">
+          <div class="page-header">
+            <span class="section-label">Your Selection</span>
+            <h1>Shopping Bag</h1>
+            <p class="header-subtitle">
+              @if (cart.items().length > 0) {
+                {{ cart.totalItems() }} {{ cart.totalItems() === 1 ? 'item' : 'items' }} selected
+              } @else {
+                Your shopping bag is currently empty
+              }
+            </p>
+          </div>
+
+          @if (cart.items().length === 0) {
+            <div class="empty-state">
+              <div class="empty-gem">✦</div>
+              <h3>Your Shopping Bag is Empty</h3>
+              <p>Explore our catalogue to find bags, bouquets, keychains, and handmade gifts you love.</p>
+              <a routerLink="/shop" class="btn btn-primary btn-lg" style="margin-top:12px;">Browse All Products</a>
+            </div>
+          } @else {
+            <div class="cart-layout">
+              <!-- Items List -->
+              <div class="cart-items">
+                @for (item of cart.items(); track item.product.id) {
+                  <div class="cart-row card">
+                    <a [routerLink]="['/product', item.product.slug]" class="item-img">
+                      <img [src]="item.product.photos[0]" [alt]="item.product.name" />
+                    </a>
+
+                    <div class="item-info">
+                      <div class="item-meta">
+                        <span class="style-sku">{{ getStyleCode(item.product) }}</span>
+                        <span class="item-category">{{ formatCategoryName(item.product.category_name) }}</span>
+                      </div>
+                      <a [routerLink]="['/product', item.product.slug]" class="item-name">{{ item.product.name }}</a>
+                      @if (item.product.materials) {
+                        <p class="item-mat">✦ {{ item.product.materials }}</p>
+                      }
+                      <p class="item-price">Unit Price: ₹{{ item.product.price | number:'1.0-0':'en-IN' }}</p>
+                    </div>
+
+                    <div class="item-controls">
+                      <div class="qty-selector">
+                        <button (click)="cart.updateQuantity(item.product.id, item.quantity - 1)" aria-label="Decrease quantity">−</button>
+                        <span>{{ item.quantity }}</span>
+                        <button (click)="cart.updateQuantity(item.product.id, item.quantity + 1)" aria-label="Increase quantity">+</button>
+                      </div>
+
+                      <div class="subtotal-box">
+                        <span class="subtotal-label">Subtotal</span>
+                        <p class="item-subtotal">₹{{ item.product.price * item.quantity | number:'1.0-0':'en-IN' }}</p>
+                      </div>
+
+                      <button class="remove-btn" (click)="cart.removeItem(item.product.id)" title="Remove item">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="3 6 5 6 21 6"></polyline>
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                }
+
+                <div class="cart-actions-bar">
+                  <a routerLink="/shop" class="btn btn-ghost continue-link">
+                    ← Browse More Products
+                  </a>
+                  <button class="btn btn-ghost clear-btn" (click)="cart.clearCart()">
+                    Clear Shopping Bag
+                  </button>
+                </div>
+              </div>
+
+              <!-- Order Summary -->
+              <div class="order-summary card">
+                <div class="summary-header">
+                  <span class="summary-eyebrow">CROCHUS Handmade</span>
+                  <h3>Order Summary</h3>
+                </div>
+                <div class="gold-hairline"></div>
+
+                <div class="summary-lines">
+                  @for (item of cart.items(); track item.product.id) {
+                    <div class="summary-line">
+                      <div class="line-title">
+                        <span class="prod-name">{{ item.product.name }}</span>
+                        <span class="prod-qty">× {{ item.quantity }}</span>
+                      </div>
+                      <span class="prod-amount">₹{{ item.product.price * item.quantity | number:'1.0-0':'en-IN' }}</span>
+                    </div>
+                  }
+                </div>
+
+                <div class="gold-hairline"></div>
+
+                <div class="perks-list">
+                  <div class="perk-item">
+                    <span class="perk-icon">✦</span>
+                    <span class="perk-desc">Complimentary gift box packaging with every order</span>
+                  </div>
+                  <div class="perk-item">
+                    <span class="perk-icon">✦</span>
+                    <span class="perk-desc">Easy WhatsApp order confirmation & tracking</span>
+                  </div>
+                  <div class="perk-item">
+                    <span class="perk-icon">✦</span>
+                    <span class="perk-desc">Quality checked and safely packed before shipping</span>
+                  </div>
+                </div>
+
+                <div class="gold-hairline"></div>
+
+                <div class="summary-total">
+                  <div class="total-label-box">
+                    <span class="total-title">Total Price</span>
+                    <span class="total-subtitle">All Taxes Included</span>
+                  </div>
+                  <span class="total-price">₹{{ cart.totalPrice() | number:'1.0-0':'en-IN' }}</span>
+                </div>
+
+                <a routerLink="/order" class="btn btn-primary btn-full btn-lg checkout-btn">
+                  Proceed to Order on WhatsApp →
+                </a>
+
+                <p class="summary-note">
+                  💬 When you proceed, we'll format your selected designs for WhatsApp so our team can confirm availability and shipping with you directly.
+                </p>
+              </div>
+            </div>
+          }
+        </div>

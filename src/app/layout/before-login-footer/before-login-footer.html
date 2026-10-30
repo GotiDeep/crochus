@@ -1,0 +1,129 @@
+<footer class="footer">
+      <!-- Quality Hallmarks Bar -->
+      <div class="maison-hallmarks-bar">
+        <div class="container">
+          <div class="hallmarks-grid">
+            <div class="hallmark-col">
+              <span class="hm-icon">🧶</span>
+              <div class="hm-text">
+                <span class="hm-title">Handcrafted with Care</span>
+                <span class="hm-sub">Quality Yarns & Thoughtful Details</span>
+              </div>
+            </div>
+            <div class="hallmark-col">
+              <span class="hm-icon">✿</span>
+              <div class="hm-text">
+                <span class="hm-title">Thoughtful Gifting</span>
+                <span class="hm-sub">Perfect for Birthdays & Festivals</span>
+              </div>
+            </div>
+            <div class="hallmark-col">
+              <span class="hm-icon">✦</span>
+              <div class="hm-text">
+                <span class="hm-title">Gift Packaging</span>
+                <span class="hm-sub">Carefully Packed with Every Order</span>
+              </div>
+            </div>
+            <div class="hallmark-col">
+              <span class="hm-icon">💬</span>
+              <div class="hm-text">
+                <span class="hm-title">WhatsApp Support</span>
+                <span class="hm-sub">Custom Colors & Quick Help</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container footer-main-body">
+        <div class="footer-grid">
+          <!-- Brand Column -->
+          <div class="footer-brand">
+            <a routerLink="/" class="logo" title="Crochus Handmade Products">
+              <img src="assets/logo.svg" alt="Crochus" class="footer-logo-img" />
+            </a>
+            <p>CROCHUS is a handmade brand creating colorful crochet bags, flower bouquets, keychains, kidswear, rakhis, and thoughtful gifts made with love.</p>
+            
+            <div class="social-links">
+              @if (whatsappUrl()) {
+                <a [href]="whatsappUrl()" target="_blank" rel="noopener" class="social-btn wa">
+                  💬 WhatsApp Support
+                </a>
+              }
+              @if (instagramUrl()) {
+                <a [href]="instagramUrl()" target="_blank" rel="noopener" class="social-btn ig">
+                  📸 Instagram
+                </a>
+              }
+              @if (facebookUrl()) {
+                <a [href]="facebookUrl()" target="_blank" rel="noopener" class="social-btn fb">
+                  🌐 Facebook
+                </a>
+              }
+            </div>
+          </div>
+
+          <!-- Quick Links (Catalogue) -->
+          <div class="footer-col">
+            <h5>Explore</h5>
+            <ul>
+              <li><a routerLink="/">Home</a></li>
+              <li><a routerLink="/shop">All Products</a></li>
+              <li><a routerLink="/shop" [queryParams]="{badge: 'new'}">New Arrivals</a></li>
+              <li><a routerLink="/shop" [queryParams]="{badge: 'bestseller'}">Popular Picks</a></li>
+              <li><a routerLink="/wishlist">Saved Items</a></li>
+            </ul>
+          </div>
+
+          <!-- Categories Links (Dynamic) -->
+          <div class="footer-col">
+            <h5>Categories</h5>
+            <ul>
+              @if (categories().length > 0) {
+                @for (cat of categories().slice(0, 5); track cat.id) {
+                  <li><a routerLink="/shop" [queryParams]="{category: cat.id}">{{ formatCategoryName(cat.name) }}</a></li>
+                }
+              } @else {
+                <li><a routerLink="/shop">All Categories</a></li>
+              }
+            </ul>
+          </div>
+
+          <!-- Account & Help -->
+          <div class="footer-col">
+            <h5>Help & Account</h5>
+            <ul>
+              <li><a routerLink="/cart">Shopping Bag</a></li>
+              <li><a routerLink="/login">Sign In</a></li>
+              <li><a routerLink="/register">Create Account</a></li>
+              <li><a routerLink="/profile">My Orders</a></li>
+              <li><a routerLink="/contact">Contact Us</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>© {{ year }} Crochus. Handcrafted with Love. All rights reserved.</p>
+          <div class="footer-bottom-right">
+            <p class="tagline">✦ Handcrafted with Love · Quality Materials · Safe Delivery</p>
+            <button class="footer-top-link" (click)="scrollToTop()">
+              Back to top ↑
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating Back to Top Button -->
+      <button
+        class="back-to-top-btn"
+        [class.visible]="showBackToTop()"
+        (click)="scrollToTop()"
+        aria-label="Back to top"
+        title="Back to top"
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="19" x2="12" y2="5"></line>
+          <polyline points="5 12 12 5 19 12"></polyline>
+        </svg>
+      </button>
+    </footer>

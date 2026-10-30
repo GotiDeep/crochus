@@ -1,0 +1,122 @@
+<div class="admin-topbar">
+          <div>
+            <h2 style="margin:0; font-size:1.5rem">Dashboard</h2>
+            <p style="margin:4px 0 0; font-size:0.85rem; color:var(--text-secondary)">Welcome back, Admin</p>
+          </div>
+          <span class="date-chip">{{ today }}</span>
+        </div>
+
+        @if (loading()) {
+          <div class="stats-grid">
+            @for (i of [1,2,3,4]; track i) {
+              <div class="skeleton stat-skeleton"></div>
+            }
+          </div>
+        } @else {
+          <div class="stats-grid fade-in">
+            <div class="stat-card">
+              <span class="stat-icon">P</span>
+              <div class="stat-value">{{ stats()?.total_products }}</div>
+              <div class="stat-label">Products</div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">O</span>
+              <div class="stat-value">{{ stats()?.total_orders }}</div>
+              <div class="stat-label">Orders</div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">U</span>
+              <div class="stat-value">{{ stats()?.total_customers }}</div>
+              <div class="stat-label">Customers</div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">C</span>
+              <div class="stat-value">{{ stats()?.total_categories }}</div>
+              <div class="stat-label">Categories</div>
+            </div>
+          </div>
+        }
+
+        <div class="quick-actions">
+          <h3>Quick Actions</h3>
+          <div class="action-grid">
+            <a routerLink="/admin/products" class="action-card card">
+              <span>Add Product</span>
+            </a>
+            <a routerLink="/admin/orders" class="action-card card">
+              <span>View Orders</span>
+            </a>
+            <a routerLink="/admin/categories" class="action-card card">
+              <span>Manage Categories</span>
+            </a>
+            <a routerLink="/admin/settings" class="action-card card">
+              <span>Settings</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Recent Orders Section -->
+        <div class="recent-section">
+          <div class="section-head">
+            <h3>Recent Orders</h3>
+            <a routerLink="/admin/orders" class="btn btn-ghost btn-sm">View All -></a>
+          </div>
+          <div class="table-wrap card">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Customer</th>
+                  <th>Items</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (order of recentOrders(); track order.id) {
+                  <tr class="clickable-row" (click)="openOrderModal(order)">
+                    <td><strong class="order-num-link">#{{ order.id }}</strong></td>
+                    <td>{{ order.customer_name }}</td>
+                    <td>
+                      <span class="items-chip">{{ order.items.length }} item(s) ℹ️</span>
+                    </td>
+                    <td>₹{{ order.total | number:'1.0-0':'en-IN' }}</td>
+                    <td><span class="status-badge" [class]="'status-' + order.status">{{ order.status }}</span></td>
+                    <td>{{ order.created_at | date:'mediumDate' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Recent Products Section -->
+        <div class="recent-section" style="margin-top:32px">
+          <div class="section-head">
+            <h3>Recent Products</h3>
+            <a routerLink="/admin/products" class="btn btn-ghost btn-sm">Manage -></a>
+          </div>
+          <div class="table-wrap card">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (product of recentProducts(); track product.id) {
+                  <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.category_name }}</td>
+                    <td>₹{{ product.price | number:'1.0-0':'en-IN' }}</td>
+                    <td>{{ product.in_stock ? 'In Stock' : 'Out of Stock' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>

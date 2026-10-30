@@ -1,0 +1,67 @@
+@if (isOpen) {
+      <div class="overlay" (click)="close.emit()"></div>
+      <aside class="slide-menu" aria-label="Mobile Boutique Menu">
+        <div class="menu-header">
+          <a routerLink="/" (click)="close.emit()" class="mobile-logo-link">
+            <img src="assets/logo.svg" alt="Crochus" class="menu-logo-img" />
+          </a>
+          <button class="close-btn" (click)="close.emit()" aria-label="Close Menu">✕</button>
+        </div>
+
+        <div class="menu-scroll-area">
+          <div class="menu-section-tag">✦ Handmade & Crochet</div>
+
+          <ul class="menu-links">
+            <li><a routerLink="/" (click)="close.emit()">Home</a></li>
+            <li><a routerLink="/shop" (click)="close.emit()">All Handmade Products</a></li>
+
+            <!-- Categories Collapsible Submenu -->
+            <li class="filter-menu-item">
+              <button class="filter-toggle-btn" (click)="toggleFilters()">
+                <span>Browse by Category</span>
+                <span class="chevron" [class.open]="filtersOpen()">▾</span>
+              </button>
+              @if (filtersOpen()) {
+                <ul class="filter-submenu">
+                  <li>
+                    <a (click)="selectCategory(null)" class="sub-link">
+                      <span>All Products</span>
+                    </a>
+                  </li>
+                  @for (cat of categories(); track cat.id) {
+                    <li>
+                      <a (click)="selectCategory(cat.id)" class="sub-link">
+                        <span>{{ formatCategoryName(cat.name) }}</span>
+                        @if (cat.product_count) {
+                          <span class="cat-count">{{ cat.product_count }}</span>
+                        }
+                      </a>
+                    </li>
+                  }
+                </ul>
+              }
+            </li>
+
+            <li><a routerLink="/wishlist" (click)="close.emit()">Saved Items</a></li>
+            <li><a routerLink="/cart" (click)="close.emit()">Shopping Bag ({{ cart.totalItems() }})</a></li>
+            <li><a routerLink="/about" (click)="close.emit()">About Us</a></li>
+            <li><a routerLink="/contact" (click)="close.emit()">Contact Us</a></li>
+          </ul>
+
+          <div class="menu-concierge-card">
+            <span class="mc-tag">Need Help or Custom Orders?</span>
+            <p>Chat directly with our team on WhatsApp for custom colors, sizes, or gift questions.</p>
+          </div>
+        </div>
+
+        <div class="menu-footer">
+          @if (auth.isLoggedIn()) {
+            <a routerLink="/profile" class="btn btn-outline btn-full" (click)="close.emit()">My Account</a>
+            <button class="btn btn-ghost btn-full" style="margin-top:10px" (click)="logout()">Sign Out</button>
+          } @else {
+            <a routerLink="/login" class="btn btn-primary btn-full" (click)="close.emit()">Sign In</a>
+            <a routerLink="/register" class="btn btn-outline btn-full" style="margin-top:10px" (click)="close.emit()">Create Account</a>
+          }
+        </div>
+      </aside>
+    }

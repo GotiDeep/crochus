@@ -1,0 +1,131 @@
+<div class="container">
+          <div class="page-header">
+            <span class="section-label">Easy Ordering</span>
+            <h1>Delivery Details</h1>
+            <p class="header-subtitle">Provide your delivery address to send your order inquiry to our team on WhatsApp</p>
+          </div>
+
+          @if (cart.items().length === 0) {
+            <div class="empty-state">
+              <div class="empty-gem">✦</div>
+              <h3>No Items in Shopping Bag</h3>
+              <p>Please select items from our catalogue before checking out.</p>
+              <a routerLink="/shop" class="btn btn-primary btn-lg" style="margin-top:14px;">Browse All Products</a>
+            </div>
+          } @else if (submitted()) {
+            <!-- Success State -->
+            <div class="success-state fade-in">
+              <div class="success-gem">✦</div>
+              <h2>Order Sent to WhatsApp!</h2>
+              <p>Your order details have been shared with our team on WhatsApp. We will confirm your items, custom details, and delivery with you shortly.</p>
+              <div class="success-actions">
+                <a routerLink="/shop" class="btn btn-primary btn-lg">Browse More Products</a>
+                <a routerLink="/profile" class="btn btn-outline btn-lg">View My Orders</a>
+              </div>
+            </div>
+          } @else {
+            <div class="order-layout">
+              <!-- Form -->
+              <div class="order-form-section card">
+                <div class="form-header">
+                  <span class="fh-eyebrow">Shipping Information</span>
+                  <h3>Delivery Address</h3>
+                </div>
+                <div class="gold-hairline"></div>
+
+                <div class="form-group floating-group">
+                  <label class="form-label">Full Name *</label>
+                  <input type="text" class="form-control" [(ngModel)]="form.full_name"
+                    placeholder="E.g. Priya Sharma" [class.error]="errors.full_name" />
+                  @if (errors.full_name) { <span class="field-error">{{ errors.full_name }}</span> }
+                </div>
+
+                <div class="form-group floating-group">
+                  <label class="form-label">WhatsApp Mobile Number *</label>
+                  <input type="tel" class="form-control" [(ngModel)]="form.phone"
+                    placeholder="10-digit mobile number for order confirmation" [class.error]="errors.phone" maxlength="10" />
+                  @if (errors.phone) { <span class="field-error">{{ errors.phone }}</span> }
+                </div>
+
+                <div class="form-group floating-group">
+                  <label class="form-label">Complete Delivery Address *</label>
+                  <textarea class="form-control" [(ngModel)]="form.address"
+                    placeholder="House/Flat no., Building, Street, City, State…" rows="3"
+                    [class.error]="errors.address"></textarea>
+                  @if (errors.address) { <span class="field-error">{{ errors.address }}</span> }
+                </div>
+
+                <div class="form-group floating-group">
+                  <label class="form-label">Postal Pincode *</label>
+                  <input type="text" class="form-control" [(ngModel)]="form.pincode"
+                    placeholder="6-digit pincode" [class.error]="errors.pincode" maxlength="6" />
+                  @if (errors.pincode) { <span class="field-error">{{ errors.pincode }}</span> }
+                </div>
+
+                <div class="form-group floating-group">
+                  <label class="form-label">Notes or Custom Requests (Optional)</label>
+                  <textarea class="form-control" [(ngModel)]="form.note"
+                    placeholder="Color preference, custom request, gift note, or delivery instructions…" rows="3"></textarea>
+                </div>
+              </div>
+
+              <!-- Summary -->
+              <div class="order-summary-section">
+                <div class="summary-card card">
+                  <div class="summary-header">
+                    <span class="summary-eyebrow">Order Summary</span>
+                    <h3>Selected Items</h3>
+                  </div>
+                  <div class="gold-hairline"></div>
+
+                  <div class="order-items">
+                    @for (item of cart.items(); track item.product.id) {
+                      <div class="order-item">
+                        <img [src]="item.product.photos[0]" [alt]="item.product.name" />
+                        <div class="oi-info">
+                          <span class="oi-sku">Design #{{ item.product.id }}</span>
+                          <p class="oi-name">{{ item.product.name }}</p>
+                          <p class="oi-qty">Qty: {{ item.quantity }}</p>
+                        </div>
+                        <span class="oi-price">₹{{ item.product.price * item.quantity | number:'1.0-0':'en-IN' }}</span>
+                      </div>
+                    }
+                  </div>
+
+                  <div class="gold-hairline"></div>
+
+                  <div class="total-row">
+                    <div class="tr-label">
+                      <span>Total Price</span>
+                      <small>All Taxes Included</small>
+                    </div>
+                    <span class="total-amt">₹{{ cart.totalPrice() | number:'1.0-0':'en-IN' }}</span>
+                  </div>
+
+                  <div class="wa-info">
+                    <span class="wa-icon">💬</span>
+                    <p>Your order details will open directly in WhatsApp so our team can confirm availability, ring size, and payment with you.</p>
+                  </div>
+
+                  <button
+                    class="btn btn-primary btn-full btn-lg submit-order-btn"
+                    style="margin-top:20px"
+                    [disabled]="submitting()"
+                    (click)="submitOrder()"
+                  >
+                    @if (submitting()) {
+                      <span class="btn-spinner"></span>
+                      <span>Connecting to WhatsApp…</span>
+                    } @else {
+                      <span>Send Order via WhatsApp →</span>
+                    }
+                  </button>
+
+                  <a routerLink="/cart" class="btn btn-ghost btn-full" style="margin-top:12px; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase;">
+                    ← Return to Shopping Bag
+                  </a>
+                </div>
+              </div>
+            </div>
+          }
+        </div>

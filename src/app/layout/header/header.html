@@ -1,0 +1,26 @@
+<header class="admin-top-header">
+  <div class="header-left">
+    <button class="mobile-toggle" (click)="sidebar.toggleMobile()" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="portal-badge">
+      <span class="portal-name">CROCHUS Admin</span>
+      <span class="portal-tag">Store Manager</span>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <a routerLink="/shop" class="header-action-btn view-store" target="_blank" title="View Store">
+      <span class="btn-icon">↗</span>
+      <span class="btn-label">View Store</span>
+    </a>
+    <button class="header-action-btn logout-btn" (click)="admin.logout()" title="Logout">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+        <polyline points="16 17 21 12 16 7"></polyline>
+        <line x1="21" y1="12" x2="9" y2="12"></line>
+      </svg>
+      <span class="btn-label">Logout</span>
+    </button>
+  </div>
+</header>

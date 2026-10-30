@@ -1,0 +1,266 @@
+<div class="admin-topbar">
+          <h2>Products</h2>
+          <button class="btn btn-primary" (click)="openForm()">+ Add Product</button>
+        </div>
+
+        <div class="table-wrap card">
+          @if (loading()) {
+            <div style="padding:40px; text-align:center; color:var(--text-secondary)">Loading products…</div>
+          } @else {
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Photo</th>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Badge</th>
+                  <th>Stock</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (product of paginatedProducts(); track product.id) {
+                  <tr class="clickable-row" (click)="openPreview(product)">
+                    <td>
+                      @if (product.photos[0]) {
+                        <img [src]="product.photos[0]" [alt]="product.name" class="thumb-img" (error)="hideBrokenImage($event)" />
+                      } @else {
+                        <span class="missing-thumb">No photo</span>
+                      }
+                    </td>
+                    <td><span class="product-code-badge">{{ product.product_code || '—' }}</span></td>
+                    <td><span class="product-name-cell">{{ product.name }}</span></td>
+                    <td>{{ product.category_name }}</td>
+                    <td>₹{{ product.price | number:'1.0-0':'en-IN' }}</td>
+                    <td>
+                      @if (product.badge) {
+                        <span class="badge" [class]="'badge-' + product.badge">{{ product.badge }}</span>
+                      } @else { — }
+                    </td>
+                    <td>
+                      <span class="status-badge" [class]="product.in_stock ? 'status-confirmed' : 'status-new'">
+                        {{ product.in_stock ? 'In Stock' : 'Out' }}
+                      </span>
+                    </td>
+                    <td (click)="$event.stopPropagation()">
+                      <div class="action-btns">
+                        <button class="btn btn-ghost btn-sm" (click)="editProduct(product)">Edit</button>
+                        <button class="btn btn-sm delete-btn" (click)="deleteProduct(product.id)">Delete</button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+
+            <!-- Pagination -->
+            @if (totalPages() > 1) {
+              <div class="pagination">
+                <button class="page-btn" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">‹</button>
+                @for (p of pageNumbers(); track p) {
+                  <button class="page-btn" [class.active]="p === currentPage()" (click)="goToPage(p)">{{ p }}</button>
+                }
+                <button class="page-btn" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">›</button>
+              </div>
+            }
+          }
+        </div>
+
+        @if (showForm()) {
+          <div class="modal-overlay" (click)="closeForm()">
+            <div class="modal" (click)="$event.stopPropagation()">
+              <div class="modal-head">
+                <h3>{{ editingId() ? 'Edit Product' : 'Add Product' }}</h3>
+                <button class="close-btn" type="button" aria-label="Close product form" title="Close" (click)="closeForm()">×</button>
+              </div>
+
+              <div class="modal-body">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Product Name *</label>
+                    <input type="text" class="form-control" [(ngModel)]="formData.name" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Product Code (Unique) *</label>
+                    <input type="text" class="form-control" [(ngModel)]="formData.product_code" placeholder="e.g. CRO-001" />
+                    <span class="hint-text">Each product must have a distinct code.</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Price (₹) *</label>
+                  <input type="number" class="form-control" [(ngModel)]="formData.price" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Description *</label>
+                  <textarea class="form-control" [(ngModel)]="formData.description" rows="3"></textarea>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-control" [(ngModel)]="formData.category_id">
+                      @for (category of categories(); track category.id) {
+                        <option [value]="category.id">{{ category.name }}</option>
+                      }
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Badge</label>
+                    <select class="form-control" [(ngModel)]="formData.badge">
+                      <option value="">None</option>
+                      <option value="new">New</option>
+                      <option value="bestseller">Bestseller</option>
+                      <option value="featured">Featured</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Materials</label>
+                  <input type="text" class="form-control" [(ngModel)]="formData.materials" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Display on Home</label>
+                  <select class="form-control" [(ngModel)]="formData.home_display">
+                    <option value="none">Do not display</option>
+                    <option value="hero">Show to Hero Section (max 3)</option>
+                    <option value="last_section">Show to Home Last Section (max 4)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Photo URLs</label>
+                  <textarea
+                    class="form-control"
+                    [(ngModel)]="photoUrlsInput"
+                    rows="2"
+                    placeholder="https://image-one.jpg, https://image-two.jpg"
+                  ></textarea>
+                  <span class="hint-text">You can keep existing URLs or add new hosted image URLs.</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Upload Photos</label>
+                  <input type="file" class="form-control" accept="image/*" multiple (change)="onPhotoFilesSelected($event)" />
+                  @if (selectedPhotoNames().length > 0) {
+                    <div class="file-chip-row">
+                      @for (name of selectedPhotoNames(); track name) {
+                        <span class="file-chip">{{ name }}</span>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Video URL (optional)</label>
+                  <input type="text" class="form-control" [(ngModel)]="formData.video_url" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Upload Video (optional)</label>
+                  <input type="file" class="form-control" accept="video/*" (change)="onVideoFileSelected($event)" />
+                  @if (selectedVideoName()) {
+                    <div class="file-chip-row">
+                      <span class="file-chip">{{ selectedVideoName() }}</span>
+                    </div>
+                  }
+                </div>
+
+                <div class="form-check">
+                  <input type="checkbox" id="inStock" [(ngModel)]="formData.in_stock" />
+                  <label for="inStock">In Stock</label>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button class="btn btn-ghost" (click)="closeForm()">Cancel</button>
+                <button class="btn btn-primary" [disabled]="saving()" (click)="saveProduct()">
+                  {{ saving() ? 'Saving…' : (editingId() ? 'Update Product' : 'Add Product') }}
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Product Preview Modal -->
+        @if (showPreview() && previewProduct()) {
+          <div class="modal-overlay" (click)="closePreview()">
+            <div class="modal preview-modal" (click)="$event.stopPropagation()">
+              <div class="modal-head">
+                <div class="preview-header-meta">
+                  <span class="preview-tag">Product Preview</span>
+                  @if (previewProduct()!.product_code) {
+                    <span class="product-code-badge large">{{ previewProduct()!.product_code }}</span>
+                  }
+                </div>
+                <button class="close-btn" type="button" aria-label="Close product preview" title="Close" (click)="closePreview()">×</button>
+              </div>
+
+              <div class="modal-body preview-body">
+                <div class="preview-layout">
+                  <!-- Left: Gallery -->
+                  <div class="preview-gallery">
+                    <app-product-gallery
+                      [images]="previewProduct()!.photos"
+                      [videoUrl]="previewProduct()!.video_url"
+                    />
+                  </div>
+
+                  <!-- Right: Product Info -->
+                  <div class="preview-info">
+                    <div class="preview-meta">
+                      <span class="category-label">{{ previewProduct()!.category_name || 'Uncategorized' }}</span>
+                      @if (previewProduct()!.badge) {
+                        <app-badge [type]="previewProduct()!.badge ?? null" />
+                      }
+                    </div>
+
+                    <h2 class="preview-title">{{ previewProduct()!.name }}</h2>
+                    <div class="preview-price">₹{{ previewProduct()!.price | number:'1.0-0':'en-IN' }}</div>
+
+                    <div class="stock-row">
+                      @if (previewProduct()!.in_stock) {
+                        <span class="stock-badge in-stock">✓ In Stock</span>
+                      } @else {
+                        <span class="stock-badge out-of-stock">✕ Out of Stock</span>
+                      }
+                      @if (previewProduct()!.home_display && previewProduct()!.home_display !== 'none') {
+                        <span class="home-display-tag">
+                          📍 {{ previewProduct()!.home_display === 'hero' ? 'Hero Section' : 'Last Section' }}
+                        </span>
+                      }
+                    </div>
+
+                    <div class="preview-divider"></div>
+
+                    <p class="preview-desc">{{ previewProduct()!.description }}</p>
+
+                    @if (previewProduct()!.materials) {
+                      <div class="preview-materials">
+                        <span class="mat-label">Materials:</span>
+                        <span class="mat-value">{{ previewProduct()!.materials }}</span>
+                      </div>
+                    }
+
+                    <div class="preview-slug">
+                      <span class="mat-label">Store URL:</span>
+                      <code>/product/{{ previewProduct()!.slug }}</code>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button class="btn btn-ghost" (click)="closePreview()">Close</button>
+                <button class="btn btn-primary" (click)="editFromPreview()">
+                  ✏️ Edit Product
+                </button>
+              </div>
+            </div>
+          </div>
+        }

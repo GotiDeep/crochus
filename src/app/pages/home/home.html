@@ -1,0 +1,174 @@
+<!-- Top Marquee Ribbon -->
+        <app-marquee-ribbon />
+
+        <!-- ── Dynamic Hero Banner Slider (CrochetByPlakshi Auto-Switching Style) ── -->
+        <app-hero-banner-slider />
+
+        <!-- ── Categories Section ── -->
+        <section class="section categories-section">
+          <div class="container">
+            <div class="section-header-row">
+              <div>
+                <span class="section-label">Browse What We Make</span>
+                <h2 class="section-title">Explore Our Products</h2>
+              </div>
+              <a routerLink="/shop" class="btn btn-outline hide-mobile">See All Categories →</a>
+            </div>
+
+            <div class="cat-slider-wrapper">
+              <div
+                class="cat-slider"
+                [style.transform]="'translateX(-' + (sliderOffset() * (100 / visibleCount)) + '%)'"
+                [style.transition]="noTransition() ? 'none' : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'"
+              >
+                @for (cat of sliderItems(); track $index) {
+                  <a routerLink="/shop" [queryParams]="{category: cat.id}" class="cat-card-lux" appTilt>
+                    <div class="cat-vignette">
+                      @if (cat.image_url) {
+                        <img [src]="cat.image_url" [alt]="cat.name" loading="lazy" />
+                      } @else {
+                        <div class="cat-gem-placeholder">
+                          <span>🧶</span>
+                        </div>
+                      }
+                      <div class="vignette-gold-ring"></div>
+                    </div>
+                    <span class="cat-name">{{ formatCategoryName(cat.name) }}</span>
+                    <span class="cat-pill">{{ cat.product_count || 6 }} Products</span>
+                  </a>
+                }
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Featured Handmade Products ── -->
+        <section class="section featured-section">
+          <div class="container">
+            <div class="section-header-row">
+              <div>
+                <span class="section-label">Handmade with Care</span>
+                <h2 class="section-title">Our Favourite Picks</h2>
+              </div>
+              <a routerLink="/shop" class="btn btn-outline">Explore All Products →</a>
+            </div>
+
+            @if (loading()) {
+              <div class="product-grid">
+                <app-product-card-skeleton [count]="8" />
+              </div>
+            } @else {
+              <div class="product-grid">
+                @for (product of featured(); track product.id) {
+                  <app-product-card appTilt [product]="product" />
+                }
+              </div>
+            }
+          </div>
+        </section>
+
+        <!-- ── Our Story & Craftsmanship Section ── -->
+        <section class="atelier-feature" id="our-story">
+          <div class="container">
+            <div class="atelier-grid">
+              <div class="atelier-text">
+                <span class="section-label">Our Story</span>
+                <h2>Every Piece Has<br><em>a Little Story</em></h2>
+                <p>
+                  At CROCHUS, we love turning simple threads and creative ideas into something special. From colorful bags and flowers to thoughtful gifts and everyday accessories, our handmade creations are made to add a personal touch to life's little moments.
+                </p>
+                <div class="atelier-pillars">
+                  <div class="pillar">
+                    <span class="pillar-num">01</span>
+                    <strong>Made by Hand</strong>
+                    <p>Each creation is made with care, patience, and close attention to detail.</p>
+                  </div>
+                  <div class="pillar">
+                    <span class="pillar-num">02</span>
+                    <strong>Made to Be Special</strong>
+                    <p>Find something different from everyday, mass-produced products.</p>
+                  </div>
+                  <div class="pillar">
+                    <span class="pillar-num">03</span>
+                    <strong>Made for Every Moment</strong>
+                    <p>From birthdays and festivals to everyday surprises, find something worth gifting or keeping.</p>
+                  </div>
+                  <div class="pillar">
+                    <span class="pillar-num">04</span>
+                    <strong>Custom Orders on WhatsApp</strong>
+                    <p>Want a specific color or custom size? Chat directly with us to bring your idea to life.</p>
+                  </div>
+                </div>
+                <a routerLink="/about" class="btn btn-primary" style="margin-top:24px">Read Our Full Story</a>
+              </div>
+
+              <!-- Visual Callout Boxes -->
+              <div class="atelier-visual">
+                <div class="atelier-card-frame">
+                  <div class="af-box primary-box">
+                    <div class="af-content">
+                      <span class="af-icon">✿</span>
+                      <h4>Custom Gifts & Requests</h4>
+                      <p>Have an idea for a custom bouquet, special bag color, or personalized gift? We are always happy to help.</p>
+                      <a routerLink="/contact" class="af-link">Chat on WhatsApp →</a>
+                    </div>
+                  </div>
+                  <div class="af-box secondary-box">
+                    <div class="quote-mark">“</div>
+                    <p class="quote-text">Little things, made with patience and love, bring the warmest smiles.</p>
+                    <span class="quote-sign">— CROCHUS Handmade</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── WhatsApp Custom Orders Banner ── -->
+        <section class="concierge-banner">
+          <div class="container">
+            <div class="cb-inner">
+              <div class="cb-text">
+                <span class="cb-tag">✦ Custom Creations & Inquiries</span>
+                <h3>Looking for Something Custom or Special?</h3>
+                <p>Want a specific color, custom size, or a personalized gift for someone dear? Chat directly with our team on WhatsApp. We're happy to help you create something special.</p>
+              </div>
+              <div class="cb-action">
+                <a routerLink="/contact" class="btn btn-primary btn-lg">Chat with Us on WhatsApp</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── More Handmade Creations Section ── -->
+        @if (lastSectionProducts().length > 0) {
+          <section class="section archival-section">
+            <div class="container">
+              <div class="section-header" style="text-align:center; margin-bottom: 36px">
+                <span class="section-label">More to Love</span>
+                <h2 class="section-title">More Handmade Creations</h2>
+                <p style="max-width: 520px; margin: 0 auto; color: var(--c-muted);">
+                  Explore more colorful bags, bouquets, and accessories made to bring big smiles.
+                </p>
+              </div>
+
+              <div class="archival-grid">
+                @for (product of lastSectionProducts(); track product.id) {
+                  <a [routerLink]="['/product', product.slug]" class="archival-tile">
+                    <div class="tile-img-wrap">
+                      <img [src]="product.photos[0]" [alt]="product.name" loading="lazy" />
+                    </div>
+                    <div class="tile-meta">
+                      <span class="tile-ref">Item #{{ product.id }}</span>
+                      <strong class="tile-name">{{ product.name }}</strong>
+                      <span class="tile-price">₹{{ product.price | number:'1.0-0':'en-IN' }}</span>
+                    </div>
+                  </a>
+                }
+              </div>
+            </div>
+          </section>
+        }
+
+        <!-- Bottom Marquee Ribbon (Reverse direction) -->
+        <app-marquee-ribbon [reverse]="true" />

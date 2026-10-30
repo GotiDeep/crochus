@@ -1,0 +1,97 @@
+// ============================================
+// CROCHUS — Buttons
+// ============================================
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  user-select: none;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.btn-primary {
+  background: var(--c-primary);
+  color: #FFFFFF;
+  border-color: var(--c-primary);
+  box-shadow: 0 4px 14px rgba(74, 92, 47, 0.25);
+
+  &:hover {
+    background: var(--c-primary-hover);
+    border-color: var(--c-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(74, 92, 47, 0.35);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-outline {
+  background: transparent;
+  border-color: var(--c-text);
+  color: var(--c-text);
+
+  &:hover {
+    background: var(--c-text);
+    color: var(--c-bg);
+  }
+}
+
+.btn-secondary {
+  background: var(--c-surface);
+  border-color: var(--border);
+  color: var(--c-text);
+
+  &:hover {
+    background: var(--c-bg);
+    border-color: var(--c-text);
+  }
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--c-text);
+
+  &:hover {
+    background: var(--c-primary-soft);
+  }
+}
+
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-sm {
+  padding: 6px 14px;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+}
+
+.btn-lg {
+  padding: 14px 28px;
+  font-size: 0.88rem;
+  letter-spacing: 0.14em;
+}

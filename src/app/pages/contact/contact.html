@@ -1,0 +1,84 @@
+<div class="container">
+          <div class="page-header">
+            <span class="section-label">Customer Support</span>
+            <h1>Get in Touch with Us</h1>
+            <p>Have questions about a handmade product, want to request a custom color or size, or need gift ideas? We are here to help!</p>
+          </div>
+
+          <div class="contact-layout">
+            <div class="contact-info">
+              @for (item of contactItems; track item.title) {
+                <a [href]="item.href" target="_blank" class="contact-card card">
+                  <span class="contact-icon">{{ item.icon }}</span>
+                  <div>
+                    <h4>{{ item.title }}</h4>
+                    <p>{{ item.detail }}</p>
+                  </div>
+                </a>
+              }
+
+              <div class="social-block">
+                <p class="social-label">Follow & Chat with Us</p>
+                <div class="social-row">
+                  @if (whatsappUrl()) {
+                    <a [href]="whatsappUrl()" target="_blank" rel="noopener" class="social-pill wa">
+                      💬 Chat on WhatsApp
+                    </a>
+                  }
+                  @if (instagramUrl()) {
+                    <a [href]="instagramUrl()" target="_blank" rel="noopener" class="social-pill">
+                      📸 Instagram
+                    </a>
+                  }
+                  @if (facebookUrl()) {
+                    <a [href]="facebookUrl()" target="_blank" rel="noopener" class="social-pill fb">
+                      🌐 Facebook
+                    </a>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="contact-form card">
+              @if (!sent()) {
+                <h3>Send Us a Message</h3>
+                <div class="divider"></div>
+
+                <div class="form-group floating-group">
+                  <label class="form-label">Full Name *</label>
+                  <input type="text" class="form-control" [class.error]="error() && !form.name" [(ngModel)]="form.name" placeholder="Your full name" />
+                </div>
+                <div class="form-group floating-group">
+                  <label class="form-label">Email Address *</label>
+                  <input type="email" class="form-control" [class.error]="error() && !form.email" [(ngModel)]="form.email" placeholder="you@example.com" />
+                </div>
+                <div class="form-group floating-group">
+                  <label class="form-label">Subject</label>
+                  <input type="text" class="form-control" [(ngModel)]="form.subject" placeholder="Custom color, gift order, bouquet inquiry…" />
+                </div>
+                <div class="form-group floating-group">
+                  <label class="form-label">Your Message *</label>
+                  <textarea class="form-control" [class.error]="error() && !form.message" [(ngModel)]="form.message" rows="5" placeholder="Tell us how we can help you…"></textarea>
+                </div>
+
+                @if (error()) { <div class="auth-error error-shake">{{ error() }}</div> }
+
+                <button class="btn btn-primary btn-full submit-btn" [disabled]="sending()" (click)="send()">
+                  @if (sending()) {
+                    <span class="btn-spinner"></span>
+                    <span>Sending Message…</span>
+                  } @else {
+                    <span>Send Message →</span>
+                  }
+                </button>
+              } @else {
+                <div class="success-msg fade-in">
+                  <span style="font-size:2.8rem; color: var(--c-accent)">✦</span>
+                  <h3>Message Sent!</h3>
+                  <p>Thank you for reaching out to CROCHUS. Our team will review your message and reply within 24 hours.</p>
+                  <button class="btn btn-outline" (click)="sent.set(false)">Send Another Message</button>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
