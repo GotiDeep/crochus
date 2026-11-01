@@ -1,0 +1,284 @@
+<section class="testimonials-admin-container">
+  <!-- Section Header -->
+  <div class="testimonials-header">
+    <div>
+      <h3>Customer Testimonials & DM Reviews</h3>
+      <p>Customer feedback screenshots appear in the homepage auto-running testimonials slider. Visitors can swipe or tap to zoom.</p>
+    </div>
+    <button class="btn btn-primary add-testimonial-btn" (click)="openAddModal()">
+      <span class="plus-icon">+</span> Add DM Screenshot
+    </button>
+  </div>
+
+  <!-- Dimension Guidance Notice Card -->
+  <div class="dimension-card">
+    <div class="dim-icon-wrap">📱</div>
+    <div class="dim-body">
+      <div class="dim-heading">
+        <strong>Mobile Chat Screenshot Specifications & Automatic 10-Item Rule</strong>
+        <span class="dim-badge">Recommended: 1080 × 1920 px or 1080 × 2340 px (Vertical 9:16 or 9:19.5)</span>
+      </div>
+      <p class="dim-desc">
+        Upload authentic Instagram DM or WhatsApp chat screenshots showing customer appreciation and handmade crochet photos. 
+        <br />
+        <span class="rule-highlight">
+          <strong>⚡ Automatic 10-Item Rule:</strong> The website displays up to <strong>10 active screenshots</strong> in the homepage carousel. Whenever you upload or activate an 11th screenshot, the oldest active screenshot is automatically set to inactive.
+        </span>
+      </p>
+    </div>
+  </div>
+
+  <!-- Testimonials Table -->
+  <div class="table-card card">
+    @if (loading()) {
+      <div class="table-loading">
+        <span class="spinner"></span> Loading customer testimonials…
+      </div>
+    } @else if (testimonials().length === 0) {
+      <div class="table-empty">
+        <div class="empty-icon">💬</div>
+        <h4>No Testimonial Screenshots Added Yet</h4>
+        <p>Upload authentic customer DM screenshots to build trust and show real handmade appreciation on your homepage.</p>
+        <button class="btn btn-primary" (click)="openAddModal()">+ Add DM Screenshot</button>
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="testimonials-table">
+          <thead>
+            <tr>
+              <th class="th-action">Action</th>
+              <th class="th-status">Status</th>
+              <th class="th-img">DM Screenshot</th>
+              <th>Customer / Label</th>
+              <th>Source / Platform</th>
+              <th>Display Order</th>
+              <th>Date Added</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of testimonials(); track item.id) {
+              <tr>
+                <!-- Action Column -->
+                <td class="td-actions">
+                  <button
+                    class="icon-btn edit-btn"
+                    (click)="openEditModal(item)"
+                    title="Edit Testimonial"
+                    aria-label="Edit Testimonial"
+                  >
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                  </button>
+                  <button
+                    class="icon-btn delete-btn"
+                    (click)="confirmDelete(item)"
+                    title="Delete Testimonial"
+                    aria-label="Delete Testimonial"
+                  >
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                  </button>
+                </td>
+
+                <!-- Status Pill Toggle -->
+                <td class="td-status">
+                  <button
+                    class="status-pill-btn"
+                    [class.active]="item.is_active"
+                    (click)="toggleStatus(item)"
+                    title="Click to toggle status (Max 10 active)"
+                  >
+                    <span class="status-dot"></span>
+                    {{ item.is_active ? 'Active (Live)' : 'Inactive' }}
+                  </button>
+                </td>
+
+                <!-- Customer Image Thumbnail -->
+                <td class="td-img">
+                  <div class="thumb-wrap" (click)="previewImage(item.image_url)">
+                    <img [src]="item.image_url" [alt]="item.customer_name" loading="lazy" />
+                    <span class="thumb-zoom" title="Click to view full image">🔍</span>
+                  </div>
+                </td>
+
+                <!-- Customer / Label -->
+                <td class="td-name">
+                  <strong>{{ item.customer_name }}</strong>
+                  @if (item.review_text) {
+                    <p class="td-preview-text">{{ item.review_text }}</p>
+                  }
+                </td>
+
+                <!-- Platform / Location -->
+                <td class="td-loc">
+                  <span class="platform-badge">{{ item.customer_location || 'Instagram DM' }}</span>
+                </td>
+
+                <!-- Order -->
+                <td class="td-order">
+                  <span class="order-badge">#{{ item.sort_order }}</span>
+                </td>
+
+                <!-- Date -->
+                <td class="td-date">
+                  <span>{{ item.created_at | date:'dd MMM yyyy' }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  <!-- Add / Edit Modal -->
+  @if (modalOpen()) {
+    <div class="modal-backdrop" (click)="closeModal()">
+      <div class="modal-dialog card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div class="m-title-wrap">
+            <span class="m-icon">{{ isEditing() ? '✏️' : '✨' }}</span>
+            <h4>{{ isEditing() ? 'Edit Testimonial Screenshot' : 'Add Customer DM Screenshot' }}</h4>
+          </div>
+          <button class="close-x" (click)="closeModal()">✕</button>
+        </div>
+
+        <form (ngSubmit)="saveTestimonial()" class="modal-form">
+          <div class="form-body">
+            <!-- Image Upload Dropzone (Primary) -->
+            <div class="form-group">
+              <label>Customer DM Screenshot <span class="required">*</span></label>
+              <div class="upload-dropzone" [class.has-file]="imagePreview()">
+                @if (imagePreview()) {
+                  <div class="preview-container">
+                    <img [src]="imagePreview()" alt="Preview" class="upload-preview-img" />
+                    <div class="preview-overlay">
+                      <button type="button" class="btn btn-sm btn-danger" (click)="removeSelectedFile()">Remove / Change</button>
+                    </div>
+                  </div>
+                } @else {
+                  <label class="dropzone-label">
+                    <input type="file" (change)="onFileSelected($event)" accept="image/*" class="file-input" />
+                    <div class="drop-content">
+                      <span class="upload-icon">📱</span>
+                      <strong>Click to Upload Chat Screenshot</strong>
+                      <p>Recommended: Vertical Screenshot (9:16 or 9:19.5, approx. 1080 × 1920 px) · JPG, PNG, WebP up to 8MB</p>
+                    </div>
+                  </label>
+                }
+              </div>
+
+              <!-- Fallback Image URL -->
+              <div class="url-fallback-wrap">
+                <span class="or-divider">OR</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Paste direct Image URL (e.g. Cloudinary, local asset)"
+                  [(ngModel)]="currentForm.image_url"
+                  name="image_url"
+                />
+              </div>
+            </div>
+
+            <!-- Customer / Reference Label -->
+            <div class="form-row two-col">
+              <div class="form-group">
+                <label>Customer Name or Review Title <span class="required">*</span></label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="e.g. Tanu - Flower Bouquet DM"
+                  [(ngModel)]="currentForm.customer_name"
+                  name="customer_name"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Platform / Source <span class="optional">(Optional)</span></label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="e.g. Instagram DM, WhatsApp"
+                  [(ngModel)]="currentForm.customer_location"
+                  name="customer_location"
+                />
+              </div>
+            </div>
+
+            <!-- Sort Order & Rating -->
+            <div class="form-row two-col">
+              <div class="form-group">
+                <label>Display Sort Order</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  [(ngModel)]="currentForm.sort_order"
+                  name="sort_order"
+                  min="0"
+                />
+              </div>
+              <div class="form-group">
+                <label>Customer Rating</label>
+                <select class="form-control" [(ngModel)]="currentForm.rating" name="rating">
+                  <option [ngValue]="5">★★★★★ (5 Stars - Verified)</option>
+                  <option [ngValue]="4">★★★★☆ (4 Stars)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Optional Note -->
+            <div class="form-group">
+              <label>Optional Review Summary / Caption <span class="optional">(Optional)</span></label>
+              <textarea
+                class="form-control text-area"
+                rows="2"
+                placeholder="Brief summary of customer compliment (optional)"
+                [(ngModel)]="currentForm.review_text"
+                name="review_text"
+              ></textarea>
+            </div>
+
+            <!-- 10-Item Rule Notice in Modal -->
+            <div class="modal-notice-banner">
+              <span>⚡ <strong>Note:</strong> Active screenshots are shown on the homepage (max 10). If 10 are already active, adding a new active screenshot will automatically set the oldest active screenshot to inactive.</span>
+            </div>
+
+            <!-- Active Status Checkbox -->
+            <div class="form-group checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="currentForm.is_active" name="is_active" />
+                <span>Publish immediately (Active on Homepage)</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-ghost" (click)="closeModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+              @if (submitting()) {
+                <span class="spinner-sm"></span> Saving…
+              } @else {
+                {{ isEditing() ? 'Save Changes' : 'Publish DM Screenshot' }}
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <!-- Image Lightbox Preview -->
+  @if (previewModalUrl()) {
+    <div class="lightbox-overlay" (click)="closePreview()">
+      <div class="lightbox-box" (click)="$event.stopPropagation()">
+        <button class="lightbox-x" (click)="closePreview()">✕</button>
+        <img [src]="previewModalUrl()" alt="Customer Testimonial Full Preview" />
+      </div>
+    </div>
+  }
+</section>

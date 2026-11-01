@@ -12,7 +12,10 @@
 @use 'styles/components/forms';
 @use 'styles/components/modal';
 @use 'styles/components/cards';
+@use 'styles/components/tables';
+@use 'styles/components/pagination';
 @use 'styles/layout/layout';
+@use 'styles/layout/admin';
 @use 'styles/utilities/spacing';
 
 // --- 2. Google Fonts Imports ---

@@ -37,14 +37,14 @@ export class HeroBannerSliderComponent implements OnInit, OnDestroy {
   // Touch / Drag swipe variables
   private startX = 0;
   private currentX = 0;
-  private dragDelta = 0;
+  dragDelta = signal(0);
   private isSwiping = false;
 
   trackTransform = computed(() => {
     const baseTranslate = -(this.currentSlide() * 100);
     if (this.isDragging() && this.sliderContainer?.nativeElement) {
       const containerWidth = this.sliderContainer.nativeElement.clientWidth || 1;
-      const deltaPercent = (this.dragDelta / containerWidth) * 100;
+      const deltaPercent = (this.dragDelta() / containerWidth) * 100;
       return `translateX(${baseTranslate + deltaPercent}%)`;
     }
     return `translateX(${baseTranslate}%)`;
@@ -112,7 +112,7 @@ export class HeroBannerSliderComponent implements OnInit, OnDestroy {
   }
 
   onBannerClick(banner: Banner) {
-    if (Math.abs(this.dragDelta) > 10) return; // Ignore if user was swiping
+    if (Math.abs(this.dragDelta()) > 10) return; // Ignore if user was swiping
     const link = banner.link_url || '/shop';
     if (link.startsWith('http://') || link.startsWith('https://')) {
       window.open(link, '_blank');
@@ -127,7 +127,7 @@ export class HeroBannerSliderComponent implements OnInit, OnDestroy {
     this.pauseAutoSlide();
     this.startX = e.touches[0].clientX;
     this.currentX = this.startX;
-    this.dragDelta = 0;
+    this.dragDelta.set(0);
     this.isSwiping = true;
     this.isDragging.set(true);
   }
@@ -135,7 +135,7 @@ export class HeroBannerSliderComponent implements OnInit, OnDestroy {
   onTouchMove(e: TouchEvent) {
     if (!this.isSwiping) return;
     this.currentX = e.touches[0].clientX;
-    this.dragDelta = this.currentX - this.startX;
+    this.dragDelta.set(this.currentX - this.startX);
   }
 
   onTouchEnd() {
@@ -150,7 +150,7 @@ export class HeroBannerSliderComponent implements OnInit, OnDestroy {
     this.pauseAutoSlide();
     this.startX = e.clientX;
     this.currentX = this.startX;
-    this.dragDelta = 0;
+    this.dragDelta.set(0);
     this.isSwiping = true;
     this.isDragging.set(true);
   }
@@ -158,7 +158,7 @@ export class HeroBannerSliderComponent implements OnInit, OnDestroy {
   onMouseMove(e: MouseEvent) {
     if (!this.isSwiping) return;
     this.currentX = e.clientX;
-    this.dragDelta = this.currentX - this.startX;
+    this.dragDelta.set(this.currentX - this.startX);
   }
 
   onMouseUp() {
@@ -177,14 +177,15 @@ export class HeroBannerSliderComponent implements OnInit, OnDestroy {
     this.isSwiping = false;
     this.isDragging.set(false);
     const threshold = 45; // min px to trigger slide change
+    const delta = this.dragDelta();
 
-    if (this.dragDelta < -threshold) {
+    if (delta < -threshold) {
       this.nextSlide();
-    } else if (this.dragDelta > threshold) {
+    } else if (delta > threshold) {
       this.prevSlide();
     }
 
-    this.dragDelta = 0;
+    this.dragDelta.set(0);
     this.resumeAutoSlide();
   }
 }

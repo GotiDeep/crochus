@@ -1,34 +1,57 @@
 <div class="admin-login-page">
-      <div class="login-card">
-        <a routerLink="/" class="back-link">← Back to Store</a>
-        <div class="login-logo">
-          <img src="assets/logo.svg" alt="Crochus" class="login-logo-img" />
-        </div>
-        <h1>Admin Login</h1>
-        <p>Enter your admin password to access the dashboard</p>
+  <div class="login-card">
+    <div class="card-header-meta">
+      <a routerLink="/" class="back-link">← Return to Store</a>
+      <span class="secure-badge">🔒 Secure Gateway</span>
+    </div>
 
-        <div class="form-group" style="margin-top: 28px">
-          <label class="form-label">Password</label>
-          <div class="pass-wrap">
-            <input
-              [type]="showPass() ? 'text' : 'password'"
-              class="form-control"
-              [(ngModel)]="password"
-              placeholder="Enter admin password"
-              (keydown.enter)="login()"
-            />
-            <button class="pass-toggle" type="button" (click)="togglePassword()">{{ showPass() ? '🙈' : '👁' }}</button>
-          </div>
-        </div>
+    <div class="login-logo">
+      <img src="assets/logo.svg" alt="Crochus" class="login-logo-img" />
+    </div>
 
-        @if (error()) {
-          <div class="auth-error">{{ error() }}</div>
-        }
+    <div class="admin-portal-tag">Staff Portal</div>
+    <h1>Admin Login</h1>
+    <p>Sign in with your administrator credentials to access store controls</p>
 
-        <button class="btn btn-primary btn-full" [disabled]="loading()" (click)="login()">
-          {{ loading() ? 'Logging in…' : 'Login to Dashboard' }}
+    <div class="form-group" style="margin-top: 24px">
+      <label class="form-label">Admin Email</label>
+      <input
+        type="email"
+        class="form-control"
+        [(ngModel)]="email"
+        placeholder="admin@crochus.com"
+        (keydown.enter)="login()"
+      />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Admin Password</label>
+      <div class="pass-wrap">
+        <input
+          [type]="showPass() ? 'text' : 'password'"
+          class="form-control"
+          [(ngModel)]="password"
+          placeholder="Enter admin password"
+          (keydown.enter)="login()"
+        />
+        <button class="pass-toggle" type="button" (click)="togglePassword()" [attr.aria-label]="showPass() ? 'Hide password' : 'Show password'">
+          {{ showPass() ? '🙈' : '👁' }}
         </button>
-
-        <p class="hint">Admin password is managed in backend configuration.</p>
       </div>
     </div>
+
+    @if (error()) {
+      <div class="auth-error">{{ error() }}</div>
+    }
+
+    <button class="btn btn-primary btn-full" [disabled]="loading()" (click)="login()">
+      {{ loading() ? 'Authenticating…' : 'Access Admin Dashboard →' }}
+    </button>
+
+    <div class="security-footer">
+      <p class="security-text">
+        🔒 Authorized personnel only. Customer accounts must sign in via the <a routerLink="/login">Customer Store Portal</a>.
+      </p>
+    </div>
+  </div>
+</div>

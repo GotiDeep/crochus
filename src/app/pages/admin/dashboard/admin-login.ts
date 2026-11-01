@@ -15,6 +15,7 @@ export class AdminLoginComponent {
   private admin = inject(AdminService);
   private router = inject(Router);
 
+  email = 'admin@crochus.com';
   password = '';
   showPass = signal(false);
   loading = signal(false);
@@ -30,15 +31,18 @@ export class AdminLoginComponent {
 
   async login() {
     this.error.set('');
-    if (!this.password) { this.error.set('Enter your password'); return; }
+    if (!this.email || !this.password) {
+      this.error.set('Please provide both admin email and password');
+      return;
+    }
     this.loading.set(true);
     try {
-      await this.admin.login(this.password);
+      await this.admin.login(this.password, this.email);
       this.loading.set(false);
       this.router.navigate(['/admin/dashboard']);
     } catch (error) {
       this.loading.set(false);
-      this.error.set(error instanceof Error ? error.message : 'Incorrect password');
+      this.error.set(error instanceof Error ? error.message : 'Invalid admin credentials');
     }
   }
 }

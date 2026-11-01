@@ -1,0 +1,181 @@
+<section class="founder-admin-container">
+  <!-- Header -->
+  <div class="founder-header">
+    <div>
+      <h3>Founder Story & Brand Note Management</h3>
+      <p>Configure the founder portrait, thank-you note, and signature displayed on your homepage.</p>
+    </div>
+  </div>
+
+  <!-- Dimension Guidance Notice Card -->
+  <div class="dimension-card">
+    <div class="dim-icon-wrap">👩‍🎨</div>
+    <div class="dim-body">
+      <div class="dim-heading">
+        <strong>Founder Photo & Section Guidelines</strong>
+        <span class="dim-badge">Recommended: 800 × 700 px (Approx 4:3 or 1:1)</span>
+      </div>
+      <p class="dim-desc">
+        Upload a warm, smiling photo of the founder, artisan, or team crafting handmade crochet products.
+        Supported formats: <strong>JPG, PNG, WebP</strong> (up to 8MB). Changes save directly and update on the homepage immediately.
+      </p>
+    </div>
+  </div>
+
+  <div class="founder-grid-layout">
+    <!-- Form Card -->
+    <div class="form-card card">
+      <div class="card-head">
+        <h4>Edit Founder Story Details</h4>
+        <span class="status-pill" [class.active]="currentForm.is_active">
+          {{ currentForm.is_active ? '● Live on Homepage' : '○ Inactive / Hidden' }}
+        </span>
+      </div>
+
+      <form (ngSubmit)="saveFounderStory()" class="founder-form">
+        <!-- Section Title -->
+        <div class="form-group">
+          <label class="form-label">Section Heading / Title <span class="required">*</span></label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="e.g. Thankyou Crochus Family"
+            [(ngModel)]="currentForm.title"
+            name="title"
+            required
+          />
+          <span class="form-hint">Appears in warm terracotta serif heading at the top of the card.</span>
+        </div>
+
+        <!-- Story Body -->
+        <div class="form-group">
+          <label class="form-label">Founder Story / Main Message <span class="required">*</span></label>
+          <textarea
+            class="form-control text-area"
+            rows="4"
+            placeholder="Tell your customers about your handmade journey and dedication..."
+            [(ngModel)]="currentForm.story_body"
+            name="story_body"
+            required
+          ></textarea>
+        </div>
+
+        <!-- Sub Message -->
+        <div class="form-group">
+          <label class="form-label">Closing Sub-Message <span class="optional">(Optional)</span></label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="e.g. Thank you for being part of our story."
+            [(ngModel)]="currentForm.sub_message"
+            name="sub_message"
+          />
+        </div>
+
+        <!-- Founder Signature -->
+        <div class="form-group">
+          <label class="form-label">Founder Name & Designation <span class="required">*</span></label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="e.g. CROCHUS - Founder or Vanshika Mittal - Founder"
+            [(ngModel)]="currentForm.founder_name"
+            name="founder_name"
+            required
+          />
+        </div>
+
+        <!-- Image Upload Box -->
+        <div class="form-group">
+          <label class="form-label">Founder Portrait Photo <span class="required">*</span></label>
+          <div class="upload-dropzone" [class.has-file]="imagePreview()">
+            @if (imagePreview()) {
+              <div class="preview-container">
+                <img [src]="imagePreview()" alt="Founder Preview" class="upload-preview-img" />
+                <div class="preview-overlay">
+                  <button type="button" class="btn btn-sm btn-danger" (click)="removeSelectedFile()">Remove / Change</button>
+                </div>
+              </div>
+            } @else {
+              <label class="dropzone-label">
+                <input type="file" (change)="onFileSelected($event)" accept="image/*" class="file-input" />
+                <div class="drop-content">
+                  <span class="upload-icon">📷</span>
+                  <strong>Click to Upload Founder Photo</strong>
+                  <p>Recommended: 800 × 700 px · JPG, PNG, WebP up to 8MB</p>
+                </div>
+              </label>
+            }
+          </div>
+
+          <!-- Fallback Image URL -->
+          <div class="url-fallback-wrap">
+            <span class="or-divider">OR</span>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Paste direct Image URL (e.g. Cloudinary, local asset)"
+              [(ngModel)]="currentForm.image_url"
+              name="image_url"
+              (input)="onUrlInput()"
+            />
+          </div>
+        </div>
+
+        <!-- Active Checkbox -->
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="currentForm.is_active" name="is_active" />
+            <span>Show Founder Story Section on Website Homepage</span>
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-save" [disabled]="saving()">
+            @if (saving()) {
+              <span class="spinner-sm"></span> Saving Changes…
+            } @else {
+              ✓ Save Founder Story
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Live Preview Card -->
+    <div class="preview-wrapper">
+      <div class="preview-header">
+        <h5>Live Website Preview</h5>
+        <span class="live-tag">Homepage Card</span>
+      </div>
+
+      <div class="family-story-preview-card" [class.is-disabled]="!currentForm.is_active">
+        @if (!currentForm.is_active) {
+          <div class="disabled-banner">
+            Section currently hidden on homepage
+          </div>
+        }
+
+        <div class="preview-img-wrap">
+          <img
+            [src]="imagePreview() || currentForm.image_url || 'assets/founder.jpg'"
+            alt="Founder Photo"
+            class="preview-img"
+          />
+        </div>
+
+        <div class="preview-content">
+          <h3 class="preview-title">{{ currentForm.title || 'Thankyou Crochus Family' }}</h3>
+          <p class="preview-body">{{ currentForm.story_body || 'We started this journey with a simple mission: to bring you the finest products with exceptional service...' }}</p>
+          @if (currentForm.sub_message) {
+            <p class="preview-sub">{{ currentForm.sub_message }}</p>
+          }
+          <div class="preview-sign">
+            <em>{{ currentForm.founder_name || 'CROCHUS - Founder' }}</em>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -5,35 +5,36 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 3px 8px;
-  border-radius: 3px;
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .badge-new {
-  background: var(--badge-new-bg);
-  color: var(--badge-new-text);
+  background: var(--badge-new-bg, #4A5C2F);
+  color: var(--badge-new-text, #FFFFFF);
 }
 
 .badge-bestseller {
-  background: var(--badge-bestseller-bg);
-  color: var(--badge-bestseller-text);
+  background: var(--badge-bestseller-bg, #D4C98A);
+  color: var(--badge-bestseller-text, #2C3A1A);
 }
 
 .badge-featured {
-  background: var(--badge-featured-bg);
-  color: var(--badge-featured-text);
+  background: var(--badge-featured-bg, #2C3A1A);
+  color: var(--badge-featured-text, #F5F0E0);
 }
 
 .badge-sale {
-  background: var(--error-bg);
-  color: var(--error-text);
+  background: #FEE2E2;
+  color: #DC2626;
 }
 
 .badge-pill {
-  border-radius: 12px;
-  padding: 4px 10px;
+  border-radius: 20px;
+  padding: 4px 12px;
 }

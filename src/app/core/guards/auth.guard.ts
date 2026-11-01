@@ -19,6 +19,6 @@ export const adminGuard: CanActivateFn = () => {
   const router = inject(Router);
 
   if (admin.isAdminLoggedIn()) return true;
-  router.navigate(['/admin']);
+  router.navigate(['/admin/login']);
   return false;
 };

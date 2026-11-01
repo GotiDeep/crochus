@@ -68,7 +68,7 @@
                 <span class="section-label">Handmade with Care</span>
                 <h2 class="section-title">Our Favourite Picks</h2>
               </div>
-              <a routerLink="/shop" class="btn btn-outline">Explore All Products →</a>
+              <a routerLink="/shop" class="btn btn-outline section-action-btn">Explore All Products →</a>
             </div>
 
             @if (loading()) {
@@ -142,6 +142,40 @@
           </div>
         </section>
 
+        <!-- ── Thank you Crochus Family / Dynamic Founder Story Section ── -->
+        @if (founderStory().is_active) {
+          <section class="section family-story-section">
+            <div class="container">
+              <div class="family-story-card">
+                <div class="family-story-img-wrap">
+                  <img
+                    [src]="founderStory().image_url || 'assets/founder.jpg'"
+                    [alt]="founderStory().title || 'Crochus Founder & Team'"
+                    class="family-story-img"
+                    loading="lazy"
+                  />
+                </div>
+                <div class="family-story-content">
+                  <h2 class="family-story-title">{{ founderStory().title || 'Thankyou Crochus Family' }}</h2>
+                  <p class="family-story-body">
+                    {{ founderStory().story_body }}
+                  </p>
+                  @if (founderStory().sub_message) {
+                    <p class="family-story-sub">
+                      {{ founderStory().sub_message }}
+                    </p>
+                  }
+                  @if (founderStory().founder_name) {
+                    <div class="family-story-sign">
+                      <em>{{ founderStory().founder_name }}</em>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </section>
+        }
+
         <!-- ── WhatsApp Custom Orders Banner ── -->
         <section class="concierge-banner">
           <div class="container">
@@ -158,35 +192,8 @@
           </div>
         </section>
 
-        <!-- ── More Handmade Creations Section ── -->
-        @if (lastSectionProducts().length > 0) {
-          <section class="section archival-section">
-            <div class="container">
-              <div class="section-header" style="text-align:center; margin-bottom: 36px">
-                <span class="section-label">More to Love</span>
-                <h2 class="section-title">More Handmade Creations</h2>
-                <p style="max-width: 520px; margin: 0 auto; color: var(--c-muted);">
-                  Explore more colorful bags, bouquets, and accessories made to bring big smiles.
-                </p>
-              </div>
-
-              <div class="archival-grid">
-                @for (product of lastSectionProducts(); track product.id) {
-                  <a [routerLink]="['/product', product.slug]" class="archival-tile">
-                    <div class="tile-img-wrap">
-                      <img [src]="product.photos[0]" [alt]="product.name" loading="lazy" />
-                    </div>
-                    <div class="tile-meta">
-                      <span class="tile-ref">Item #{{ product.id }}</span>
-                      <strong class="tile-name">{{ product.name }}</strong>
-                      <span class="tile-price">₹{{ product.price | number:'1.0-0':'en-IN' }}</span>
-                    </div>
-                  </a>
-                }
-              </div>
-            </div>
-          </section>
-        }
+        <!-- ── Customer Testimonials Section (Auto-Running & Touch/Mouse Swipe) ── -->
+        <app-customer-testimonials />
 
         <!-- Bottom Marquee Ribbon (Reverse direction) -->
         <app-marquee-ribbon [reverse]="true" />

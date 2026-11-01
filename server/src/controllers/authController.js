@@ -7,6 +7,8 @@ const { generateOtp } = require('../lib/otp');
 const { mapUserRow } = require('../lib/mappers');
 const { sendOtpEmail } = require('../services/mailService');
 
+const ADMIN_EMAIL = 'admin@crochus.com';
+
 function validateEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
@@ -19,6 +21,10 @@ exports.register = asyncHandler(async (req, res) => {
 
   if (!fullName || !validateEmail(email) || !/^\d{10}$/.test(mobile) || password.length < 6) {
     throw new ApiError(400, 'Please provide a valid name, email, mobile number, and password');
+  }
+
+  if (email === ADMIN_EMAIL.toLowerCase()) {
+    throw new ApiError(400, 'This email address is reserved for administrative access.');
   }
 
   const existingUsers = await runFunction('sp_get_customer_auth', [email]);
@@ -59,6 +65,11 @@ exports.login = asyncHandler(async (req, res) => {
 
   if (!validateEmail(email) || !password) {
     throw new ApiError(400, 'Email and password are required');
+  }
+
+  // Security barrier: Admin accounts must not authenticate via customer portal
+  if (email === ADMIN_EMAIL.toLowerCase()) {
+    throw new ApiError(403, 'Admin accounts cannot log in through the customer portal. Please access the Admin Portal.');
   }
 
   const rows = await runFunction('sp_get_customer_auth', [email]);

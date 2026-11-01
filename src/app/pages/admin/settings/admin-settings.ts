@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { AdminBannersComponent } from './admin-banners.component';
+import { AdminTestimonialsComponent } from './admin-testimonials';
+import { AdminFounderStoryComponent } from './admin-founder-story';
 import { SettingsService } from '../../../core/services/settings.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { SiteSettings } from '../../../core/models';
@@ -21,7 +23,7 @@ interface SmtpSettings {
 @Component({
   selector: 'app-admin-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminBannersComponent],
+  imports: [CommonModule, FormsModule, AdminBannersComponent, AdminTestimonialsComponent, AdminFounderStoryComponent],
   templateUrl: './admin-settings.html',
   styleUrl: './admin-settings.scss'
 })
@@ -30,7 +32,7 @@ export class AdminSettingsComponent implements OnInit {
   private toast = inject(ToastService);
   private route = inject(ActivatedRoute);
 
-  activeTab = signal<'banners' | 'general' | 'email'>('banners');
+  activeTab = signal<'banners' | 'testimonials' | 'founder' | 'general' | 'email'>('banners');
   savingGeneral = signal(false);
   savingSmtp = signal(false);
   testingSmtp = signal(false);
@@ -61,6 +63,10 @@ export class AdminSettingsComponent implements OnInit {
         this.activeTab.set('general');
       } else if (params['tab'] === 'email') {
         this.activeTab.set('email');
+      } else if (params['tab'] === 'testimonials' || params['tab'] === 'testimonial') {
+        this.activeTab.set('testimonials');
+      } else if (params['tab'] === 'founder' || params['tab'] === 'founder-story') {
+        this.activeTab.set('founder');
       } else if (params['tab'] === 'banners' || params['tab'] === 'banner') {
         this.activeTab.set('banners');
       }

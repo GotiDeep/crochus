@@ -1,0 +1,50 @@
+// ============================================
+// CROCHUS — Pagination Controls
+// ============================================
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+  padding: 16px 0 24px;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  min-width: 38px;
+  height: 38px;
+  padding: 0 12px;
+  background: var(--surface, #FFFFFF);
+  border: 1.5px solid var(--border, #E4DECE);
+  border-radius: 6px;
+  color: var(--text-primary, #2C3A1A);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+
+  &:hover:not(:disabled) {
+    border-color: var(--primary, #4A5C2F);
+    color: var(--primary, #4A5C2F);
+    background: color-mix(in srgb, var(--c-primary, #4A5C2F) 6%, #FFFFFF);
+  }
+
+  &.active {
+    background: var(--primary, #4A5C2F);
+    color: #FFFFFF;
+    border-color: var(--primary, #4A5C2F);
+    font-weight: 600;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}

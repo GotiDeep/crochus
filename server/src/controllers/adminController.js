@@ -120,10 +120,16 @@ function cleanupAssets(urls) {
 }
 
 exports.login = asyncHandler(async (req, res) => {
+  const email = req.body.email ? String(req.body.email).trim().toLowerCase() : null;
   const password = String(req.body.password || '');
 
   if (!password) {
     throw new ApiError(400, 'Admin password is required');
+  }
+
+  // Security barrier: Only admin identity can authenticate via admin login
+  if (email && email !== ADMIN_EMAIL.toLowerCase()) {
+    throw new ApiError(401, 'Invalid admin credentials');
   }
 
   const rows = await runFunction('sp_get_customer_auth', [ADMIN_EMAIL]);

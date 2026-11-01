@@ -1,0 +1,378 @@
+.founder-admin-container {
+  max-width: 100%;
+}
+
+.founder-header {
+  margin-bottom: 20px;
+  h3 {
+    margin: 0 0 6px;
+    font-size: 1.25rem;
+    color: var(--text, #111827);
+  }
+  p {
+    margin: 0;
+    color: var(--text-secondary, #6B7280);
+    font-size: 0.88rem;
+  }
+}
+
+/* ── Dimension Notice Banner ── */
+.dimension-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: linear-gradient(135deg, rgba(74, 92, 47, 0.08) 0%, rgba(212, 201, 138, 0.15) 100%);
+  border: 1px solid rgba(74, 92, 47, 0.25);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+
+  .dim-icon-wrap {
+    font-size: 1.8rem;
+    line-height: 1;
+  }
+
+  .dim-body {
+    flex: 1;
+  }
+
+  .dim-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+
+    strong {
+      color: #2C3A1A;
+      font-size: 0.98rem;
+    }
+
+    .dim-badge {
+      background: #4A5C2F;
+      color: #FFFFFF;
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 12px;
+      letter-spacing: 0.04em;
+    }
+  }
+
+  .dim-desc {
+    margin: 0;
+    font-size: 0.86rem;
+    color: #374151;
+    line-height: 1.5;
+  }
+}
+
+/* ── Grid Layout: Form (Left) & Preview (Right) ── */
+.founder-grid-layout {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 24px;
+  align-items: start;
+
+  @media (max-width: 1050px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border, #E5E7EB);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border, #E5E7EB);
+
+  h4 {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #111827;
+  }
+
+  .status-pill {
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: #F3F4F6;
+    color: #6B7280;
+
+    &.active {
+      background: #ECFDF5;
+      color: #059669;
+    }
+  }
+}
+
+.form-group {
+  margin-bottom: 18px;
+
+  .form-label {
+    display: block;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+
+    .required { color: #DC2626; }
+    .optional { color: #9CA3AF; font-weight: normal; font-size: 0.78rem; }
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #111827;
+    transition: border-color 0.15s ease;
+
+    &:focus {
+      outline: none;
+      border-color: #4A5C2F;
+      box-shadow: 0 0 0 3px rgba(74, 92, 47, 0.12);
+    }
+  }
+
+  .text-area {
+    resize: vertical;
+    line-height: 1.5;
+  }
+
+  .form-hint {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.76rem;
+    color: #6B7280;
+  }
+}
+
+/* Upload Dropzone */
+.upload-dropzone {
+  border: 2px dashed #D1D5DB;
+  border-radius: 8px;
+  background: #F9FAFB;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  overflow: hidden;
+
+  &:hover {
+    border-color: #4A5C2F;
+    background: rgba(74, 92, 47, 0.04);
+  }
+
+  .dropzone-label {
+    display: block;
+    padding: 20px 16px;
+    cursor: pointer;
+  }
+
+  .file-input {
+    display: none;
+  }
+
+  .drop-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+
+    .upload-icon {
+      font-size: 1.8rem;
+    }
+
+    strong {
+      color: #111827;
+      font-size: 0.88rem;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.76rem;
+      color: #6B7280;
+    }
+  }
+
+  .preview-container {
+    position: relative;
+    max-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+
+    .upload-preview-img {
+      max-height: 180px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .preview-overlay {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+    }
+  }
+}
+
+.url-fallback-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+
+  .or-divider {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #9CA3AF;
+  }
+}
+
+.checkbox-group {
+  margin: 20px 0;
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #374151;
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #4A5C2F;
+    }
+  }
+}
+
+.form-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+
+  .btn-save {
+    padding: 10px 24px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+}
+
+/* ── Live Preview Box ── */
+.preview-wrapper {
+  position: sticky;
+  top: 24px;
+
+  .preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+
+    h5 {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #374151;
+      font-weight: 600;
+    }
+
+    .live-tag {
+      font-size: 0.72rem;
+      background: #F3F4F6;
+      color: #4B5563;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+  }
+}
+
+.family-story-preview-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+
+  &.is-disabled {
+    opacity: 0.65;
+  }
+
+  .disabled-banner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #FEF2F2;
+    color: #DC2626;
+    font-size: 0.76rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 4px;
+    border-bottom: 1px solid #FEE2E2;
+  }
+
+  .preview-img-wrap {
+    width: 100%;
+    aspect-ratio: 4 / 3.2;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #F3F4F6;
+    margin-bottom: 18px;
+
+    .preview-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  .preview-content {
+    .preview-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.55rem;
+      color: #D45D3B;
+      font-weight: 700;
+      margin: 0 0 10px;
+      line-height: 1.2;
+    }
+
+    .preview-body {
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #374151;
+      margin: 0 0 10px;
+    }
+
+    .preview-sub {
+      font-size: 0.84rem;
+      color: #4B5563;
+      margin: 0 0 14px;
+    }
+
+    .preview-sign {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-style: italic;
+      color: #1F2937;
+      font-weight: 600;
+    }
+  }
+}

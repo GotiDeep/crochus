@@ -6,6 +6,12 @@
           <button [class.active]="activeTab() === 'banners'" (click)="activeTab.set('banners')">
             🖼️ Hero Banners
           </button>
+          <button [class.active]="activeTab() === 'testimonials'" (click)="activeTab.set('testimonials')">
+            💬 Customer Testimonials
+          </button>
+          <button [class.active]="activeTab() === 'founder'" (click)="activeTab.set('founder')">
+            👩‍🎨 Founder Story
+          </button>
           <button [class.active]="activeTab() === 'general'" (click)="activeTab.set('general')">
             📱 Contact & Social Media
           </button>
@@ -16,6 +22,10 @@
 
         @if (activeTab() === 'banners') {
           <app-admin-banners />
+        } @else if (activeTab() === 'testimonials') {
+          <app-admin-testimonials />
+        } @else if (activeTab() === 'founder') {
+          <app-admin-founder-story />
         } @else if (activeTab() === 'general') {
           <section class="settings-card card">
             <div class="section-head">

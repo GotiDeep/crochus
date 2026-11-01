@@ -18,6 +18,9 @@ import { Product, Category } from '../../core/models';
 import { MarqueeRibbonComponent } from '../../shared/animations/marquee-ribbon.component';
 import { TiltDirective } from '../../shared/animations/tilt.directive';
 import { HeroBannerSliderComponent } from '../../shared/components/hero-banner-slider/hero-banner-slider';
+import { CustomerTestimonialsComponent } from '../../shared/components/customer-testimonials/customer-testimonials';
+import { FounderStoryService } from '../../core/services/founder-story.service';
+import { FounderStory } from '../../core/models';
 
 @Component({
   selector: 'app-home',
@@ -29,6 +32,7 @@ import { HeroBannerSliderComponent } from '../../shared/components/hero-banner-s
     ProductCardSkeletonComponent,
     MarqueeRibbonComponent,
     HeroBannerSliderComponent,
+    CustomerTestimonialsComponent,
     TiltDirective
   ],
   templateUrl: './home.html',
@@ -36,6 +40,7 @@ import { HeroBannerSliderComponent } from '../../shared/components/hero-banner-s
 })
 export class HomeComponent implements OnInit, OnDestroy {
   private productService = inject(ProductService);
+  private founderService = inject(FounderStoryService);
 
   @ViewChild('catSliderWrapper') catSliderWrapper?: ElementRef<HTMLElement>;
 
@@ -44,6 +49,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   heroProducts = signal<Product[]>([]);
   lastSectionProducts = signal<Product[]>([]);
   categories = signal<Category[]>([]);
+  founderStory = signal<FounderStory>(this.founderService.founderStory());
 
   // Category Slider state
   sliderOffset = signal(0);
@@ -78,6 +84,15 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.updateVisibleCount();
+
+    this.founderService.getPublicFounderStory().subscribe({
+      next: (story) => {
+        if (story) {
+          this.founderStory.set(story);
+        }
+      },
+      error: () => {}
+    });
 
     this.productService.getFeaturedProducts().subscribe(products => {
       this.featured.set(products);
@@ -129,18 +144,26 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   setupSlider(cats: Category[]) {
-    this.baseItemCount = cats.length;
+    if (!cats || cats.length === 0) return;
 
-    if (this.baseItemCount <= 5) {
+    if (cats.length === 1) {
+      this.baseItemCount = 1;
       this.sliderItems.set(cats);
       return;
     }
 
+    // Multiply items if less than 10 so the slider can infinitely loop and auto-slide seamlessly
+    let expanded = [...cats];
+    while (expanded.length < 10) {
+      expanded = [...expanded, ...cats];
+    }
+
+    this.baseItemCount = expanded.length;
     this.cloneCount = 5;
     const cloned = [
-      ...cats.slice(-this.cloneCount),
-      ...cats,
-      ...cats.slice(0, this.cloneCount)
+      ...expanded.slice(-this.cloneCount),
+      ...expanded,
+      ...expanded.slice(0, this.cloneCount)
     ];
     this.sliderItems.set(cloned);
     this.sliderOffset.set(this.cloneCount);
@@ -154,7 +177,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   startSlider() {
     this.pauseSlider();
-    if (this.baseItemCount <= 5) return;
+    if (this.baseItemCount < 2) return;
 
     this.sliderInterval = setInterval(() => {
       this.nextCat();
@@ -208,7 +231,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // ── Touch Handling (Mobile / Tablet Swipe) ──
   onCatTouchStart(e: TouchEvent) {
-    if (this.sliderItems().length <= 5) return;
+    if (this.sliderItems().length < 2) return;
     this.pauseSlider();
     this.catStartX = e.touches[0].clientX;
     this.catCurrentX = this.catStartX;
@@ -233,7 +256,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // ── Mouse Drag Handling (Desktop Swipe) ──
   onCatMouseDown(e: MouseEvent) {
-    if (this.sliderItems().length <= 5) return;
+    if (this.sliderItems().length < 2) return;
     if (e.button !== 0) return;
     this.pauseSlider();
     this.catStartX = e.clientX;

@@ -7,8 +7,10 @@ const orderController = require('../controllers/orderController');
 const contactController = require('../controllers/contactController');
 const adminController = require('../controllers/adminController');
 const bannerController = require('../controllers/bannerController');
+const testimonialController = require('../controllers/testimonialController');
+const founderStoryController = require('../controllers/founderStoryController');
 const { requireAdminAuth, requireCustomerAuth } = require('../middleware/auth');
-const { productUpload, categoryUpload, bannerUpload } = require('../middleware/upload');
+const { productUpload, categoryUpload, bannerUpload, testimonialUpload } = require('../middleware/upload');
 
 const router = express.Router();
 
@@ -22,6 +24,8 @@ router.get('/products', publicController.getProducts);
 router.get('/categories', publicController.getCategories);
 router.get('/settings/whatsapp', publicController.getPublicSettings);
 router.get('/banners', bannerController.getPublicBanners);
+router.get('/testimonials', testimonialController.getPublicTestimonials);
+router.get('/founder-story', founderStoryController.getPublicFounderStory);
 
 router.post('/auth/register', authController.register);
 router.post('/auth/verify-otp', authController.verifyOtp);
@@ -67,5 +71,14 @@ router.post('/admin/banners', requireAdminAuth, bannerUpload, bannerController.c
 router.put('/admin/banners/:id', requireAdminAuth, bannerUpload, bannerController.updateBanner);
 router.delete('/admin/banners/:id', requireAdminAuth, bannerController.deleteBanner);
 router.patch('/admin/banners/:id/status', requireAdminAuth, bannerController.toggleBannerStatus);
+
+router.get('/admin/testimonials', requireAdminAuth, testimonialController.getAdminTestimonials);
+router.post('/admin/testimonials', requireAdminAuth, testimonialUpload, testimonialController.createTestimonial);
+router.put('/admin/testimonials/:id', requireAdminAuth, testimonialUpload, testimonialController.updateTestimonial);
+router.delete('/admin/testimonials/:id', requireAdminAuth, testimonialController.deleteTestimonial);
+router.patch('/admin/testimonials/:id/status', requireAdminAuth, testimonialController.toggleTestimonialStatus);
+
+router.get('/admin/founder-story', requireAdminAuth, founderStoryController.getAdminFounderStory);
+router.put('/admin/founder-story', requireAdminAuth, testimonialUpload, founderStoryController.updateFounderStory);
 
 module.exports = router;

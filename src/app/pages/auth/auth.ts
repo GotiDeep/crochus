@@ -2,7 +2,6 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AdminService } from '../../core/services/admin.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ToastService } from '../../core/services/toast.service';
 
@@ -16,7 +15,6 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
   styleUrl: './auth.scss'
 })
 export class AuthComponent implements OnInit {
-  private adminService = inject(AdminService);
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -37,11 +35,6 @@ export class AuthComponent implements OnInit {
     const path = this.route.snapshot.routeConfig?.path;
     if (path === 'register') this.mode.set('register');
 
-    if (this.adminService.isAdminLoggedIn()) {
-      this.router.navigate(['/admin/dashboard']);
-      return;
-    }
-
     if (this.authService.isLoggedIn()) {
       this.router.navigate([this.authService.redirectUrl || '/']);
     }
@@ -54,16 +47,15 @@ export class AuthComponent implements OnInit {
   async login() {
     this.error.set('');
     if (!this.email || !this.password) { this.error.set('Please fill in all fields'); return; }
+    
+    // Explicit security boundary: Customer portal is strictly for customers
+    if (this.email.trim().toLowerCase() === 'admin@crochus.com') {
+      this.error.set('Admin accounts cannot log in through the customer portal. Please access the dedicated Admin Portal at /admin/login.');
+      return;
+    }
+
     this.loading.set(true);
     try {
-      if (this.email.trim().toLowerCase() === 'admin@crochus.com') {
-        await this.adminService.login(this.password);
-        this.loading.set(false);
-        this.toast.success('Welcome admin!');
-        this.router.navigate(['/admin/dashboard']);
-        return;
-      }
-
       await this.authService.login({ email: this.email, password: this.password });
       this.loading.set(false);
       this.toast.success('Welcome back!');

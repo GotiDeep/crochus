@@ -36,9 +36,14 @@ export class AdminService {
     }
   }
 
-  async login(password: string): Promise<void> {
+  async login(password: string, email?: string): Promise<void> {
+    const payload: { password: string; email?: string } = { password };
+    if (email) {
+      payload.email = email.trim();
+    }
+
     const response = await firstValueFrom(
-      this.http.post<AdminLoginResponse>(`${environment.apiUrl}/admin/login`, { password })
+      this.http.post<AdminLoginResponse>(`${environment.apiUrl}/admin/login`, payload)
     );
 
     sessionStorage.setItem(this.ADMIN_TOKEN_KEY, response.token);
@@ -49,7 +54,7 @@ export class AdminService {
     sessionStorage.removeItem(this.ADMIN_TOKEN_KEY);
     this.cleanLegacyStorage();
     this.isAdminLoggedIn.set(false);
-    this.router.navigate(['/admin']);
+    this.router.navigate(['/admin/login']);
   }
 
   getDashboardOverview(): Observable<DashboardOverview> {

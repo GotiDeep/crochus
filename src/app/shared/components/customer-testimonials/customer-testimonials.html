@@ -1,0 +1,62 @@
+<section class="testimonials-section" aria-label="Customer Testimonials">
+  <div class="testimonials-inner">
+    <!-- Clean Centered Title matching Floreal -->
+    <h2 class="testimonials-heading">CUSTOMER TESTIMONIALS</h2>
+
+    <!-- Auto-Running Edge-to-Edge Slider -->
+    <div
+      class="testimonials-slider-container"
+      #sliderTrackRef
+      [class.is-dragging]="isDragging()"
+      (mouseenter)="pauseAutoSlide()"
+      (mouseleave)="resumeAutoSlide()"
+      (touchstart)="onTouchStart($event)"
+      (touchmove)="onTouchMove($event)"
+      (touchend)="onTouchEnd()"
+      (mousedown)="onMouseDown($event)"
+      (mousemove)="onMouseMove($event)"
+      (mouseup)="onMouseUp()"
+    >
+      <div
+        class="testimonials-track"
+        [style.transform]="trackTransform()"
+        [style.transition]="isDragging() || noTransition() ? 'none' : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'"
+      >
+        @for (item of sliderItems(); track $index) {
+          <div
+            class="dm-screenshot-card"
+            (click)="onCardClick(item)"
+            title="Click to view full chat screenshot"
+          >
+            <img
+              [src]="item.image_url"
+              [alt]="item.customer_name || 'Customer Testimonial DM'"
+              loading="lazy"
+              draggable="false"
+              class="dm-screenshot-img"
+            />
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Fullscreen Lightbox Modal for Reading Screenshots -->
+  @if (previewImage()) {
+    <div class="testimonial-lightbox" (click)="closeLightbox()">
+      <div class="lightbox-dialog" (click)="$event.stopPropagation()">
+        <button
+          type="button"
+          class="lightbox-close-btn"
+          (click)="closeLightbox()"
+          aria-label="Close Preview"
+        >
+          ✕
+        </button>
+        <div class="lightbox-img-wrap">
+          <img [src]="previewImage()" alt="Customer Review Screenshot Full" class="lightbox-img" />
+        </div>
+      </div>
+    </div>
+  }
+</section>

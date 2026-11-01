@@ -120,6 +120,20 @@ export interface Banner {
   updated_at?: string;
 }
 
+// ============ TESTIMONIAL ============
+export interface Testimonial {
+  id: number;
+  customer_name: string;
+  customer_location?: string;
+  rating: number;
+  review_text: string;
+  image_url: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
 // ============ SETTINGS ============
 export interface SiteSettings {
   whatsapp_number: string;
@@ -164,4 +178,17 @@ export interface MessageResponse {
 export interface OrderSubmissionResponse {
   order: Order;
   whatsapp_number: string;
+}
+
+// ============ FOUNDER STORY ============
+export interface FounderStory {
+  id?: number;
+  title: string;
+  story_body: string;
+  sub_message?: string;
+  founder_name?: string;
+  image_url: string;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
 }

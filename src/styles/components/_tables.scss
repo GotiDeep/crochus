@@ -1,0 +1,108 @@
+// ============================================
+// CROCHUS — Data Tables (Admin & Account)
+// ============================================
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 32px;
+  background: var(--surface, #FFFFFF);
+  border: 1px solid var(--border, #E4DECE);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+
+  &.card {
+    padding: 0;
+    overflow: hidden;
+  }
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background: transparent;
+
+  th {
+    text-align: left;
+    padding: 14px 18px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary, #6B7F4A);
+    border-bottom: 1.5px solid var(--border, #E4DECE);
+    background: color-mix(in srgb, var(--c-bg, #F5F0E0) 40%, var(--surface, #FFFFFF));
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 14px 18px;
+    border-bottom: 1px solid color-mix(in srgb, var(--border, #E4DECE) 60%, transparent);
+    color: var(--text-primary, #2C3A1A);
+    vertical-align: middle;
+    font-size: 0.88rem;
+  }
+
+  tr:hover td {
+    background: color-mix(in srgb, var(--c-primary, #4A5C2F) 4%, var(--surface, #FFFFFF));
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.thumb-img {
+  width: 46px;
+  height: 46px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border, #E4DECE);
+  display: block;
+}
+
+.missing-thumb {
+  display: inline-flex;
+  width: 46px;
+  height: 46px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--c-bg, #F5F0E0) 80%, var(--surface, #FFFFFF));
+  color: var(--text-secondary, #6B7F4A);
+  font-size: 0.68rem;
+  font-weight: 500;
+}
+
+.product-code-badge {
+  display: inline-block;
+  font-family: monospace;
+  font-size: 0.76rem;
+  background: color-mix(in srgb, var(--c-bg, #F5F0E0) 65%, var(--surface, #FFFFFF));
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: var(--text-primary, #2C3A1A);
+  border: 1px solid var(--border, #E4DECE);
+  letter-spacing: 0.04em;
+}
+
+.product-name-cell {
+  font-weight: 600;
+  color: var(--text-primary, #2C3A1A);
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+.action-btns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.clickable-row {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
