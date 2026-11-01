@@ -252,7 +252,8 @@
       font-weight: 500;
 
       @media (max-width: 560px) {
-        font-size: 1.05rem;
+        font-size: 1.02rem;
+        min-height: 2.4em;
         margin-bottom: 4px;
       }
     }

@@ -23,6 +23,12 @@
       }
     }
 
+    .slider-viewport {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+
     .slider-track {
       display: flex;
       width: 100%;
@@ -231,7 +237,7 @@
     /* ── Pagination Dots ── */
     .slider-dots {
       position: absolute;
-      bottom: 50px;
+      bottom: 18px;
       left: 0;
       right: 0;
       display: flex;
@@ -242,7 +248,7 @@
       pointer-events: auto;
 
       @media (max-width: 600px) {
-        bottom: 40px;
+        bottom: 12px;
         gap: 8px;
       }
     }
@@ -283,9 +289,11 @@
       background: #2C3A1A;
       color: #F5F0E0;
       border-top: 1px solid rgba(212, 201, 138, 0.25);
-      padding: 10px 0;
+      padding: 12px 0;
       font-size: 0.82rem;
       letter-spacing: 0.04em;
+      position: relative;
+      z-index: 3;
 
       .strip-content {
         display: flex;
@@ -309,10 +317,18 @@
 
       @media (max-width: 600px) {
         font-size: 0.72rem;
-        padding: 8px 0;
+        padding: 10px 14px;
+
         .strip-content {
-          justify-content: center;
-          gap: 6px 14px;
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 8px 12px;
+          justify-items: center;
+        }
+
+        .strip-item {
+          gap: 5px;
+          font-size: 0.7rem;
         }
       }
     }

@@ -42,7 +42,7 @@ export class CustomerTestimonialsComponent implements OnInit, OnDestroy {
   // Touch / Drag variables
   private startX = 0;
   private currentX = 0;
-  private dragDelta = 0;
+  dragDelta = signal(0);
   private wasDragging = false;
 
   trackTransform = computed(() => {
@@ -52,11 +52,24 @@ export class CustomerTestimonialsComponent implements OnInit, OnDestroy {
 
     if (this.isDragging() && this.sliderTrackRef?.nativeElement) {
       const containerWidth = this.sliderTrackRef.nativeElement.clientWidth || 1;
-      const deltaPercent = (this.dragDelta / containerWidth) * 100;
+      const deltaPercent = (this.dragDelta() / containerWidth) * 100;
       return `translateX(${baseTranslate + deltaPercent}%)`;
     }
 
     return `translateX(${baseTranslate}%)`;
+  });
+
+  dotsList = computed(() => {
+    const count = Math.min(Math.max(this.baseCount, 1), 5);
+    return new Array(count).fill(0);
+  });
+
+  activeDot = computed(() => {
+    if (this.baseCount === 0) return 0;
+    const rel = (this.currentIndex() - this.cloneCount) % this.baseCount;
+    const normalized = (rel + this.baseCount) % this.baseCount;
+    const dotCount = this.dotsList().length;
+    return normalized % dotCount;
   });
 
   ngOnInit() {
@@ -162,7 +175,8 @@ export class CustomerTestimonialsComponent implements OnInit, OnDestroy {
     }
   }
 
-  nextSlide() {
+  nextSlide(event?: Event) {
+    if (event) event.stopPropagation();
     if (this.baseCount === 0) return;
     this.noTransition.set(false);
     const next = this.currentIndex() + 1;
@@ -178,7 +192,8 @@ export class CustomerTestimonialsComponent implements OnInit, OnDestroy {
     }
   }
 
-  prevSlide() {
+  prevSlide(event?: Event) {
+    if (event) event.stopPropagation();
     if (this.baseCount === 0) return;
     this.noTransition.set(false);
     const prev = this.currentIndex() - 1;
@@ -192,6 +207,13 @@ export class CustomerTestimonialsComponent implements OnInit, OnDestroy {
         setTimeout(() => this.noTransition.set(false), 50);
       }, 500);
     }
+  }
+
+  goToDot(dotIndex: number, event?: Event) {
+    if (event) event.stopPropagation();
+    this.noTransition.set(false);
+    this.currentIndex.set(this.cloneCount + dotIndex);
+    this.resumeAutoSlide();
   }
 
   onCardClick(item: Testimonial) {
@@ -215,7 +237,7 @@ export class CustomerTestimonialsComponent implements OnInit, OnDestroy {
     this.pauseAutoSlide();
     this.startX = e.touches[0].clientX;
     this.currentX = this.startX;
-    this.dragDelta = 0;
+    this.dragDelta.set(0);
     this.isDragging.set(true);
     this.wasDragging = false;
   }
@@ -223,8 +245,9 @@ export class CustomerTestimonialsComponent implements OnInit, OnDestroy {
   onTouchMove(e: TouchEvent) {
     if (!this.isDragging()) return;
     this.currentX = e.touches[0].clientX;
-    this.dragDelta = this.currentX - this.startX;
-    if (Math.abs(this.dragDelta) > 8) {
+    const diff = this.currentX - this.startX;
+    this.dragDelta.set(diff);
+    if (Math.abs(diff) > 8) {
       this.wasDragging = true;
     }
   }
@@ -238,10 +261,11 @@ export class CustomerTestimonialsComponent implements OnInit, OnDestroy {
   onMouseDown(e: MouseEvent) {
     if (this.sliderItems().length < 2) return;
     if (e.button !== 0) return;
+    if ((e.target as HTMLElement).closest('button')) return;
     this.pauseAutoSlide();
     this.startX = e.clientX;
     this.currentX = this.startX;
-    this.dragDelta = 0;
+    this.dragDelta.set(0);
     this.isDragging.set(true);
     this.wasDragging = false;
   }
@@ -249,8 +273,9 @@ export class CustomerTestimonialsComponent implements OnInit, OnDestroy {
   onMouseMove(e: MouseEvent) {
     if (!this.isDragging()) return;
     this.currentX = e.clientX;
-    this.dragDelta = this.currentX - this.startX;
-    if (Math.abs(this.dragDelta) > 8) {
+    const diff = this.currentX - this.startX;
+    this.dragDelta.set(diff);
+    if (Math.abs(diff) > 8) {
       this.wasDragging = true;
     }
   }
@@ -270,14 +295,15 @@ export class CustomerTestimonialsComponent implements OnInit, OnDestroy {
   private finishSwipe() {
     this.isDragging.set(false);
     const threshold = 35; // minimum px to advance
+    const delta = this.dragDelta();
 
-    if (this.dragDelta < -threshold) {
+    if (delta < -threshold) {
       this.nextSlide();
-    } else if (this.dragDelta > threshold) {
+    } else if (delta > threshold) {
       this.prevSlide();
     }
 
-    this.dragDelta = 0;
+    this.dragDelta.set(0);
     setTimeout(() => {
       this.wasDragging = false;
       this.resumeAutoSlide();

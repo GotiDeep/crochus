@@ -54,7 +54,10 @@ export class HeroBannerSliderComponent implements OnInit, OnDestroy {
     this.bannerService.getPublicBanners().subscribe({
       next: (data) => {
         if (data && data.length > 0) {
-          this.banners.set(data);
+          const heroBanners = data.filter((b) => b.display_on !== 'Login Page');
+          if (heroBanners.length > 0) {
+            this.banners.set(heroBanners);
+          }
         }
       },
       error: () => {

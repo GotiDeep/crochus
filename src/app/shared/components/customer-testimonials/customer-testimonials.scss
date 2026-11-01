@@ -5,37 +5,215 @@
 }
 
 .testimonials-section {
-  padding: 56px 0 44px;
-  background: var(--c-surface, #FFFFFF);
-  border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
   position: relative;
   width: 100%;
+  padding: 68px 0 60px;
+  background: #F9F6EE;
+  border-top: 1px solid rgba(212, 201, 138, 0.35);
+  border-bottom: 1px solid rgba(212, 201, 138, 0.35);
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 48px 0 40px;
+  }
+}
+
+/* ── Corner Handmade Crochet Decorative Elements ── */
+.decor-knit-corner {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+
+  &.top-left {
+    top: 12px;
+    left: 20px;
+    width: 110px;
+    height: 110px;
+  }
+
+  &.top-right {
+    top: -10px;
+    right: -10px;
+    width: 140px;
+    height: 140px;
+  }
+
+  .decor-heart-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 2px 6px rgba(107, 127, 74, 0.15));
+  }
+
+  .crochet-edge-knit {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 100% 0%, rgba(212, 201, 138, 0.35) 0%, rgba(245, 240, 224, 0.2) 60%, transparent 80%);
+    border-radius: 0 0 0 100%;
+  }
+
+  @media (max-width: 900px) {
+    display: none;
+  }
+}
+
+.decor-flower-corner {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+
+  &.bottom-left {
+    bottom: -15px;
+    left: -15px;
+    width: 120px;
+    height: 120px;
+  }
+
+  &.bottom-right {
+    bottom: -15px;
+    right: -15px;
+    width: 140px;
+    height: 140px;
+  }
+
+  .crochet-daisy-svg,
+  .crochet-sunflower-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.1));
+  }
+
+  @media (max-width: 768px) {
+    transform: scale(0.75);
+    opacity: 0.85;
+  }
+
+  @media (max-width: 480px) {
+    display: none;
+  }
 }
 
 .testimonials-inner {
+  position: relative;
+  z-index: 2;
   width: 100%;
   margin: 0 auto;
 }
 
-/* Clean Centered Title matching Floreal */
-.testimonials-heading {
-  font-family: inherit;
-  font-size: clamp(1.4rem, 2.2vw, 1.85rem);
-  font-weight: 800;
-  color: #111411;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+/* ── Section Header ── */
+.testimonials-header {
   text-align: center;
-  margin: 0 0 28px;
-  line-height: 1.2;
+  margin-bottom: 38px;
+  padding: 0 20px;
+
+  @media (max-width: 600px) {
+    margin-bottom: 26px;
+  }
 }
 
-/* Slider Track & Container */
+.th-label-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+
+  .th-line {
+    display: inline-block;
+    width: 38px;
+    height: 1.5px;
+    background: #6B7F4A;
+    opacity: 0.5;
+  }
+
+  .th-label {
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #4A5C2F;
+  }
+}
+
+.th-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(2rem, 3.8vw, 3.2rem);
+  font-weight: 500;
+  color: #2C3A1A;
+  margin: 6px 0 10px;
+  line-height: 1.15;
+}
+
+.th-subtitle {
+  font-size: clamp(0.88rem, 1.3vw, 1.02rem);
+  color: #5D6B4E;
+  margin: 0 auto;
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+/* ── Carousel Wrapper with Side Arrows ── */
+.carousel-relative-wrap {
+  position: relative;
+  width: 100%;
+  padding: 8px 0;
+}
+
+/* ── Side Navigation Buttons ── */
+.slider-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #3B4A25;
+  color: #FFFFFF;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 6px 18px rgba(44, 58, 26, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 12;
+  transition: all 0.25s ease;
+
+  &:hover {
+    background: #253116;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 8px 24px rgba(44, 58, 26, 0.38);
+    border-color: #FFFFFF;
+  }
+
+  &.prev-btn {
+    left: 20px;
+  }
+
+  &.next-btn {
+    right: 20px;
+  }
+
+  @media (max-width: 900px) {
+    width: 38px;
+    height: 38px;
+
+    &.prev-btn { left: 8px; }
+    &.next-btn { right: 8px; }
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  @media (max-width: 500px) {
+    display: none; // On mobile, clean thumb swipe without arrow obstruction
+  }
+}
+
+/* ── Slider Container & Track ── */
 .testimonials-slider-container {
   overflow: hidden;
   width: 100%;
-  padding: 6px 12px 18px;
+  padding: 12px 28px 24px;
   cursor: grab;
   user-select: none;
   touch-action: pan-y;
@@ -43,136 +221,253 @@
   &.is-dragging {
     cursor: grabbing;
 
-    .dm-screenshot-card {
+    .phone-mockup-card {
       cursor: grabbing;
     }
+  }
+
+  @media (max-width: 600px) {
+    padding: 8px 16px 16px;
   }
 }
 
 .testimonials-track {
   display: flex;
-  gap: 16px;
+  gap: 20px;
   will-change: transform;
 
-  @media (max-width: 640px) {
-    gap: 12px;
+  @media (max-width: 800px) {
+    gap: 14px;
   }
 }
 
-/* Pure Screenshot Card (Exact replica of Floreal layout) */
-.dm-screenshot-card {
-  flex: 0 0 calc(100% / 5.2 - 13px);
-  aspect-ratio: 9 / 18.5;
-  border-radius: 14px;
-  overflow: hidden;
-  background: #000;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+/* ── Smartphone Mockup Card ── */
+.phone-mockup-card {
+  flex: 0 0 calc(100% / 5.15 - 16px);
+  aspect-ratio: 9 / 18.8;
+  border-radius: 30px;
   cursor: pointer;
   user-select: none;
   -webkit-user-drag: none;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
 
-  @media (max-width: 1100px) {
-    flex: 0 0 calc(100% / 4.2 - 12px);
+  @media (max-width: 1200px) {
+    flex: 0 0 calc(100% / 4.2 - 14px);
   }
 
-  @media (max-width: 800px) {
-    flex: 0 0 calc(100% / 3.2 - 11px);
-    border-radius: 12px;
+  @media (max-width: 850px) {
+    flex: 0 0 calc(100% / 3.2 - 12px);
+    border-radius: 24px;
   }
 
   @media (max-width: 560px) {
-    flex: 0 0 calc(100% / 2.2 - 10px);
-    border-radius: 12px;
+    flex: 0 0 calc(100% / 2.15 - 10px);
+    border-radius: 20px;
   }
 
   @media (max-width: 380px) {
-    flex: 0 0 calc(100% / 1.6 - 10px);
+    flex: 0 0 calc(100% / 1.5 - 8px);
   }
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.14);
+    transform: translateY(-8px) scale(1.02);
   }
 }
 
-.dm-screenshot-img {
+/* Outer phone bezel frame */
+.phone-outer-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #111411;
+  border: 4px solid #1E221E;
+  border-radius: inherit;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18), 0 4px 10px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 600px) {
+    border-width: 3px;
+  }
+}
+
+/* Modern phone notch / dynamic island */
+.phone-top-island {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 8px;
+  background: #000000;
+  border-radius: 10px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  pointer-events: none;
+
+  .phone-island-pill {
+    width: 22px;
+    height: 3px;
+    background: #1C1E1B;
+    border-radius: 3px;
+  }
+
+  .phone-camera-lens {
+    width: 4px;
+    height: 4px;
+    background: #1A2733;
+    border-radius: 50%;
+  }
+
+  @media (max-width: 600px) {
+    top: 4px;
+    width: 36px;
+    height: 6px;
+  }
+}
+
+/* Inside screen displaying review */
+.phone-screen-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000000;
+  border-radius: calc(30px - 4px);
+
+  @media (max-width: 850px) {
+    border-radius: calc(24px - 4px);
+  }
+
+  @media (max-width: 560px) {
+    border-radius: calc(20px - 3px);
+  }
+}
+
+.phone-screenshot-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: top center;
   display: block;
+  user-select: none;
   -webkit-user-drag: none;
-  pointer-events: none;
+  transition: transform 0.4s ease;
+
+  .phone-mockup-card:hover & {
+    transform: scale(1.03);
+  }
 }
 
-/* Lightbox Modal */
+/* ── Bottom Indicator Dots ── */
+.testimonials-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  padding: 4px 0;
+
+  .t-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #D1CCC0;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+
+    &.active {
+      width: 26px;
+      border-radius: 12px;
+      background: #3B4A25;
+      box-shadow: 0 2px 8px rgba(59, 74, 37, 0.35);
+    }
+
+    &:hover:not(.active) {
+      background: #B4AE9F;
+    }
+  }
+}
+
+/* ── Fullscreen Lightbox Modal ── */
 .testimonial-lightbox {
   position: fixed;
   inset: 0;
-  z-index: 9999;
-  background: rgba(10, 15, 10, 0.88);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(18, 24, 12, 0.85);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px;
-  animation: fadeIn 0.25s ease-out;
+  animation: lightboxFadeIn 0.25s ease-out;
+}
 
-  .lightbox-dialog {
-    position: relative;
-    max-width: 420px;
-    max-height: 90vh;
-    background: transparent;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+@keyframes lightboxFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.lightbox-dialog {
+  position: relative;
+  max-width: 440px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: lightboxPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes lightboxPop {
+  from {
+    transform: scale(0.92) translateY(12px);
+    opacity: 0;
   }
-
-  .lightbox-close-btn {
-    position: absolute;
-    top: -46px;
-    right: 0;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    color: #fff;
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.35);
-      transform: scale(1.08);
-    }
-  }
-
-  .lightbox-img-wrap {
-    max-height: 84vh;
-    overflow: hidden;
-    border-radius: 18px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .lightbox-img {
-    display: block;
-    max-height: 84vh;
-    max-width: 100%;
-    width: auto;
-    object-fit: contain;
-    border-radius: 16px;
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
   }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.lightbox-close-btn {
+  position: absolute;
+  top: -44px;
+  right: 0;
+  background: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #DC2626;
+    border-color: #DC2626;
+    transform: scale(1.1);
+  }
+}
+
+.lightbox-img-wrap {
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+  border: 3px solid #1C1E1B;
+  background: #000;
+}
+
+.lightbox-img {
+  width: 100%;
+  max-height: 84vh;
+  object-fit: contain;
+  display: block;
 }

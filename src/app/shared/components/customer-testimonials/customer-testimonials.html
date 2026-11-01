@@ -1,44 +1,172 @@
 <section class="testimonials-section" aria-label="Customer Testimonials">
-  <div class="testimonials-inner">
-    <!-- Clean Centered Title matching Floreal -->
-    <h2 class="testimonials-heading">CUSTOMER TESTIMONIALS</h2>
+  <!-- Decorative Corner Flourishes matching artisanal crochet aesthetic -->
+  <div class="decor-knit-corner top-left" aria-hidden="true">
+    <svg viewBox="0 0 100 100" class="decor-heart-svg">
+      <path d="M 50,30 C 50,15 35,5 20,15 C 5,25 10,50 50,85 C 90,50 95,25 80,15 C 65,5 50,15 50,30 Z" fill="none" stroke="#6B7F4A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.45" />
+      <path d="M 40,40 C 40,28 28,20 18,28 C 8,36 12,54 40,78" fill="none" stroke="#D4C98A" stroke-width="2" stroke-linecap="round" opacity="0.5" />
+    </svg>
+  </div>
 
-    <!-- Auto-Running Edge-to-Edge Slider -->
-    <div
-      class="testimonials-slider-container"
-      #sliderTrackRef
-      [class.is-dragging]="isDragging()"
-      (mouseenter)="pauseAutoSlide()"
-      (mouseleave)="resumeAutoSlide()"
-      (touchstart)="onTouchStart($event)"
-      (touchmove)="onTouchMove($event)"
-      (touchend)="onTouchEnd()"
-      (mousedown)="onMouseDown($event)"
-      (mousemove)="onMouseMove($event)"
-      (mouseup)="onMouseUp()"
-    >
-      <div
-        class="testimonials-track"
-        [style.transform]="trackTransform()"
-        [style.transition]="isDragging() || noTransition() ? 'none' : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'"
+  <div class="decor-knit-corner top-right" aria-hidden="true">
+    <div class="crochet-edge-knit"></div>
+  </div>
+
+  <div class="decor-flower-corner bottom-left" aria-hidden="true">
+    <!-- Handcrafted Crochet Daisy Flower -->
+    <svg viewBox="0 0 120 120" class="crochet-daisy-svg">
+      <g transform="translate(60,60)">
+        <!-- 12 Daisy Petals -->
+        <ellipse cx="0" cy="-38" rx="10" ry="20" fill="#FFFFFF" stroke="#E2DAC8" stroke-width="1.5" />
+        <ellipse cx="19" cy="-33" rx="10" ry="20" transform="rotate(30)" fill="#FFFFFF" stroke="#E2DAC8" stroke-width="1.5" />
+        <ellipse cx="33" cy="-19" rx="10" ry="20" transform="rotate(60)" fill="#FFFFFF" stroke="#E2DAC8" stroke-width="1.5" />
+        <ellipse cx="38" cy="0" rx="10" ry="20" transform="rotate(90)" fill="#FFFFFF" stroke="#E2DAC8" stroke-width="1.5" />
+        <ellipse cx="33" cy="19" rx="10" ry="20" transform="rotate(120)" fill="#FFFFFF" stroke="#E2DAC8" stroke-width="1.5" />
+        <ellipse cx="19" cy="33" rx="10" ry="20" transform="rotate(150)" fill="#FFFFFF" stroke="#E2DAC8" stroke-width="1.5" />
+        <ellipse cx="0" cy="38" rx="10" ry="20" transform="rotate(180)" fill="#FFFFFF" stroke="#E2DAC8" stroke-width="1.5" />
+        <ellipse cx="-19" cy="33" rx="10" ry="20" transform="rotate(210)" fill="#FFFFFF" stroke="#E2DAC8" stroke-width="1.5" />
+        <ellipse cx="-33" cy="19" rx="10" ry="20" transform="rotate(240)" fill="#FFFFFF" stroke="#E2DAC8" stroke-width="1.5" />
+        <ellipse cx="-38" cy="0" rx="10" ry="20" transform="rotate(270)" fill="#FFFFFF" stroke="#E2DAC8" stroke-width="1.5" />
+        <ellipse cx="-33" cy="-19" rx="10" ry="20" transform="rotate(300)" fill="#FFFFFF" stroke="#E2DAC8" stroke-width="1.5" />
+        <ellipse cx="-19" cy="-33" rx="10" ry="20" transform="rotate(330)" fill="#FFFFFF" stroke="#E2DAC8" stroke-width="1.5" />
+        <!-- Textured Gold Center -->
+        <circle cx="0" cy="0" r="18" fill="#F59E0B" stroke="#D97706" stroke-width="2" />
+        <circle cx="0" cy="0" r="13" fill="#D97706" opacity="0.3" stroke="#B45309" stroke-width="1.5" stroke-dasharray="3,2" />
+      </g>
+    </svg>
+  </div>
+
+  <div class="decor-flower-corner bottom-right" aria-hidden="true">
+    <!-- Handcrafted Crochet Sunflower with Leaves -->
+    <svg viewBox="0 0 150 150" class="crochet-sunflower-svg">
+      <g transform="translate(85,75)">
+        <!-- Green crochet leaves -->
+        <path d="M -45,15 C -70,5 -65,45 -30,35 Z" fill="#4A5C2F" stroke="#3B4A25" stroke-width="2" />
+        <path d="M 25,25 C 45,45 65,20 40,-5 Z" fill="#6B7F4A" stroke="#4A5C2F" stroke-width="2" />
+        <!-- Sunflower Petals -->
+        <g fill="#EAB308" stroke="#CA8A04" stroke-width="1.5">
+          <ellipse cx="0" cy="-42" rx="11" ry="22" />
+          <ellipse cx="21" cy="-36" rx="11" ry="22" transform="rotate(30)" />
+          <ellipse cx="36" cy="-21" rx="11" ry="22" transform="rotate(60)" />
+          <ellipse cx="42" cy="0" rx="11" ry="22" transform="rotate(90)" />
+          <ellipse cx="36" cy="21" rx="11" ry="22" transform="rotate(120)" />
+          <ellipse cx="21" cy="36" rx="11" ry="22" transform="rotate(150)" />
+          <ellipse cx="0" cy="42" rx="11" ry="22" transform="rotate(180)" />
+          <ellipse cx="-21" cy="36" rx="11" ry="22" transform="rotate(210)" />
+          <ellipse cx="-36" cy="21" rx="11" ry="22" transform="rotate(240)" />
+          <ellipse cx="-42" cy="0" rx="11" ry="22" transform="rotate(270)" />
+          <ellipse cx="-36" cy="-21" rx="11" ry="22" transform="rotate(300)" />
+          <ellipse cx="-21" cy="-36" rx="11" ry="22" transform="rotate(330)" />
+        </g>
+        <!-- Rich Crochet Center -->
+        <circle cx="0" cy="0" r="22" fill="#78350F" stroke="#451A03" stroke-width="2.5" />
+        <circle cx="0" cy="0" r="16" fill="#451A03" stroke="#B45309" stroke-width="1.5" stroke-dasharray="3,3" />
+      </g>
+    </svg>
+  </div>
+
+  <div class="testimonials-inner">
+    <!-- Centered Header Section matching Reference Image -->
+    <div class="testimonials-header container">
+      <div class="th-label-wrap">
+        <span class="th-line"></span>
+        <span class="th-label">OUR HAPPY CUSTOMERS</span>
+        <span class="th-line"></span>
+      </div>
+      <h2 class="th-title">Customer Testimonials</h2>
+      <p class="th-subtitle">Real messages from our valued customers who loved our handmade creations.</p>
+    </div>
+
+    <!-- Carousel Carousel Wrapper with Side Navigation Arrows -->
+    <div class="carousel-relative-wrap">
+      <!-- Left Navigation Arrow -->
+      <button
+        type="button"
+        class="slider-nav-btn prev-btn"
+        (click)="prevSlide($event)"
+        aria-label="Previous Testimonials"
+        title="Previous Testimonial"
       >
-        @for (item of sliderItems(); track $index) {
-          <div
-            class="dm-screenshot-card"
-            (click)="onCardClick(item)"
-            title="Click to view full chat screenshot"
-          >
-            <img
-              [src]="item.image_url"
-              [alt]="item.customer_name || 'Customer Testimonial DM'"
-              loading="lazy"
-              draggable="false"
-              class="dm-screenshot-img"
-            />
-          </div>
-        }
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <!-- Right Navigation Arrow -->
+      <button
+        type="button"
+        class="slider-nav-btn next-btn"
+        (click)="nextSlide($event)"
+        aria-label="Next Testimonials"
+        title="Next Testimonial"
+      >
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+
+      <!-- Auto-Running Edge-to-Edge Slider Container -->
+      <div
+        class="testimonials-slider-container"
+        #sliderTrackRef
+        [class.is-dragging]="isDragging()"
+        (mouseenter)="pauseAutoSlide()"
+        (mouseleave)="resumeAutoSlide()"
+        (touchstart)="onTouchStart($event)"
+        (touchmove)="onTouchMove($event)"
+        (touchend)="onTouchEnd()"
+        (mousedown)="onMouseDown($event)"
+        (mousemove)="onMouseMove($event)"
+        (mouseup)="onMouseUp()"
+      >
+        <div
+          class="testimonials-track"
+          [style.transform]="trackTransform()"
+          [style.transition]="isDragging() || noTransition() ? 'none' : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'"
+        >
+          @for (item of sliderItems(); track $index) {
+            <div
+              class="phone-mockup-card"
+              (click)="onCardClick(item)"
+              title="Click to view full chat review"
+            >
+              <!-- Phone Bezel Frame -->
+              <div class="phone-outer-frame">
+                <!-- Phone Top Dynamic Notch / Pill -->
+                <div class="phone-top-island">
+                  <span class="phone-island-pill"></span>
+                  <span class="phone-camera-lens"></span>
+                </div>
+                <!-- Phone Screen with Instagram/WhatsApp DM Screenshot -->
+                <div class="phone-screen-container">
+                  <img
+                    [src]="item.image_url"
+                    [alt]="item.customer_name || 'Customer Testimonial DM'"
+                    loading="lazy"
+                    draggable="false"
+                    class="phone-screenshot-img"
+                  />
+                </div>
+              </div>
+            </div>
+          }
+        </div>
       </div>
     </div>
+
+    <!-- Bottom Indicator Dots matching Reference Image -->
+    @if (dotsList().length > 1) {
+      <div class="testimonials-dots" role="tablist">
+        @for (dot of dotsList(); track $index) {
+          <button
+            type="button"
+            class="t-dot"
+            [class.active]="activeDot() === $index"
+            (click)="goToDot($index, $event)"
+            [attr.aria-label]="'Go to testimonial slide ' + ($index + 1)"
+          ></button>
+        }
+      </div>
+    }
   </div>
 
   <!-- Fullscreen Lightbox Modal for Reading Screenshots -->

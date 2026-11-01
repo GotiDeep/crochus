@@ -98,6 +98,11 @@ export const routes: Routes = [
       import('./pages/admin/dashboard/admin-login').then(m => m.AdminLoginComponent)
   },
   {
+    path: 'admin/login.',
+    redirectTo: 'admin/login',
+    pathMatch: 'full'
+  },
+  {
     path: 'admin',
     loadComponent: () =>
       import('./layout/after-login-layout/after-login-layout').then(m => m.AfterLoginLayoutComponent),

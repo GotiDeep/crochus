@@ -24,7 +24,7 @@ exports.register = asyncHandler(async (req, res) => {
   }
 
   if (email === ADMIN_EMAIL.toLowerCase()) {
-    throw new ApiError(400, 'This email address is reserved for administrative access.');
+    throw new ApiError(409, 'An account with this email already exists');
   }
 
   const existingUsers = await runFunction('sp_get_customer_auth', [email]);
@@ -68,8 +68,9 @@ exports.login = asyncHandler(async (req, res) => {
   }
 
   // Security barrier: Admin accounts must not authenticate via customer portal
+  // Return standard generic error to avoid exposing admin existence or admin routes
   if (email === ADMIN_EMAIL.toLowerCase()) {
-    throw new ApiError(403, 'Admin accounts cannot log in through the customer portal. Please access the Admin Portal.');
+    throw new ApiError(401, 'Invalid email or password');
   }
 
   const rows = await runFunction('sp_get_customer_auth', [email]);

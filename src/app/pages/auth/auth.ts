@@ -3,7 +3,9 @@ import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
+import { BannerService } from '../../core/services/banner.service';
 import { ToastService } from '../../core/services/toast.service';
+import { Banner } from '../../core/models';
 
 type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
 
@@ -16,6 +18,7 @@ type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
 })
 export class AuthComponent implements OnInit {
   private authService = inject(AuthService);
+  private bannerService = inject(BannerService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private toast = inject(ToastService);
@@ -24,6 +27,7 @@ export class AuthComponent implements OnInit {
   loading = signal(false);
   error = signal('');
   showPass = signal(false);
+  loginBanner = signal<Banner | null>(null);
 
   email = '';
   password = '';
@@ -38,6 +42,15 @@ export class AuthComponent implements OnInit {
     if (this.authService.isLoggedIn()) {
       this.router.navigate([this.authService.redirectUrl || '/']);
     }
+
+    this.bannerService.getLoginBanner().subscribe({
+      next: (banner) => {
+        if (banner) {
+          this.loginBanner.set(banner);
+        }
+      },
+      error: () => {}
+    });
   }
 
   togglePassword() {
@@ -48,9 +61,9 @@ export class AuthComponent implements OnInit {
     this.error.set('');
     if (!this.email || !this.password) { this.error.set('Please fill in all fields'); return; }
     
-    // Explicit security boundary: Customer portal is strictly for customers
+    // Security: Never reveal admin existence or admin path on public customer portal
     if (this.email.trim().toLowerCase() === 'admin@crochus.com') {
-      this.error.set('Admin accounts cannot log in through the customer portal. Please access the dedicated Admin Portal at /admin/login.');
+      this.error.set('Invalid email or password');
       return;
     }
 

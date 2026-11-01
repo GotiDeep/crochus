@@ -81,6 +81,10 @@
           padding: 3px 10px;
           border-radius: 12px;
           letter-spacing: 0.04em;
+
+          &.login-badge {
+            background: #854D0E;
+          }
         }
       }
 
@@ -206,6 +210,13 @@
       padding: 3px 8px;
       border-radius: 4px;
       white-space: nowrap;
+
+      &.login-badge {
+        background: #FEF3C7;
+        color: #92400E;
+        font-weight: 600;
+        border: 1px solid #FCD34D;
+      }
     }
 
     .order-badge {

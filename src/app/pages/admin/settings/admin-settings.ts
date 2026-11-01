@@ -2,7 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { AdminBannersComponent } from './admin-banners.component';
+import { AdminBannersComponent } from './admin-banners';
 import { AdminTestimonialsComponent } from './admin-testimonials';
 import { AdminFounderStoryComponent } from './admin-founder-story';
 import { SettingsService } from '../../../core/services/settings.service';

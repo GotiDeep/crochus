@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, of, tap } from 'rxjs';
+import { Observable, catchError, map, of, tap } from 'rxjs';
 import { Banner } from '../models';
 import { environment } from '../../../environments/environment';
 
@@ -72,6 +72,15 @@ export class BannerService {
       catchError((err) => {
         console.warn('[BannerService] Failed to fetch banners, using fallback:', err);
         return of(this.banners());
+      })
+    );
+  }
+
+  getLoginBanner(): Observable<Banner | null> {
+    return this.getPublicBanners().pipe(
+      map((banners) => {
+        const found = banners.find((b) => b.is_active && b.display_on === 'Login Page');
+        return found || null;
       })
     );
   }

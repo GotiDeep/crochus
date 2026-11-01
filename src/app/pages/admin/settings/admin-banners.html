@@ -15,12 +15,14 @@
         <div class="dim-icon-wrap">📐</div>
         <div class="dim-body">
           <div class="dim-heading">
-            <strong>Standard Hero Banner Specifications</strong>
-            <span class="dim-badge">Recommended: 1920 × 650 px</span>
+            <strong>Recommended Banner Specifications</strong>
+            <span class="dim-badge">Hero: 1920 × 650 px</span>
+            <span class="dim-badge login-badge">Login: 1000 × 1200 px</span>
           </div>
           <p class="dim-desc">
-            For best visual appeal, upload landscape images of <strong>1920 × 650 px</strong> (aspect ratio ~16:6).
-            Supported formats: <strong>JPG, PNG, WebP</strong> (up to 5MB). Keep key visuals and text centered so they look great on both mobile and wide screens.
+            • <strong>Hero Slider Banner (App & Web):</strong> Recommended landscape <strong>1920 × 650 px</strong> (aspect ratio ~16:6).<br>
+            • <strong>Customer Login Banner:</strong> Recommended portrait <strong>1000 × 1200 px</strong> (aspect ratio ~4:5 or 3:4) for the sign-in visual panel.<br>
+            Supported formats: <strong>JPG, PNG, WebP</strong> (up to 5MB).
           </p>
         </div>
       </div>
@@ -108,7 +110,11 @@
 
                     <!-- Display On -->
                     <td class="td-display">
-                      <span class="display-badge">{{ banner.display_on || 'App, Web' }}</span>
+                      @if (banner.display_on === 'Login Page') {
+                        <span class="display-badge login-badge">🔐 Login Page</span>
+                      } @else {
+                        <span class="display-badge">{{ banner.display_on || 'App, Web' }}</span>
+                      }
                     </td>
 
                     <!-- Banner Image Thumbnail -->
@@ -153,12 +159,12 @@
                 </div>
                 <div class="mdb-tags">
                   <div class="mdb-tag">
-                    <span class="tag-title">Desktop Width × Height:</span>
-                    <strong class="tag-val">1920 × 650 px</strong>
+                    <span class="tag-title">Hero Banner (Landscape):</span>
+                    <strong class="tag-val">1920 × 650 px (~16:6)</strong>
                   </div>
                   <div class="mdb-tag">
-                    <span class="tag-title">Aspect Ratio:</span>
-                    <strong class="tag-val">~16:6 (or 2.5:1)</strong>
+                    <span class="tag-title">Login Page Banner (Portrait):</span>
+                    <strong class="tag-val">1000 × 1200 px (~4:5)</strong>
                   </div>
                   <div class="mdb-tag">
                     <span class="tag-title">File Types:</span>
@@ -166,7 +172,7 @@
                   </div>
                 </div>
                 <div class="mdb-note">
-                  ℹ️ <em>Please keep focal subjects and text centered. The slider will auto-scale gracefully across mobile (320px–430px) and wide screens.</em>
+                  ℹ️ <em>For <strong>Hero Banners</strong>, use landscape 1920 × 650 px. For <strong>Login Page</strong> banner, use portrait ~1000 × 1200 px to fill the customer login panel gracefully.</em>
                 </div>
               </div>
 
@@ -191,7 +197,9 @@
                     <div class="dropzone-empty" (click)="fileInput.click()">
                       <div class="upload-cloud-icon">☁️</div>
                       <strong>Click to upload banner photo</strong>
-                      <span>Recommended: 1920 × 650 px landscape image</span>
+                      <span>
+                        {{ currentForm.display_on === 'Login Page' ? 'Recommended: 1000 × 1200 px portrait image' : 'Recommended: 1920 × 650 px landscape image' }}
+                      </span>
                     </div>
                   }
                   <input
@@ -223,7 +231,7 @@
                   <input
                     class="form-control"
                     [(ngModel)]="currentForm.name"
-                    placeholder="e.g. Summer Crochet Bouquets"
+                    placeholder="e.g. Summer Crochet Bouquets or Login Visual"
                     required
                   />
                   <span class="hint-text">Internal reference name for this banner.</span>
@@ -235,7 +243,11 @@
                     <option value="App, Web">App, Web</option>
                     <option value="Web Only">Web Only</option>
                     <option value="App Only">App Only</option>
+                    <option value="Login Page">Login Page</option>
                   </select>
+                  <span class="hint-text">
+                    {{ currentForm.display_on === 'Login Page' ? 'Used on customer sign-in & register visual panel.' : 'Platforms where this hero banner will appear.' }}
+                  </span>
                 </div>
               </div>
 
