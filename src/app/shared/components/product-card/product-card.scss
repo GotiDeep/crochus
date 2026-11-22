@@ -308,20 +308,25 @@
       align-items: baseline;
       gap: 2px;
       color: var(--c-primary);
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Outfit', sans-serif;
+      font-variant-numeric: lining-nums tabular-nums;
+      font-feature-settings: 'lnum' 1, 'tnum' 1;
 
       .price-currency {
         font-size: 0.95rem;
-        font-weight: 500;
+        font-weight: 600;
+        font-family: 'Outfit', sans-serif;
       }
 
       .price-val {
-        font-size: 1.35rem;
-        font-weight: 600;
+        font-size: 1.25rem;
+        font-weight: 700;
         letter-spacing: -0.01em;
+        font-family: 'Outfit', sans-serif;
+        font-variant-numeric: lining-nums tabular-nums;
 
         @media (max-width: 560px) {
-          font-size: 1.2rem;
+          font-size: 1.15rem;
         }
       }
     }

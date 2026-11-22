@@ -234,8 +234,9 @@
       }
 
       .oi-price {
-        font-family: 'Cormorant Garamond', serif;
-        font-size: 1.15rem;
+        font-family: 'Outfit', sans-serif;
+        font-variant-numeric: lining-nums tabular-nums;
+        font-size: 1.1rem;
         font-weight: 600;
         color: var(--c-primary);
         flex-shrink: 0;
@@ -266,8 +267,9 @@
       }
 
       .total-amt {
-        font-family: 'Cormorant Garamond', serif;
-        font-size: 1.85rem;
+        font-family: 'Outfit', sans-serif;
+        font-variant-numeric: lining-nums tabular-nums;
+        font-size: 1.7rem;
         font-weight: 700;
         color: var(--c-primary);
       }

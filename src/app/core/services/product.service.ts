@@ -46,9 +46,9 @@ export class ProductService {
     return this.http.get<Product>(`${environment.apiUrl}/products/${slug}`);
   }
 
-  getFeaturedProducts(): Observable<Product[]> {
+  getFeaturedProducts(limit = 12): Observable<Product[]> {
     return this.http.get<Product[]>(`${environment.apiUrl}/products/featured`, {
-      params: new HttpParams().set('limit', '10'),
+      params: new HttpParams().set('limit', String(limit)),
     });
   }
 

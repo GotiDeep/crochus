@@ -38,6 +38,41 @@ h1, h2, h3, h4, .font-serif {
   color: var(--c-text);
 }
 
+/* Universal Digits & Numeric Consistency Across Whole Website */
+:root {
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: 'lnum' 1, 'tnum' 1;
+}
+
+/* Ensure all prices, currency amounts, counters and digits across the website use modern, perfectly aligned lining numerals */
+.price,
+.price-container,
+.price-val,
+.main-price,
+.sticky-price,
+.item-price,
+.item-subtotal,
+.total-price,
+.total-amt,
+.prod-amount,
+.tile-price,
+.oi-price,
+.sp-num,
+.rating-num,
+.rating-count,
+.dossier-sku-tag,
+.style-sku,
+.style-tag,
+.price-currency,
+.currency,
+.step-value,
+.cart-badge,
+.pillar-num {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-variant-numeric: lining-nums tabular-nums !important;
+  font-feature-settings: 'lnum' 1, 'tnum' 1 !important;
+}
+
 img, svg {
   display: block;
   max-width: 100%;

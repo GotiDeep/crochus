@@ -94,7 +94,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       error: () => {}
     });
 
-    this.productService.getFeaturedProducts().subscribe(products => {
+    this.productService.getFeaturedProducts(12).subscribe(products => {
       this.featured.set(products);
       this.loading.set(false);
       if (this.heroProducts().length === 0 && products.length > 0) {

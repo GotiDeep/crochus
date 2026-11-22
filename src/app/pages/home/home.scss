@@ -496,8 +496,9 @@
       }
 
       .tile-price {
-        font-family: 'Cormorant Garamond', serif;
-        font-size: 1rem;
+        font-family: 'Outfit', sans-serif;
+        font-variant-numeric: lining-nums tabular-nums;
+        font-size: 0.95rem;
         font-weight: 600;
         color: var(--c-primary);
         margin-top: 4px;

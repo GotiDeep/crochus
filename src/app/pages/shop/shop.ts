@@ -28,7 +28,7 @@ export class ShopComponent implements OnInit, OnDestroy {
   categories = signal<Category[]>([]);
   total = signal(0);
   currentPage = signal(1);
-  limit = 10;
+  limit = 12;
 
   activeCategory = signal<number | null>(null);
   sortBy = 'newest';
